@@ -17,6 +17,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+import { clearSession, getSession } from '@/features/auth/session';
+
 import { BirthChecklist } from './components/BirthChecklist';
 import { BottomSheet } from './components/BottomSheet';
 import { DomainTiles } from './components/DomainTiles';
@@ -24,7 +26,7 @@ import { Header, StatusBar } from './components/Header';
 import IslandScene from './components/IslandScene';
 import { KateCard } from './components/KateCard';
 import { PhoneFrame, usePhoneFramed } from './components/PhoneFrame';
-import { DomainSheet, WhySheet } from './components/SheetContent';
+import { AccountSheet, DomainSheet, WhySheet } from './components/SheetContent';
 import { SkyBackground } from './components/SkyBackground';
 import { TabBar } from './components/TabBar';
 import { PillButton } from './components/ui';
@@ -34,7 +36,11 @@ import { useMijnWereld, useMijnWereldCommands } from './state/store';
 import type { Domain } from './state/types';
 import { font, page, world } from './theme';
 
-type Sheet = { kind: 'domain'; domain: Domain } | { kind: 'why' } | { kind: 'checklist' };
+type Sheet =
+  | { kind: 'domain'; domain: Domain }
+  | { kind: 'why' }
+  | { kind: 'checklist' }
+  | { kind: 'account' };
 
 /** Where the sky ends inside the island, as in the prototype (42% of 812px). */
 const SKY_STOP_IN_SCENE = 0.836;
@@ -144,7 +150,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
         </View>
       </ScrollView>
 
-      <TabBar bottomInset={native ? insets.bottom : 0} />
+      <TabBar bottomInset={native ? insets.bottom : 0} onMore={() => openSheet({ kind: 'account' })} />
 
       <BottomSheet open={!!sheet} label={sheetLabel(shown)} onClose={closeSheet}>
         {shown?.kind === 'domain' && (
@@ -156,9 +162,21 @@ function PhoneScreen({ framed }: { framed: boolean }) {
         {shown?.kind === 'why' && (
           <WhySheet
             signals={state.moment.signals}
+            hiddenSignals={state.moment.hiddenSignals}
             canAnswer={phase === 'ask'}
             onConfirm={confirm}
             onReject={reject}
+          />
+        )}
+        {shown?.kind === 'account' && (
+          <AccountSheet
+            displayName={customer?.displayName ?? ''}
+            username={getSession()?.user.sub}
+            onLogout={() => {
+              closeSheet();
+              clearSession();
+            }}
+            onClose={closeSheet}
           />
         )}
         {shown?.kind === 'checklist' &&
@@ -183,6 +201,7 @@ function sheetLabel(sheet: Sheet | null) {
   if (!sheet) return '';
   if (sheet.kind === 'why') return 'Waarom vraag ik dit?';
   if (sheet.kind === 'checklist') return 'Klaar voor de geboorte';
+  if (sheet.kind === 'account') return 'Account';
   return `Details ${sheet.domain}`;
 }
 

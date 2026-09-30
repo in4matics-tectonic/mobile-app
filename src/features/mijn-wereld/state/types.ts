@@ -78,13 +78,30 @@ export interface WorldResponse {
   domains: DomainInfo[];
 }
 
+/** A counted signal as the customer may see it (never sensitive ones). */
+export interface MomentSignal {
+  id: string;
+  /** Customer wording, used in "Waarom vraag je dit?". */
+  label: string;
+  consent?: string;
+}
+
 export interface MomentResponse {
+  /** 0–100. */
   score: number;
   threshold: number;
-  /** Signals that were counted, oldest first. */
-  signals: Signal[];
+  /** Visible signals that were counted, oldest first. */
+  signals: MomentSignal[];
+  /** Sensitive signals that counted but whose labels stay hidden from the customer. */
+  hiddenSignals: number;
+  /** The backend decides the phase: true once Kate may ask (fase 'vragen' or later). */
+  shouldAsk: boolean;
+  /** Confirmed by the customer (possibly on another device, e.g. Lien's phone). */
+  confirmed: boolean;
   /** True once the customer said "Klopt niet": the moment never comes back. */
   closed: boolean;
+  /** Backend demo clock (week). Going backwards means the demo was reset. */
+  clock?: number;
 }
 
 export interface ChecklistResponse {

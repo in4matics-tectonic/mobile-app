@@ -57,8 +57,13 @@ const styles = StyleSheet.create({
     lineHeight: Platform.select({ web: 34, default: 36 }),
     letterSpacing: -0.28,
     color: world.title,
-    textShadowColor: 'rgba(255,255,255,.6)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 0,
+    ...Platform.select({
+      web: { textShadow: '0 2px 0 rgba(255,255,255,.6)' },
+      default: {
+        textShadowColor: 'rgba(255,255,255,.6)',
+        textShadowOffset: { width: 0, height: 2 },
+        textShadowRadius: 0,
+      },
+    }),
   },
 });

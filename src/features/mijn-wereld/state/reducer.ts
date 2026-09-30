@@ -12,7 +12,15 @@ export function createInitialState(): MijnWereldState {
     customer: null,
     domains: [],
     phase: 'signals',
-    moment: { score: 0, threshold: 70, signals: [], closed: false },
+    moment: {
+      score: 0,
+      threshold: 70,
+      signals: [],
+      hiddenSignals: 0,
+      shouldAsk: false,
+      confirmed: false,
+      closed: false,
+    },
     checklist: null,
     runs: {},
     coins: 0,
@@ -36,6 +44,20 @@ function updateTodo(
   };
 }
 
+/** Kate asks her one question (never a proposal) and logs it for audit. */
+function askFor(state: MijnWereldState, moment: MijnWereldState['moment']): MijnWereldState {
+  return {
+    ...state,
+    moment,
+    phase: 'ask',
+    audit: log(state, {
+      kind: 'vraag',
+      text: 'Kate vraagt: "Klopt het dat er een gezinsuitbreiding op komst is?"',
+      consent: state.customer?.consents.join(', '),
+    }),
+  };
+}
+
 export const openCount = (state: MijnWereldState) =>
   state.checklist?.todo.filter((t) => t.status !== 'done').length ?? 0;
 
@@ -43,8 +65,8 @@ export function reducer(state: MijnWereldState, action: Action): MijnWereldState
   const name = state.customer?.displayName ?? 'De klant';
 
   switch (action.type) {
-    case 'LOADED':
-      return {
+    case 'LOADED': {
+      const loaded: MijnWereldState = {
         ...state,
         status: 'ready',
         error: undefined,
@@ -53,6 +75,11 @@ export function reducer(state: MijnWereldState, action: Action): MijnWereldState
         coins: action.world.customer.kateCoins,
         moment: action.moment,
       };
+      // Pick up where the backend is: already confirmed, or already past the threshold.
+      if (action.moment.confirmed) return { ...loaded, phase: 'confirmed' };
+      if (action.moment.shouldAsk) return askFor(loaded, action.moment);
+      return loaded;
+    }
 
     case 'LOAD_FAILED':
       return { ...state, status: 'error', error: action.error };
@@ -61,33 +88,44 @@ export function reducer(state: MijnWereldState, action: Action): MijnWereldState
       return { ...state, domains: action.world.domains };
 
     case 'SIGNAL_RECEIVED': {
+      const moment = action.moment;
+
+      // The backend demo clock went back (backoffice "Demo resetten"): start over.
+      if (moment.clock !== undefined && state.moment.clock !== undefined && moment.clock < state.moment.clock) {
+        const fresh: MijnWereldState = {
+          ...createInitialState(),
+          status: 'ready',
+          customer: state.customer,
+          domains: state.domains,
+          coins: state.customer?.kateCoins ?? 0,
+          moment,
+        };
+        return moment.shouldAsk ? askFor(fresh, moment) : fresh;
+      }
+
       // After "Klopt niet" the moment stays closed: new signals change nothing.
-      if (state.phase === 'declined' || action.moment.closed) return state;
+      if (state.phase === 'declined' || moment.closed) return state;
 
       const known = new Set(state.moment.signals.map((s) => s.id));
       let audit = state.audit;
-      for (const signal of action.moment.signals.filter((s) => !known.has(s.id))) {
+      for (const signal of moment.signals.filter((s) => !known.has(s.id))) {
         audit = log({ ...state, audit }, { kind: 'signaal', text: signal.label, consent: signal.consent });
       }
+      const next = { ...state, moment, audit };
 
-      const moment = action.moment;
-      // Below the threshold Kate does nothing visible; at the threshold she asks one question.
-      if (state.phase === 'signals' && moment.score >= moment.threshold) {
+      // Confirmed elsewhere (Tom and Lien share one customer, or via their own AI).
+      if (moment.confirmed && (state.phase === 'signals' || state.phase === 'ask')) {
         return {
-          ...state,
-          moment,
-          phase: 'ask',
-          audit: log(
-            { ...state, audit },
-            {
-              kind: 'vraag',
-              text: 'Kate vraagt: "Klopt het dat er een gezinsuitbreiding op komst is?"',
-              consent: state.customer?.consents.join(', '),
-            }
-          ),
+          ...next,
+          phase: 'confirmed',
+          audit: log(next, { kind: 'antwoord', text: 'Gezinsuitbreiding bevestigd op een ander toestel' }),
         };
       }
-      return { ...state, moment, audit };
+      // Below the threshold Kate does nothing visible; at the threshold she asks one question.
+      if (state.phase === 'signals' && moment.shouldAsk) return askFor(next, moment);
+      // The estimate dropped back under the threshold (e.g. withdrawn elsewhere): stop asking.
+      if (state.phase === 'ask' && !moment.shouldAsk) return { ...next, phase: 'signals' };
+      return next;
     }
 
     case 'ANSWER_CONFIRM':
@@ -103,7 +141,7 @@ export function reducer(state: MijnWereldState, action: Action): MijnWereldState
       return {
         ...state,
         phase: 'declined',
-        moment: { ...state.moment, score: 0, signals: [], closed: true },
+        moment: { ...state.moment, score: 0, signals: [], hiddenSignals: 0, shouldAsk: false, closed: true },
         audit: log(state, { kind: 'antwoord', text: `${name} zeggen "Klopt niet". Inschatting gewist.` }),
       };
 

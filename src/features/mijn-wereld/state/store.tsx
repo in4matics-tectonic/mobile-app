@@ -50,15 +50,22 @@ export function MijnWereldProvider({ children }: { children: ReactNode }) {
     load();
   }, []);
 
-  // While Kate is still listening, keep the moment score fresh. She stops once she asked.
-  const listening = state.status === 'ready' && state.phase === 'signals';
+  // Keep the moment fresh: new signals, a confirmation on Lien's phone, or a backend demo reset.
+  const ready = state.status === 'ready';
   useEffect(() => {
-    if (!listening) return;
+    if (!ready) return;
     let cancelled = false;
     const timer = setInterval(async () => {
       try {
         const moment = await momentService.getFamilyMoment(customerId());
-        if (!cancelled) dispatch({ type: 'SIGNAL_RECEIVED', moment });
+        if (cancelled) return;
+        const previous = stateRef.current.moment.clock;
+        if (moment.clock !== undefined && previous !== undefined && moment.clock < previous) {
+          // Demo reset in the backoffice: clear the mocked checklist progress as well.
+          queueRef.current = Promise.resolve();
+          await momentService.resetMockState();
+        }
+        dispatch({ type: 'SIGNAL_RECEIVED', moment });
       } catch {
         // Try again on the next tick.
       }
@@ -67,18 +74,39 @@ export function MijnWereldProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       clearInterval(timer);
     };
-  }, [listening]);
+  }, [ready]);
+
+  // Once confirmed (here or on another device), Kate builds the checklist.
+  const needsChecklist = state.phase === 'confirmed' && !state.checklist;
+  useEffect(() => {
+    if (!needsChecklist) return;
+    let cancelled = false;
+    (async () => {
+      // KateCard shows "Ik zet jullie checklist klaar…" until this succeeds.
+      while (!cancelled) {
+        try {
+          const [checklist, world] = await Promise.all([
+            momentService.getChecklist(customerId()),
+            momentService.getWorld(customerId()),
+          ]);
+          if (cancelled) return;
+          dispatch({ type: 'CHECKLIST_LOADED', checklist });
+          dispatch({ type: 'WORLD_UPDATED', world });
+          return;
+        } catch {
+          await delay(TIMING.momentPoll);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [needsChecklist]);
 
   const confirm = async () => {
     if (stateRef.current.phase !== 'ask') return;
     dispatch({ type: 'ANSWER_CONFIRM' });
     await momentService.answer(customerId(), 'confirm');
-    const [checklist, world] = await Promise.all([
-      momentService.getChecklist(customerId()),
-      momentService.getWorld(customerId()),
-    ]);
-    dispatch({ type: 'CHECKLIST_LOADED', checklist });
-    dispatch({ type: 'WORLD_UPDATED', world });
   };
 
   const reject = async () => {

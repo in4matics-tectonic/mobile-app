@@ -60,7 +60,7 @@ export function BottomSheet({
   }));
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents={open ? 'auto' : 'none'} aria-hidden={!open}>
+    <View style={[StyleSheet.absoluteFill, { pointerEvents: open ? 'auto' : 'none' }]} aria-hidden={!open}>
       <Animated.View style={[StyleSheet.absoluteFill, styles.veil, veilStyle]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} aria-label="Sluiten" />
       </Animated.View>

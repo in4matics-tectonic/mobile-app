@@ -15,6 +15,7 @@ export function PillButton({
   small,
   style,
   accessibilityHint,
+  disabled,
 }: {
   label: string;
   onPress: () => void;
@@ -22,11 +23,14 @@ export function PillButton({
   small?: boolean;
   style?: StyleProp<ViewStyle>;
   accessibilityHint?: string;
+  disabled?: boolean;
 }) {
   return (
     <Pressable
       role="button"
       accessibilityHint={accessibilityHint}
+      disabled={disabled}
+      aria-disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.btn,
@@ -35,6 +39,7 @@ export function PillButton({
         variant === 'secondary' && styles.secondary,
         variant === 'link' && styles.link,
         pressed && styles.pressed,
+        disabled && styles.disabled,
         style,
       ]}>
       <Text
@@ -69,6 +74,7 @@ const styles = StyleSheet.create({
   secondary: { backgroundColor: world.secondaryBg },
   link: { backgroundColor: 'transparent', paddingHorizontal: 2 },
   pressed: { transform: [{ translateY: 2 }] },
+  disabled: { opacity: 0.6 },
   label: { fontFamily: font.body800, fontSize: 13, color: world.ink },
   smallLabel: { fontSize: 12 },
   linkLabel: { color: world.soft, textDecorationLine: 'underline' },

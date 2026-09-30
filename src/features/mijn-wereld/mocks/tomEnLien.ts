@@ -233,6 +233,6 @@ export const TIMING = {
   stpSettle: 350,
   /** A new signal arrives every … ms after the app opens (threshold is hit at the 5th). */
   signalInterval: 1500,
-  /** How often the app asks for the latest moment score while Kate is still listening. */
-  momentPoll: 1000,
+  /** How often the app asks for the latest moment (the backend advises polling every 1–2 s). */
+  momentPoll: 1500,
 };

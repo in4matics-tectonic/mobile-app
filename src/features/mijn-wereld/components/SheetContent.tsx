@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import type { DomainInfo, Signal } from '../state/types';
+import type { DomainInfo, MomentSignal } from '../state/types';
 import { font, world } from '../theme';
 import { PillButton } from './ui';
 
@@ -42,11 +42,14 @@ export function DomainSheet({ domain, onClose }: { domain: DomainInfo; onClose: 
 
 export function WhySheet({
   signals,
+  hiddenSignals,
   canAnswer,
   onConfirm,
   onReject,
 }: {
-  signals: Signal[];
+  signals: MomentSignal[];
+  /** Sensitive signals: they count, but their labels are never shown to the customer. */
+  hiddenSignals: number;
   canAnswer: boolean;
   onConfirm: () => void;
   onReject: () => void;
@@ -61,9 +64,18 @@ export function WhySheet({
         {signals.map((s) => (
           <View key={s.id} style={styles.whyRow}>
             <View style={styles.bullet} />
-            <Text style={styles.whyText}>{s.customerLabel}</Text>
+            <Text style={styles.whyText}>{s.label}</Text>
           </View>
         ))}
+        {hiddenSignals > 0 && (
+          <View style={styles.whyRow}>
+            <View style={styles.bullet} />
+            <Text style={styles.whyText}>
+              En {hiddenSignals === 1 ? 'één ander signaal' : `${hiddenSignals} andere signalen`} waarvoor
+              jullie toestemming gaven
+            </Text>
+          </View>
+        )}
       </View>
       <Tip>
         Jullie kiezen zelf welke data ik mag gebruiken via &apos;Op jouw maat&apos;. Zeggen jullie nee,
@@ -75,6 +87,33 @@ export function WhySheet({
           <PillButton label="Klopt niet" variant="secondary" onPress={onReject} />
         </View>
       )}
+    </>
+  );
+}
+
+export function AccountSheet({
+  displayName,
+  username,
+  onLogout,
+  onClose,
+}: {
+  displayName: string;
+  /** Undefined in the offline mock demo (no backend login). */
+  username?: string;
+  onLogout: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      <SheetTitle
+        title="Meer"
+        subtitle={username ? `Ingelogd als ${username} · ${displayName}` : `Demo · ${displayName}`}
+      />
+      <Tip>Je sessie blijft op dit toestel bewaard tot ze na een uur verloopt of tot je uitlogt.</Tip>
+      <View style={styles.row}>
+        {username && <PillButton label="Uitloggen" onPress={onLogout} />}
+        <PillButton label="Sluiten" variant="secondary" onPress={onClose} />
+      </View>
     </>
   );
 }
