@@ -1,0 +1,81 @@
+/* Island animations and hotspot states, taken from the prototype. */
+
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.spot {
+  cursor: pointer;
+  outline: none;
+}
+.spot:focus-visible {
+  outline: none;
+}
+.spot:focus-visible .badge rect {
+  stroke: #0a5fb4;
+  stroke-width: 2.5;
+}
+.spot:hover .badge {
+  transform: translateY(-2px);
+}
+.badge {
+  transition: transform 0.2s;
+}
+
+.float {
+  animation: bob 5s ease-in-out infinite;
+}
+.kateBob {
+  animation: bob 3.2s ease-in-out infinite;
+}
+.blades {
+  animation: spin 6s linear infinite;
+  transform-origin: 0 0;
+}
+.cloud {
+  animation: drift 22s ease-in-out infinite alternate;
+}
+.ghostBaby {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+.fade {
+  transition: opacity 0.8s;
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes drift {
+  to {
+    transform: translateX(18px);
+  }
+}
+@keyframes breathe {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .kateBob,
+  .blades,
+  .cloud,
+  .ghostBaby {
+    animation: none;
+  }
+  .fade,
+  .badge {
+    transition: none;
+  }
+}

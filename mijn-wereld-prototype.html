@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}</style>
+<title>Mijn wereld</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: phone mockup (the product) left, pitch + backoffice annotations right; stacks on mobile. Phone interior is a committed daylight "3D cartoon" world. */
+:root{
+  --bg:#eef3f9; --fg:#0f2138; --muted:#5a6b82; --line:#d5dfeb; --panel:#ffffff; --accent:#0a5fb4; --good:#1f9d55; --warn:#d97706;
+  --display:"Fredoka","Baloo 2",ui-rounded,"Segoe UI",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --w-ink:#12305a; --w-soft:#6b7f99; --w-card:#ffffff; --w-blue:#0a5fb4; --w-good:#1f9d55;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0c1522;--fg:#e8eef7;--muted:#98a8bf;--line:#223249;--panel:#121e30;--accent:#6fb2ff;--good:#3ccf7e;--warn:#f5a623;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1522;--fg:#e8eef7;--muted:#98a8bf;--line:#223249;--panel:#121e30;--accent:#6fb2ff;--good:#3ccf7e;--warn:#f5a623;color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:32px 48px;display:grid;grid-template-columns:390px minmax(0,1fr);gap:48px;align-items:start}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);justify-items:center;gap:32px;padding-block:16px 40px}}
+
+/* ---------- phone ---------- */
+.phone{width:min(390px,100%);background:#0b1220;border-radius:52px;padding:12px;box-shadow:0 30px 60px -20px rgba(10,40,90,.45),0 0 0 2px #2a3445 inset;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+@media (max-width:860px){.phone{position:static}}
+.screen{position:relative;border-radius:42px;overflow:hidden;background:linear-gradient(180deg,#8fd0ff 0%,#cdeeff 42%,#f4f8fc 42.1%);color:var(--w-ink);height:812px;display:flex;flex-direction:column}
+@media (max-width:430px){.phone{padding:0;border-radius:28px;background:none;box-shadow:0 20px 40px -20px rgba(10,40,90,.4)}.screen{border-radius:28px}}
+.status{display:flex;justify-content:space-between;padding:14px 28px 0;font-weight:800;font-size:13px}
+.head{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0;gap:8px}
+.head h1{font-family:var(--display);font-weight:700;font-size:28px;margin:0;letter-spacing:-.01em;color:#0d2b52;text-shadow:0 2px 0 rgba(255,255,255,.6)}
+.head small{display:block;font-size:12px;font-weight:700;color:#2b5d92;letter-spacing:.06em;text-transform:uppercase}
+.coins{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:5px 12px 5px 6px;font-weight:800;font-size:14px;box-shadow:0 4px 0 rgba(12,60,120,.15);font-variant-numeric:tabular-nums;transition:transform .3s}
+.coins.pop{transform:scale(1.15)}
+.scene{display:block;width:100%;height:auto;margin-top:-4px}
+.spot{cursor:pointer;outline:none}
+.spot:focus-visible .badge rect{stroke:#0a5fb4;stroke-width:2.5}
+.spot:hover .badge{transform:translateY(-2px)}
+.badge{transition:transform .2s}
+.float{animation:bob 5s ease-in-out infinite}
+.kate-bob{animation:bob 3.2s ease-in-out infinite}
+.blades{animation:spin 6s linear infinite;transform-origin:0 0}
+.cloud{animation:drift 22s ease-in-out infinite alternate}
+.ghost-baby{animation:breathe 2.4s ease-in-out infinite}
+#babyGhost,#babySolid,#heart,#swing{transition:opacity .8s}
+@keyframes bob{50%{transform:translateY(-5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{to{transform:translateX(18px)}}
+@keyframes breathe{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.float,.kate-bob,.blades,.cloud,.ghost-baby{animation:none}}
+
+.body{flex:1;display:flex;flex-direction:column;gap:12px;padding:0 16px;margin-top:-8px;min-height:0}
+.kate{background:var(--w-card);border-radius:22px;padding:14px;box-shadow:0 6px 0 rgba(12,60,120,.08),0 10px 24px -10px rgba(12,60,120,.25);display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:start;transition:box-shadow .4s}
+.kate.glow{box-shadow:0 0 0 3px #ffd34d,0 10px 24px -10px rgba(12,60,120,.25)}
+.kate .who{font-size:12px;font-weight:800;color:var(--w-blue);letter-spacing:.04em;text-transform:uppercase}
+.kate p{margin:2px 0 10px;font-size:14px;line-height:1.4}
+.kate p b{font-weight:800}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:800;font-size:13px;border:0;border-radius:999px;padding:9px 14px;cursor:pointer;transition:transform .1s}
+.btn:active{transform:translateY(2px)}
+.btn:focus-visible{outline:3px solid #7cc0ff;outline-offset:2px}
+.btn.pri{background:var(--w-blue);color:#fff;box-shadow:0 3px 0 #073f78}
+.btn.sec{background:#eaf2fb;color:var(--w-blue)}
+.btn.link{background:none;color:var(--w-soft);padding:9px 2px;text-decoration:underline}
+.steps{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:6px;font-size:13.5px;font-weight:700}
+.steps li{display:flex;gap:8px;align-items:center;color:var(--w-soft);transition:color .2s}
+.steps li.done{color:var(--w-ink)}
+.steps .tick{width:18px;height:18px;border-radius:50%;background:#e3ebf5;display:grid;place-items:center;font-size:11px;color:#fff;flex:none;transition:background .2s}
+.steps li.done .tick{background:var(--w-good)}
+.consent{font-size:11.5px;color:var(--w-soft);font-weight:700;display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+.consent span{background:#eef7f0;color:#1d7a45;border-radius:999px;padding:2px 8px}
+
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{font:inherit;text-align:left;border:0;background:var(--w-card);border-radius:18px;padding:11px 12px;cursor:pointer;box-shadow:0 4px 0 rgba(12,60,120,.07);display:grid;gap:2px;color:var(--w-ink);min-width:0}
+.tile:focus-visible{outline:3px solid #7cc0ff;outline-offset:2px}
+.tile .t{font-family:var(--display);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.tile .s{font-size:12px;color:var(--w-soft);font-weight:600;line-height:1.35}
+.chip{font-family:var(--body);font-size:10.5px;font-weight:800;border-radius:999px;padding:1px 7px;letter-spacing:.02em}
+.chip.ok{background:#e4f6eb;color:#157a42}.chip.warn{background:#fff0df;color:#b65b00}.chip.info{background:#e6f0fb;color:#0a5fb4}
+
+.tabs{display:flex;justify-content:space-around;padding:10px 12px 22px;background:#fff;border-top:1px solid #e4ebf3;font-size:11px;font-weight:800;color:#8a9ab0}
+.tabs div{display:grid;justify-items:center;gap:3px}
+.tabs div.on{color:var(--w-blue)}
+.tabs i{width:22px;height:22px;border-radius:7px;background:currentColor;opacity:.25;display:block}
+.tabs .on i{opacity:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8fd0ff,#0a5fb4)}
+
+.veil{position:absolute;inset:0;background:rgba(8,30,60,.35);opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow:auto;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 24px;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.9,.3,1.1);box-shadow:0 -10px 30px rgba(8,30,60,.2)}
+.open .veil{opacity:1;pointer-events:auto}.open .sheet{transform:none}
+.grab{width:40px;height:5px;border-radius:5px;background:#d7e0ea;margin:0 auto 12px}
+.sheet h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 2px}
+.sheet .sub{color:var(--w-soft);font-size:13px;font-weight:600;margin:0 0 12px}
+.kv{display:grid;gap:8px;margin:0 0 14px}
+.kv div{display:flex;justify-content:space-between;gap:12px;font-size:14px;border-bottom:1px dashed #e3eaf2;padding-bottom:7px}
+.kv dt{color:var(--w-soft);font-weight:600}.kv dd{margin:0;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.tip{background:#eef6ff;border-radius:16px;padding:10px 12px;font-size:13.5px;font-weight:600;margin-bottom:14px}
+.why{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:6px;font-size:13.5px;font-weight:600}
+.why li{display:flex;gap:8px}.why li::before{content:"";width:6px;height:6px;border-radius:50%;background:#0a5fb4;margin-top:7px;flex:none}
+.offer{display:grid;gap:8px;margin:0 0 12px}
+.offer label{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;border:1.5px solid #e3eaf2;border-radius:14px;padding:10px 12px;cursor:pointer}
+.offer label:has(input:checked){border-color:#9cc8f5;background:#f5faff}
+.offer input{width:18px;height:18px;margin:1px 0 0;accent-color:#0a5fb4}
+.offer b{font-size:14px;display:block;line-height:1.3}
+.offer small{display:block;font-size:12px;color:var(--w-soft);font-weight:600;line-height:1.35}
+.offer .base{display:inline-block;margin-top:4px;font-size:11px;font-weight:800;color:#0a5fb4;background:#e6f0fb;border-radius:999px;padding:1px 8px}
+.offer .p{font-weight:800;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.grp{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin:4px 0 6px;display:flex;justify-content:space-between}
+.grp.ok{color:#157a42}.grp.todo{color:#b65b00}
+.grp span{color:var(--w-soft);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+.cl{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+.cl>li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:start;border:1.5px solid #f3dcc2;background:#fffaf4;border-radius:14px;padding:10px 12px;transition:background .4s,border-color .4s}
+.cl>li.is-ok{border-color:#cdebd8;background:#f3fbf6}
+.cl .dot{width:20px;height:20px;border-radius:50%;border:2px dashed #f0a45a;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px}
+.cl li.is-ok .dot{border:0;background:var(--w-good)}
+.cl b{font-size:14px;display:block;line-height:1.3}
+.cl small{display:block;font-size:12px;color:var(--w-soft);font-weight:600;line-height:1.35}
+.cl .base{display:inline-block;margin-top:4px;font-size:11px;font-weight:800;color:#0a5fb4;background:#e6f0fb;border-radius:999px;padding:1px 8px}
+.cl .act{display:block;margin-top:8px}
+.cl .p{font-weight:800;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.btn.sm{padding:6px 12px;font-size:12px}
+.okTxt{font-size:12px;font-weight:800;color:#157a42}
+.cl .steps{margin:0;font-size:12.5px}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;margin:4px 0 12px;font-variant-numeric:tabular-nums}
+.total small{font-weight:600;color:var(--w-soft);font-size:12px;display:block}
+
+/* ---------- side panel ---------- */
+.side{max-width:560px;min-width:0;display:grid;gap:28px;padding-top:16px;width:100%;justify-self:stretch}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.side h2{font-family:var(--display);font-weight:700;font-size:clamp(30px,4vw,44px);line-height:1.05;margin:6px 0 10px;text-wrap:balance}
+.side .lead{color:var(--muted);font-size:16px;margin:0;max-width:52ch}
+.side h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 10px}
+.flow ol{margin:0;padding-left:22px;display:grid;gap:8px}
+.flow li{color:var(--muted);transition:color .3s}
+.flow li b{font-family:var(--display);font-weight:600}
+.flow li.on{color:var(--fg)}
+.flow li.on b{color:var(--accent)}
+.flow li.done{color:var(--muted)}
+.flow li.done b{color:var(--good)}
+.flow li::marker{font-family:var(--display);font-weight:700;color:var(--accent)}
+
+.engine{display:grid;gap:12px}
+.meter{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.meter span{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meter .big{font-family:var(--display);font-weight:700;font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+.meter .big small{font-size:18px;color:var(--muted)}
+.track{position:relative;height:12px;border-radius:8px;background:var(--panel);border:1px solid var(--line);margin-top:18px}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:linear-gradient(90deg,#7cc0ff,var(--accent));width:0;transition:width .7s cubic-bezier(.3,.9,.3,1)}
+.thr{position:absolute;left:70%;top:-6px;bottom:-6px;border-left:2px dashed var(--warn)}
+.thr b{position:absolute;top:-19px;left:-14px;font-size:11px;font-weight:800;color:var(--warn);white-space:nowrap}
+.state{font-size:13px;font-weight:700;color:var(--muted)}
+.state.ask{color:var(--warn)}.state.ok{color:var(--good)}
+.sigs{list-style:none;margin:0;padding:0;display:grid;border-top:1px solid var(--line)}
+.sigs li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);opacity:.35;transition:opacity .4s}
+.sigs li.in{opacity:1}
+.sigs time{font-size:12.5px;color:var(--muted);font-weight:700}
+.sigs .what{min-width:0}
+.sigs .what small{display:block;color:var(--muted);font-size:12.5px}
+.sigs .w{font-family:var(--display);font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap}
+.reset{font:inherit;font-weight:700;font-size:13px;color:var(--accent);background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.reset.pri{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.reset:disabled{opacity:.4;cursor:default}
+.reset:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.pillars{display:grid;gap:0;border-top:1px solid var(--line)}
+.pillars div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.pillars b{font-family:var(--display);font-weight:600;font-size:16px}
+.pillars span{color:var(--muted)}
+@media (max-width:520px){.pillars div{grid-template-columns:minmax(0,1fr);gap:2px}}
+.note{font-size:13px;color:var(--muted);margin:0}
+</style>
+</head><body>
+
+<div class="wrap">
+  <div class="phone">
+    <div class="screen" id="screen">
+      <div class="status"><span>9:41</span><span>KBC Mobile</span></div>
+      <div class="head">
+        <div><small>Hallo Tom &amp; Lien</small><h1>Mijn wereld</h1></div>
+        <div class="coins" id="coins" title="Kate Coins">
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="cg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff3a8"/><stop offset=".5" stop-color="#ffcc1f"/><stop offset="1" stop-color="#d99100"/></radialGradient></defs><circle cx="12" cy="12" r="11" fill="url(#cg)"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="#b87700" stroke-width="1.4" opacity=".6"/><text x="12" y="16" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="10" fill="#8a5a00">K</text></svg>
+          <span id="coinVal">860</span>
+        </div>
+      </div>
+
+      <!-- ===== 3D cartoon island ===== -->
+      <svg class="scene" viewBox="0 0 360 300" role="img" aria-label="De wereld van Tom en Lien: hun huis, auto, energie, spaarboom en hun gezin">
+        <defs>
+          <radialGradient id="grass" cx="45%" cy="30%" r="75%"><stop offset="0" stop-color="#a6f07a"/><stop offset=".6" stop-color="#6fd052"/><stop offset="1" stop-color="#3fa33a"/></radialGradient>
+          <linearGradient id="cliff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9955c"/><stop offset=".55" stop-color="#a8683b"/><stop offset="1" stop-color="#6e4024"/></linearGradient>
+          <linearGradient id="cliffSide" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset=".75" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient>
+          <linearGradient id="wall" x1="0" x2="1"><stop offset="0" stop-color="#fff7e8"/><stop offset="1" stop-color="#efcf9f"/></linearGradient>
+          <linearGradient id="wallSide" x1="0" x2="1"><stop offset="0" stop-color="#e2b77e"/><stop offset="1" stop-color="#c9975c"/></linearGradient>
+          <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a66"/><stop offset="1" stop-color="#d44a2c"/></linearGradient>
+          <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a7fd6"/><stop offset="1" stop-color="#1c2f66"/></linearGradient>
+          <radialGradient id="win" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fff6c4"/><stop offset="1" stop-color="#ffc94a"/></radialGradient>
+          <linearGradient id="carBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb0ff"/><stop offset=".5" stop-color="#0a6fd1"/><stop offset="1" stop-color="#074a91"/></linearGradient>
+          <radialGradient id="leaf" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#9ff08c"/><stop offset=".6" stop-color="#46c05c"/><stop offset="1" stop-color="#23873e"/></radialGradient>
+          <radialGradient id="coin" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff3a8"/><stop offset=".55" stop-color="#ffc81a"/><stop offset="1" stop-color="#c98500"/></radialGradient>
+          <radialGradient id="water" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#b8f0ff"/><stop offset=".6" stop-color="#4cc3f0"/><stop offset="1" stop-color="#1c8fcf"/></radialGradient>
+          <radialGradient id="kate" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="#bfe6ff"/><stop offset=".5" stop-color="#2f95f0"/><stop offset="1" stop-color="#0a4f9c"/></radialGradient>
+          <radialGradient id="cloudG" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dcebf7"/></radialGradient>
+          <radialGradient id="skin" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffe2cc"/><stop offset="1" stop-color="#e9b08a"/></radialGradient>
+          <linearGradient id="shirtT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa9ff"/><stop offset="1" stop-color="#1f5fb0"/></linearGradient>
+          <linearGradient id="shirtL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a7a"/><stop offset="1" stop-color="#d9573a"/></linearGradient>
+          <linearGradient id="onesie" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#f2c230"/></linearGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>
+          <filter id="lift" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="3" stdDeviation="2.2" flood-color="#0b2a4a" flood-opacity=".22"/></filter>
+          <symbol id="kateLogo" viewBox="-200 -200 400 400"><circle r="200" fill="#b3e0f5"/><circle r="184" fill="#e2f2fc"/><circle r="168" fill="#f1f8fe"/><circle r="152" fill="#fbfdff"/><g stroke="#009fe3" stroke-width="22" stroke-linecap="round"><line x1="-29" y1="-85" x2="-3" y2="-85"/><line x1="-67" y1="-43" x2="11" y2="-43"/><line x1="-89" y1="0" x2="88" y2="0"/><line x1="-11" y1="42" x2="67" y2="42"/><line x1="2" y1="84" x2="28" y2="84"/></g></symbol>
+          <g id="check"><circle r="6.5" fill="#1f9d55"/><path d="M-2.8 0 l2 2 l3.8 -4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+        </defs>
+
+        <!-- clouds -->
+        <g class="cloud" filter="url(#lift)"><g fill="url(#cloudG)"><ellipse cx="190" cy="34" rx="26" ry="12"/><circle cx="178" cy="28" r="11"/><circle cx="198" cy="24" r="14"/></g></g>
+        <g class="cloud" style="animation-duration:30s" filter="url(#lift)"><g fill="url(#cloudG)" opacity=".9"><ellipse cx="330" cy="130" rx="20" ry="9"/><circle cx="322" cy="124" r="9"/><circle cx="337" cy="121" r="10"/></g></g>
+
+        <g class="float">
+          <ellipse cx="180" cy="292" rx="70" ry="6" fill="#0b2a4a" opacity=".12" filter="url(#soft)"/>
+          <path d="M16 178 C 24 230, 90 262, 150 284 C 168 292, 192 292, 210 284 C 270 262, 336 230, 344 178 Z" fill="url(#cliff)"/>
+          <path d="M16 178 C 24 230, 90 262, 150 284 C 168 292, 192 292, 210 284 C 270 262, 336 230, 344 178 Z" fill="url(#cliffSide)"/>
+          <path d="M60 214 q10 8 22 6 M250 236 q14 -2 22 -12 M150 262 q12 6 26 2" stroke="#5b331c" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".35"/>
+          <ellipse cx="180" cy="178" rx="166" ry="64" fill="#3a9436"/>
+          <ellipse cx="180" cy="172" rx="164" ry="62" fill="url(#grass)"/>
+          <path d="M40 150 Q 180 104 320 150" stroke="#fff" stroke-opacity=".28" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+          <!-- path -->
+          <path d="M122 162 C 140 190, 180 196, 238 212" stroke="#f4e3c1" stroke-width="10" fill="none" stroke-linecap="round" opacity=".9"/>
+
+          <!-- pond -->
+          <ellipse cx="172" cy="214" rx="26" ry="10" fill="#2b8a3e" opacity=".5"/>
+          <ellipse cx="172" cy="212" rx="24" ry="9" fill="url(#water)"/>
+          <ellipse cx="164" cy="209" rx="7" ry="2" fill="#fff" opacity=".7"/>
+
+          <!-- ===== WONEN: house ===== -->
+          <g class="spot" data-k="wonen" tabindex="0" role="button" aria-label="Wonen openen">
+            <ellipse cx="116" cy="166" rx="46" ry="11" fill="#1d5e24" opacity=".35" filter="url(#soft)"/>
+            <g filter="url(#lift)">
+              <path d="M78 118 L118 118 L118 164 L78 164 Z" fill="url(#wall)"/>
+              <path d="M118 118 L152 108 L152 152 L118 164 Z" fill="url(#wallSide)"/>
+              <path d="M72 122 L98 90 L124 122 Z" fill="#c43f22"/>
+              <path d="M98 90 L136 78 L158 110 L124 122 Z" fill="url(#roof)"/>
+              <path d="M98 90 L136 78" stroke="#ffb199" stroke-width="3" stroke-linecap="round"/>
+              <g><path d="M112 99 L132 92 L144 108 L124 115 Z" fill="url(#panel)"/><path d="M118 97 L130 112 M125 94 L137 110 M114 104 L136 97 M119 110 L141 103" stroke="#a9c3ff" stroke-width=".8" opacity=".7"/><path d="M114 100 L130 94" stroke="#fff" stroke-width="1.5" opacity=".6"/></g>
+              <rect x="138" y="72" width="8" height="18" rx="2" fill="#b0452b"/>
+              <rect x="92" y="140" width="13" height="24" rx="6" fill="#0a5fb4"/><circle cx="102" cy="153" r="1.4" fill="#ffd34d"/>
+              <rect x="82" y="128" width="8" height="9" rx="2" fill="url(#win)"/>
+              <path d="M126 130 L140 126 L140 138 L126 142 Z" fill="url(#win)"/>
+              <path d="M78 164 L118 164 L152 152" stroke="#000" stroke-opacity=".08" stroke-width="2" fill="none"/>
+            </g>
+            <g class="badge"><rect x="76" y="52" width="72" height="20" rx="10" fill="#fff" filter="url(#lift)"/><text x="104" y="66" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="11.5" fill="#12305a">Wonen</text><use href="#check" x="136" y="62"/></g>
+          </g>
+
+          <!-- ===== ENERGIE: windmill ===== -->
+          <g class="spot" data-k="energie" tabindex="0" role="button" aria-label="Energie openen">
+            <ellipse cx="286" cy="150" rx="16" ry="5" fill="#1d5e24" opacity=".35" filter="url(#soft)"/>
+            <path d="M281 150 L284 74 L288 74 L291 150 Z" fill="#f4f7fb" filter="url(#lift)"/>
+            <path d="M286 150 L288 74 L291 150 Z" fill="#cdd8e4"/>
+            <g transform="translate(286 72)">
+              <g class="blades">
+                <path d="M0 0 C -4 -12, -3 -30, 0 -38 C 3 -30, 4 -12, 0 0 Z" fill="#fff" filter="url(#lift)"/>
+                <path d="M0 0 C -4 -12, -3 -30, 0 -38 C 3 -30, 4 -12, 0 0 Z" fill="#fff" transform="rotate(120)" filter="url(#lift)"/>
+                <path d="M0 0 C -4 -12, -3 -30, 0 -38 C 3 -30, 4 -12, 0 0 Z" fill="#fff" transform="rotate(240)" filter="url(#lift)"/>
+              </g>
+              <circle r="5" fill="#0a5fb4"/><circle r="2" cx="-1.5" cy="-1.5" fill="#8fd0ff"/>
+            </g>
+            <g class="badge"><rect x="252" y="158" width="66" height="20" rx="10" fill="#fff" filter="url(#lift)"/><text x="285" y="172" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="11.5" fill="#12305a">Energie</text></g>
+          </g>
+
+          <!-- ===== SPAREN: coin tree ===== -->
+          <g class="spot" data-k="sparen" tabindex="0" role="button" aria-label="Sparen openen">
+            <ellipse cx="66" cy="206" rx="28" ry="7" fill="#1d5e24" opacity=".35" filter="url(#soft)"/>
+            <path d="M61 206 C 63 190, 62 180, 60 170 L72 170 C 70 180, 69 190, 71 206 Z" fill="#8a5431"/>
+            <g filter="url(#lift)" fill="url(#leaf)"><circle cx="52" cy="160" r="18"/><circle cx="80" cy="158" r="19"/><circle cx="66" cy="140" r="21"/></g>
+            <g><circle cx="54" cy="150" r="5" fill="url(#coin)"/><circle cx="76" cy="146" r="5" fill="url(#coin)"/><circle cx="68" cy="164" r="5" fill="url(#coin)"/><circle cx="86" cy="164" r="4.5" fill="url(#coin)"/></g>
+            <g id="swing" opacity="0"><path d="M84 172 L84 196 M96 170 L96 196" stroke="#6e4024" stroke-width="1.4"/><rect x="81" y="195" width="18" height="4" rx="2" fill="#ff8a66"/></g>
+            <g class="badge"><rect x="36" y="222" width="58" height="20" rx="10" fill="#fff" filter="url(#lift)"/><text x="65" y="236" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="11.5" fill="#12305a">Sparen</text></g>
+          </g>
+
+          <!-- ===== GEZIN: Tom & Lien ===== -->
+          <g class="spot" data-k="gezin" tabindex="0" role="button" aria-label="Gezin openen">
+            <ellipse cx="172" cy="196" rx="30" ry="5" fill="#1d5e24" opacity=".35" filter="url(#soft)"/>
+            <path id="heart" opacity="0" d="M170 142 c-3-5-10-3-9 2 c1 4 9 8 9 8 s8-4 9-8 c1-5-6-7-9-2z" fill="#ff5c8a" filter="url(#lift)"/>
+            <g transform="translate(160 196)" filter="url(#lift)">
+              <rect x="-4.5" y="-11" width="4" height="11" rx="2" fill="#2b3a55"/><rect x=".5" y="-11" width="4" height="11" rx="2" fill="#2b3a55"/>
+              <rect x="-7" y="-27" width="14" height="18" rx="6" fill="url(#shirtT)"/>
+              <circle cy="-34" r="7.5" fill="url(#skin)"/>
+              <path d="M-7.5 -35 a7.5 7.5 0 0 1 15 0 q-3 -3 -8 -2 q-4 1 -7 2z" fill="#5a3a22"/>
+              <circle cx="-2.6" cy="-33.5" r="1" fill="#1b2433"/><circle cx="2.6" cy="-33.5" r="1" fill="#1b2433"/>
+              <path d="M-2 -30.5 q2 1.4 4 0" stroke="#8a4a2a" stroke-width=".9" fill="none" stroke-linecap="round"/>
+            </g>
+            <g transform="translate(180 196)" filter="url(#lift)">
+              <rect x="-4" y="-10" width="3.6" height="10" rx="1.8" fill="#3b2f4a"/><rect x=".4" y="-10" width="3.6" height="10" rx="1.8" fill="#3b2f4a"/>
+              <path d="M-7 -9 L-6 -24 q0 -3 6 -3 q6 0 6 3 L7 -9 Z" fill="url(#shirtL)"/>
+              <path d="M-8 -33 q0 -9 8 -9 q8 0 8 9 l1 9 q-3 1 -4 -1 l-5 0 l-5 0 q-1 2 -4 1z" fill="#8a3b1f"/>
+              <circle cy="-32" r="7" fill="url(#skin)"/>
+              <path d="M-7 -33 q2 -7 7 -7 q5 0 7 7 q-5 -4 -14 0z" fill="#8a3b1f"/>
+              <circle cx="-2.4" cy="-31.5" r="1" fill="#1b2433"/><circle cx="2.4" cy="-31.5" r="1" fill="#1b2433"/>
+              <path d="M-2 -28.6 q2 1.4 4 0" stroke="#8a4a2a" stroke-width=".9" fill="none" stroke-linecap="round"/>
+            </g>
+            <g id="babyGhost" opacity="0"><g class="ghost-baby" transform="translate(197 196)">
+              <rect x="-4.5" y="-11" width="9" height="11" rx="4" fill="#fff" fill-opacity=".35" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 1.8"/>
+              <circle cy="-16" r="5.2" fill="#fff" fill-opacity=".35" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 1.8"/>
+            </g></g>
+            <g id="babySolid" opacity="0" transform="translate(197 196)" filter="url(#lift)">
+              <rect x="-4.5" y="-11" width="9" height="11" rx="4" fill="url(#onesie)"/>
+              <circle cy="-16" r="5.2" fill="url(#skin)"/>
+              <path d="M-1 -21 q1 -2 2 0" stroke="#8a4a2a" stroke-width="1" fill="none"/>
+              <circle cx="-1.7" cy="-16" r=".8" fill="#1b2433"/><circle cx="1.7" cy="-16" r=".8" fill="#1b2433"/>
+            </g>
+            <g class="badge"><rect x="132" y="228" width="76" height="20" rx="10" fill="#fff" filter="url(#lift)"/><text id="famText" x="170" y="242" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="11.5" fill="#12305a">Gezin · 2</text></g>
+          </g>
+
+          <!-- ===== MOBILITEIT: car + charger ===== -->
+          <g class="spot" data-k="mobiliteit" tabindex="0" role="button" aria-label="Mobiliteit openen">
+            <ellipse cx="246" cy="222" rx="42" ry="8" fill="#1d5e24" opacity=".4" filter="url(#soft)"/>
+            <rect x="286" y="188" width="10" height="30" rx="4" fill="#f4f7fb" filter="url(#lift)"/><rect x="288" y="193" width="6" height="6" rx="2" fill="#35d07f"/>
+            <path d="M291 206 C 288 222, 270 216, 272 206" stroke="#243449" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <g filter="url(#lift)">
+              <path d="M212 212 C 212 200, 220 196, 232 195 L 238 184 C 241 180, 245 178, 252 178 L 266 178 C 272 178, 276 181, 279 186 L 284 196 C 290 198, 292 203, 292 212 C 292 216, 289 218, 285 218 L 218 218 C 214 218, 212 216, 212 212 Z" fill="url(#carBody)"/>
+              <path d="M240 194 L 246 184 C 247 182, 249 181, 252 181 L 258 181 L 258 194 Z" fill="#cfefff"/>
+              <path d="M262 194 L 262 181 L 267 181 C 270 181, 272 182, 274 185 L 278 194 Z" fill="#a8dcff"/>
+              <path d="M222 200 L 282 200" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="287" cy="206" r="2.5" fill="#fff6c4"/>
+              <circle cx="230" cy="218" r="8" fill="#1b2433"/><circle cx="230" cy="218" r="3.5" fill="#c7d3e0"/>
+              <circle cx="274" cy="218" r="8" fill="#1b2433"/><circle cx="274" cy="218" r="3.5" fill="#c7d3e0"/>
+            </g>
+            <g class="badge"><rect x="214" y="232" width="90" height="20" rx="10" fill="#fff" filter="url(#lift)"/><text x="250" y="246" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="11.5" fill="#12305a">Mobiliteit</text><use href="#check" x="292" y="242"/></g>
+          </g>
+        </g>
+
+        <!-- Kate orb (original character) -->
+        <g class="kate-bob">
+          <g transform="translate(36 44)">
+            <ellipse cx="0" cy="30" rx="14" ry="3" fill="#0b2a4a" opacity=".15" filter="url(#soft)"/>
+            <use href="#kateLogo" x="-22" y="-22" width="44" height="44" filter="url(#lift)"/>
+          </g>
+        </g>
+      </svg>
+
+      <div class="body">
+        <div class="kate" id="kateCard">
+          <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><use href="#kateLogo" width="40" height="40"/></svg>
+          <div id="kateBody"></div>
+        </div>
+
+        <div class="tiles">
+          <button class="tile" data-open="wonen"><span class="t">Wonen <span class="chip ok">in orde</span></span><span class="s">Woonkrediet · nog 23 jaar</span></button>
+          <button class="tile" data-open="mobiliteit"><span class="t">Mobiliteit <span class="chip ok">in orde</span></span><span class="s">Omnium · Tom &amp; Lien</span></button>
+          <button class="tile" data-open="gezin"><span class="t">Gezin <span class="chip info" id="gChip">2</span></span><span class="s" id="gSub">Tom &amp; Lien</span></button>
+          <button class="tile" data-open="sparen"><span class="t">Sparen <span class="chip info">€ 12.400</span></span><span class="s">Spaarrekening · buffer</span></button>
+        </div>
+      </div>
+
+      <div class="tabs"><div class="on"><i></i>Mijn wereld</div><div><i></i>Rekeningen</div><div><i></i>Kate</div><div><i></i>Meer</div></div>
+
+      <div class="veil" id="veil"></div>
+      <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="shBody"></div></div>
+    </div>
+  </div>
+
+  <aside class="side">
+    <div>
+      <div class="eyebrow">Concept · KBC-challenge Tectonic Hackathon</div>
+      <h2>De wereld van Tom &amp; Lien groeit mee</h2>
+      <p class="lead">Tom en Lien zijn 32. Ze kochten twee jaar geleden een huis met een KBC-woonkrediet en hun auto is bij KBC verzekerd. Kate merkt dat er een kindje op komst is voor ze het zelf vertellen, en vraagt het eerst na.</p>
+    </div>
+
+    <div class="flow">
+      <h3>Demo in drie stappen</h3>
+      <ol>
+        <li id="f1"><b>Signalen komen binnen.</b> De backoffice speelt het levensverhaal af. Per signaal stijgt de score voor "Gezinsuitbreiding".</li>
+        <li id="f2"><b>Het landschap verandert.</b> Bij 70% verschijnt een gestippeld figuurtje naast Tom en Lien. Kate zegt dat ze een gezinsuitbreiding vermoedt. Zij bevestigen of ontkrachten.</li>
+        <li id="f3"><b>Kate maakt de checklist.</b> Na bevestiging toont Kate wat al in orde is voor de geboorte en wat nog moet. Per onderwerp tikken ze op "Laat Kate dit doen".</li>
+      </ol>
+    </div>
+
+    <div class="engine" aria-label="Backoffice">
+      <div class="meter"><span>Backoffice · moment "Gezinsuitbreiding"</span><div class="big"><span id="score">0</span><small>%</small></div></div>
+      <div class="track"><div class="fill" id="fill"></div><div class="thr"><b>70%</b></div></div>
+      <div class="state" id="boState">Wacht op signalen. Kate doet niets.</div>
+      <ol class="sigs" id="sigs"></ol>
+      <div class="ctrl">
+        <button class="reset pri" id="next">Speel volgend signaal</button>
+        <button class="reset" id="all">Speel alles af</button>
+        <button class="reset" id="reset">Demo resetten</button>
+      </div>
+    </div>
+
+    <div class="pillars">
+      <div><b>Kate 2.0</b><span>Kate herkent een levensmoment uit signalen en vraagt het na voor ze iets voorstelt.</span></div>
+      <div><b>Beyond Banking</b><span>Het voorstel vertrekt van hun wereld: huis, auto en verzekeringen samen.</span></div>
+      <div><b>STP</b><span>Elk open punt voert Kate met één tik uit, zonder formulier of kantoorbezoek.</span></div>
+      <div><b>Kate Coin 2.0</b><span>Welkomstbonus op het spaarplan en cashback bij babyaankopen.</span></div>
+      <div><b>Trust &amp; Privacy</b><span>Alleen signalen met toestemming via 'Op jouw maat', geen gezondheidsdata. Zeggen ze nee, dan wist Kate de inschatting.</span></div>
+    </div>
+    <p class="note">Tom, Lien en alle bedragen zijn fictieve voorbeelden.</p>
+  </aside>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const SIGNALS=[
+  {d:"mrt '27",t:"Spaarrekening hernoemd naar 'Kleine spruit'",src:"App-gedrag",w:18,why:"Jullie gaven een spaarrekening een nieuwe naam"},
+  {d:"apr '27",t:"Aankoop bij babyspeciaalzaak · € 389",src:"Transactie",w:20,why:"Een aankoop bij een babywinkel"},
+  {d:"apr '27",t:"Simulatie gezinswagen in KBC Mobile",src:"App-gedrag",w:14,why:"Een simulatie voor een grotere auto"},
+  {d:"mei '27",t:"Vraag aan Kate over het Groeipakket",src:"Kate-gesprek",w:12,why:"Een vraag aan mij over het Groeipakket"},
+  {d:"mei '27",t:"Betaling inschrijving kinderopvang",src:"Transactie",w:16,why:"Een betaling aan een kinderopvang"}
+];
+const THR=70;
+let idx=0,score=0,phase="signals",coins=860,timer=null;
+const sigList=$("sigs");
+sigList.innerHTML=SIGNALS.map(s=>`<li><time>${s.d}</time><span class="what">${s.t}<small>${s.src}</small></span><span class="w">+${s.w}%</span></li>`).join("");
+
+const KATE={
+  idle:`<div class="who">Kate denkt mee</div><p>Alles staat goed. Jullie huis en auto zijn in orde en de spaarbuffer groeit mooi.</p><div class="consent">Op jouw maat <span>transacties</span><span>app-gebruik</span></div>`,
+  ask:`<div class="who">Kate</div><p>Ik vermoed dat er een <b>gezinsuitbreiding</b> op komst is bij jullie. Klopt dat?</p><div class="row"><button class="btn pri" id="yes">Bevestigen</button><button class="btn sec" id="no">Klopt niet</button><button class="btn link" id="why">Waarom?</button></div>`,
+  declined:`<div class="who">Kate</div><p>Bedankt om het te laten weten. Ik stop met deze suggesties en wis deze inschatting.</p>`,
+  confirmed:()=>`<div class="who">Kate · klaar voor de geboorte</div><p><b>Proficiat!</b> ${TODO.length-doneCount()===0?"Alles is in orde.":`${OK.length} dingen zijn al in orde, nog <b>${TODO.length-doneCount()}</b> te regelen.`}</p><div class="row"><button class="btn pri" id="showOffer">Bekijk checklist</button></div>`,
+  bundled:`<div class="who">Klaar voor de geboorte</div><p>Alles is geregeld. Jullie kleine spruit is vanaf dag één beschermd. Als welkom: <b>+100 Kate Coins</b> op het spaarplan.</p><div class="consent">Op jouw maat <span>beheer je toestemmingen</span></div>`
+};
+function setKate(k){
+  $("kateBody").innerHTML=typeof KATE[k]==="function"?KATE[k]():KATE[k];
+  const on=(id,fn)=>{const b=$(id);if(b)b.onclick=fn};
+  on("yes",confirmYes);on("no",decline);on("why",()=>openSheet("why"));on("showOffer",()=>openSheet("offer"));
+  $("kateCard").classList.toggle("glow",k==="ask"||k==="confirmed");
+}
+function setStep(n){[1,2,3].forEach(i=>{const e=$("f"+i);e.classList.toggle("on",i===n);e.classList.toggle("done",i<n)})}
+function boState(t,c){const e=$("boState");e.textContent=t;e.className="state"+(c?" "+c:"")}
+function renderScore(){$("score").textContent=score;$("fill").style.width=score+"%";$("next").disabled=$("all").disabled=idx>=SIGNALS.length}
+
+function playNext(){
+  if(idx>=SIGNALS.length)return;
+  sigList.children[idx].classList.add("in");
+  score=Math.min(100,score+SIGNALS[idx].w);idx++;renderScore();
+  if(phase==="signals"){score>=THR?toAsk():boState(`Score ${score}%. Onder de drempel: Kate blijft stil.`)}
+}
+function playAll(){clearInterval(timer);playNext();timer=setInterval(()=>{if(idx>=SIGNALS.length){clearInterval(timer);return}playNext()},900)}
+function toAsk(){
+  phase="ask";setStep(2);
+  boState(`Drempel bereikt (${score}%). Kate stelt één zachte vraag, nog geen voorstel.`,"ask");
+  $("babyGhost").setAttribute("opacity","1");$("famText").textContent="Gezin · 2 + ?";
+  $("gChip").className="chip warn";$("gChip").textContent="?";$("gSub").textContent="Wordt jullie gezin groter?";
+  setKate("ask");
+}
+function confirmYes(){
+  phase="confirmed";setStep(3);closeSheet();
+  boState("Bevestigd door Tom & Lien. Checklist opgemaakt: 3 in orde, 5 te regelen.","ok");
+  $("babyGhost").setAttribute("opacity","0");$("babySolid").setAttribute("opacity","1");$("heart").setAttribute("opacity","1");
+  $("famText").textContent="Gezin · 2 + 1";$("gChip").className="chip info";$("gChip").textContent="2 + 1";$("gSub").textContent="Kleine spruit op komst";
+  setKate("confirmed");
+}
+function decline(){
+  phase="declined";closeSheet();
+  boState("Tom & Lien zeggen nee. Moment gesloten, inschatting gewist.");
+  $("babyGhost").setAttribute("opacity","0");$("famText").textContent="Gezin · 2";
+  $("gChip").className="chip info";$("gChip").textContent="2";$("gSub").textContent="Tom & Lien";
+  setKate("declined");
+}
+
+const OK=[
+  {t:"Woonverzekering",s:"Jullie huis en inboedel zijn goed verzekerd, ook de nieuwe babyspullen."},
+  {t:"Autoverzekering omnium",s:"Jullie kind is als passagier automatisch meeverzekerd."},
+  {t:"Spaarbuffer € 12.400",s:"Dekt ruim drie maanden vaste kosten, ook tijdens ouderschapsverlof."}
+];
+const TODO=[
+  {id:"t1",t:"Schuldsaldoverzekering bijwerken",s:"Het woonkrediet blijft betaald als een van jullie wegvalt.",b:"Woonkrediet",p:"+ € 9/mnd",steps:["Dekking herberekend voor gezin","Polis aangepast"]},
+  {id:"t2",t:"Familiale verzekering afsluiten",s:"Jullie kind is verzekerd voor schade aan anderen.",b:"Woonverzekering",p:"+ € 7/mnd",steps:["Gebundeld met woonverzekering","Polis actief vanaf geboorte"]},
+  {id:"t3",t:"Baby meeverzekeren in hospitalisatie",s:"Vanaf de geboorte, zonder wachttijd.",b:"Gezinssamenstelling",p:"+ € 8/mnd",steps:["Aanvraag klaargezet","Start bij aangifte geboorte"]},
+  {id:"t4",t:"Groeipakket aanvragen",s:"Het kindergeld van de overheid, rechtstreeks op jullie rekening.",b:"Beyond Banking",p:"gratis",steps:["Formulier ingevuld","Klaar om te versturen na geboorte"]},
+  {id:"t5",t:"Spaarplan 'Kleine spruit' openen",s:"€ 50 per maand. 2% terug in Kate Coins bij babyaankopen.",b:"Spaarrekening",p:"€ 50/mnd",steps:["Spaarplan geopend","Doorlopende opdracht ingesteld"]}
+];
+let done={};
+const doneCount=()=>Object.keys(done).length;
+const DATA={
+  wonen:{t:"Wonen",s:"Rijwoning, Mechelen · gekocht in 2024",kv:[["Woonkrediet","€ 248.000 open"],["Maandlast","€ 1.186"],["Woonverzekering","actief"],["Schuldsaldo","50/50 · 2 personen"]],tip:"Alles in orde. Ik kijk mee als jullie situatie verandert."},
+  mobiliteit:{t:"Mobiliteit",s:"Compacte wagen · 2019",kv:[["Autoverzekering","omnium"],["Bestuurders","Tom, Lien"],["Schadevrije jaren","8"]],tip:"Jullie zijn goed verzekerd voor jullie huidige wagen."},
+  energie:{t:"Energie",s:"Zonnepanelen 4,2 kWp",kv:[["Opbrengst dit jaar","3.610 kWh"],["Contract","vast · tot 2028"]],tip:"Ik vergelijk elke maand automatisch voor jullie."},
+  sparen:{t:"Sparen",s:"Spaarrekening",kv:[["Saldo","€ 12.400"],["Automatisch sparen","€ 200/mnd"],["Kate Coins","860"]],tip:"Jullie buffer dekt ruim drie maanden vaste kosten."},
+  gezin:{t:"Gezin",s:"Tom & Lien, 32",kv:[["Leden","2"],["Gedeelde rekening","ja"]],tip:"Ik houd jullie gezinssituatie bij, alleen met jullie toestemming."}
+};
+function openSheet(k){
+  let h="";
+  if(k==="why"){
+    h=`<h2>Waarom vraag ik dit?</h2><p class="sub">Deze signalen deden me denken dat er iets verandert. Ik heb er nog niets mee gedaan.</p><ul class="why">${SIGNALS.slice(0,idx).map(s=>`<li>${s.why}</li>`).join("")}</ul><div class="tip">Jullie kiezen zelf welke data ik mag gebruiken via 'Op jouw maat'. Zeggen jullie nee, dan wis ik deze inschatting.</div><div class="row"><button class="btn pri" id="sYes">Bevestigen</button><button class="btn sec" id="sNo">Klopt niet</button></div>`;
+  }else if(k==="offer"){
+    h=`<h2>Klaar voor de geboorte</h2><p class="sub">Op basis van wat jullie al hebben bij KBC.</p>
+    <div class="grp ok">Al in orde</div>
+    <ul class="cl">${OK.map(o=>`<li class="is-ok"><span class="dot">✓</span><span class="txt"><b>${o.t}</b><small>${o.s}</small></span></li>`).join("")}</ul>
+    <div class="grp todo">Nog te regelen <span id="todoCount"></span></div>
+    <ul class="cl">${TODO.map(o=>`<li id="${o.id}" class="${done[o.id]?"is-ok":""}"><span class="dot">${done[o.id]?"✓":""}</span><span class="txt"><b>${o.t}</b><small>${o.s}</small><span class="base">bouwt op: ${o.b}</span><span class="act">${done[o.id]?`<span class="okTxt">Geregeld door Kate</span>`:`<button class="btn pri sm" data-do="${o.id}">Laat Kate dit doen</button>`}</span></span><span class="p">${o.p}</span></li>`).join("")}</ul>
+    <div class="row" id="allRow"><button class="btn sec" id="doAll" style="flex:1">Laat Kate alles regelen</button><button class="btn link" id="sClose">Later</button></div>`;
+  }else{
+    let d=DATA[k];
+    if(k==="gezin"&&(phase==="confirmed"||phase==="bundled"))d={t:"Gezin",s:"Tom, Lien & kleine spruit",kv:[["Leden","2 + 1 op komst"],["Groeipakket","aanvraag klaargezet"]],tip:"Ik zet de aanvraag voor het Groeipakket klaar zodra de geboorte is aangegeven."};
+    h=`<h2>${d.t}</h2><p class="sub">${d.s}</p><dl class="kv">${d.kv.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl><div class="tip">${d.tip}</div><button class="btn pri" id="sClose" style="width:100%">Sluiten</button>`;
+  }
+  $("shBody").innerHTML=h;$("screen").classList.add("open");
+  const on=(id,fn)=>{const b=$(id);if(b)b.onclick=fn};
+  on("sYes",confirmYes);on("sNo",decline);on("sClose",closeSheet);
+  if(k==="offer"){
+    document.querySelectorAll("[data-do]").forEach(b=>b.onclick=()=>runTodo(b.dataset.do));
+    on("doAll",doAll);updateTodoCount();
+  }
+}
+const busy={};
+function runTodo(id,cb){
+  if(done[id]||busy[id]){cb&&cb();return}
+  busy[id]=true;
+  const o=TODO.find(x=>x.id===id),li=$(id);
+  const act=li&&li.querySelector(".act");
+  if(act)act.innerHTML=`<ul class="steps">${o.steps.map(s=>`<li><span class="tick">✓</span>${s}</li>`).join("")}</ul>`;
+  const lis=act?act.querySelectorAll("li"):[];
+  lis.forEach((x,i)=>setTimeout(()=>x.classList.add("done"),450*(i+1)));
+  setTimeout(()=>{
+    done[id]=true;delete busy[id];
+    if(li){li.classList.add("is-ok");li.querySelector(".dot").textContent="✓";act.innerHTML=`<span class="okTxt">Geregeld door Kate</span>`}
+    updateTodoCount();
+    boState(`Kate voerde uit via STP: ${o.t.toLowerCase()}. ${TODO.length-doneCount()} open.`,"ok");
+    if(phase==="confirmed")setKate("confirmed");
+    if(doneCount()===TODO.length)finishAll();
+    cb&&cb();
+  },450*o.steps.length+350);
+}
+function doAll(){
+  const open=TODO.filter(o=>!done[o.id]).map(o=>o.id);
+  const next=()=>{const id=open.shift();if(id)runTodo(id,next)};next();
+}
+function updateTodoCount(){const c=$("todoCount");if(c)c.textContent=`${doneCount()}/${TODO.length} geregeld`;const r=$("allRow");if(r&&doneCount()===TODO.length)r.innerHTML=`<button class="btn pri" id="sClose2" style="flex:1">Klaar</button>`,$("sClose2").onclick=closeSheet}
+function finishAll(){
+  phase="bundled";setKate("bundled");
+  [1,2,3].forEach(i=>{$("f"+i).classList.remove("on");$("f"+i).classList.add("done")});
+  boState("Alles geregeld via STP. Geen kantoorbezoek nodig.","ok");
+  $("swing").setAttribute("opacity","1");$("gChip").className="chip ok";$("gChip").textContent="klaar";$("gSub").textContent="Klaar voor de geboorte";
+  countCoins(coins,coins+100);coins+=100;
+}
+function closeSheet(){$("screen").classList.remove("open")}
+function countCoins(a,b){const c=$("coins");c.classList.add("pop");let v=a;const t=setInterval(()=>{v+=4;if(v>=b){v=b;clearInterval(t);setTimeout(()=>c.classList.remove("pop"),250)}$("coinVal").textContent=v.toLocaleString("nl-BE")},25)}
+
+document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openSheet(b.dataset.open)));
+document.querySelectorAll(".spot").forEach(s=>{
+  s.addEventListener("click",()=>openSheet(s.dataset.k));
+  s.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openSheet(s.dataset.k)}});
+});
+$("veil").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("next").onclick=playNext;$("all").onclick=playAll;
+function reset(){
+  clearInterval(timer);idx=0;score=0;phase="signals";coins=860;done={};$("coinVal").textContent="860";
+  [...sigList.children].forEach(li=>li.classList.remove("in"));
+  ["babyGhost","babySolid","heart","swing"].forEach(id=>$(id).setAttribute("opacity","0"));
+  $("famText").textContent="Gezin · 2";$("gChip").className="chip info";$("gChip").textContent="2";$("gSub").textContent="Tom & Lien";
+  boState("Wacht op signalen. Kate doet niets.");setStep(1);setKate("idle");closeSheet();renderScore();
+}
+$("reset").onclick=reset;
+reset();
+</script>
+</body></html>

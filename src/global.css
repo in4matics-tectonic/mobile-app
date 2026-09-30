@@ -7,3 +7,9 @@
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 }
+
+/* Visible keyboard focus for every interactive element (hotspots, tiles, buttons). */
+:focus-visible {
+  outline: 3px solid #7cc0ff;
+  outline-offset: 2px;
+}
