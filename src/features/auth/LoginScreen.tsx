@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { DEMO_PASSWORD, DEMO_USERS } from '@/features/auth/demo';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { StatusBar } from '@/features/mijn-wereld/components/Header';
 import { KateLogoIcon } from '@/features/mijn-wereld/components/KateLogoIcon';
@@ -23,10 +24,6 @@ import { PillButton } from '@/features/mijn-wereld/components/ui';
 import { KbcApiError, login } from '@/features/mijn-wereld/services/kbcApi';
 import { font, page, shadow, world } from '@/features/mijn-wereld/theme';
 
-/** Demo customers from the backend; Tom and Lien share one customer file. */
-const DEMO_USERS = ['tom', 'lien'];
-// Shared PoC demo password; may be hardcoded in frontends (backend AGENTS.md, rule 1).
-const DEMO_PASSWORD = 'in4matics-must-win';
 
 function errorMessage(e: unknown) {
   if (!(e instanceof KbcApiError)) return 'Er liep iets mis. Probeer het opnieuw.';

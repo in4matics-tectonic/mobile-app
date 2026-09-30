@@ -106,6 +106,19 @@ export function reducer(state: MijnWereldState, action: Action): MijnWereldState
       // After "Klopt niet" the moment stays closed: new signals change nothing.
       if (state.phase === 'declined' || moment.closed) return state;
 
+      // Withdrawn elsewhere (Kate's "Niet voor ons", or their own AI via MCP): the backend wiped every signal,
+      // so the question, the plan and the checklist are gone too. Same outcome as "Klopt niet" here.
+      const wiped = moment.signals.length === 0 && moment.hiddenSignals === 0 && !moment.confirmed;
+      if (wiped && state.phase !== 'signals') {
+        return {
+          ...state,
+          moment,
+          phase: 'declined',
+          checklist: null,
+          audit: log(state, { kind: 'antwoord', text: 'Gezinsuitbreiding ingetrokken op een ander toestel' }),
+        };
+      }
+
       const known = new Set(state.moment.signals.map((s) => s.id));
       let audit = state.audit;
       for (const signal of moment.signals.filter((s) => !known.has(s.id))) {
