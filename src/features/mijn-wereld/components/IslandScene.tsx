@@ -2,7 +2,7 @@
 
 // The island is an Expo DOM component: on web it renders inline as plain SVG (identical to the
 // prototype, CSS animations included); on iOS/Android it runs in a lightweight webview.
-// Props must stay serializable; onSelectDomain is a native action.
+// Props must stay serializable; onSelectDomain and onOpenKate are native actions.
 
 import { useEffect } from 'react';
 
@@ -27,11 +27,14 @@ export default function IslandScene({
   familyLabel,
   verified,
   onSelectDomain,
+  onOpenKate,
 }: {
   phase: Phase;
   familyLabel: string;
   verified: Partial<Record<Domain, boolean>>;
   onSelectDomain: (domain: Domain) => Promise<void> | void;
+  /** Tap on the Kate orb: open the chat with Kate. */
+  onOpenKate: () => Promise<void> | void;
   dom?: import('expo/dom').DOMProps;
 }) {
   useEffect(() => {
@@ -101,7 +104,7 @@ export default function IslandScene({
         </Hotspot>
       </g>
 
-      <KateOrb />
+      <KateOrb onOpen={() => onOpenKate()} />
     </svg>
   );
 }

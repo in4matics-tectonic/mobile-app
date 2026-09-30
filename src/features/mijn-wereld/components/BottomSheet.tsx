@@ -40,7 +40,9 @@ export function BottomSheet({
       document.addEventListener('keydown', onKey);
       const focusTimer = setTimeout(() => {
         const node = sheetRef.current as unknown as HTMLElement | null;
-        node?.querySelector<HTMLElement>('[role="button"], button')?.focus();
+        // preventScroll: the sheet is still sliding in from below the screen. Without it the browser
+        // scrolls the phone's overflow-hidden screen to reveal the button, and the whole view jumps.
+        node?.querySelector<HTMLElement>('[role="button"], button')?.focus({ preventScroll: true });
       }, 60);
       return () => {
         document.removeEventListener('keydown', onKey);

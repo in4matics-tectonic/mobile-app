@@ -1,16 +1,50 @@
-// Dev-only: forwards /v1/* and /health from the Metro dev server to the KBC Momentum backend,
-// like nginx does in the deployed PoC (poc-runner/docker/spa.nginx.conf). The app keeps calling
-// its own origin, so there is no CORS and no API URL in the bundle.
+// Dev-only: forwards requests from the Metro dev server to the PoC services, like nginx does in the
+// deployed PoC (poc-runner/docker/spa.nginx.conf). The app keeps calling its own origin, so there is
+// no CORS and no API URL in the bundle.
+//
+//   /v1/*, /health               → backend      (KBC_API_TARGET)
+//   /kate-chat/*, /api/*, /vendor/* → Kate chat (KATE_CHAT_TARGET), so the chat can be embedded
+//                                   same-origin in the app (see src/features/kate-chat)
 //
 // .env.local (never committed):
 //   KBC_API_TARGET=https://api.34-23-164-33.sslip.io   (default; or http://127.0.0.1:3000 for ../backend)
+//   KATE_CHAT_TARGET=https://chat.34-23-164-33.sslip.io (default: derived from KBC_API_TARGET)
 //   KBC_GATE_PASSWORD=...                               (the shared site password in front of the VM)
 // The gate cookie stays in this Node process; it never reaches the browser.
+
+const { Buffer } = require('node:buffer');
 
 const TARGET = (process.env.KBC_API_TARGET || 'https://api.34-23-164-33.sslip.io').replace(/\/$/, '');
 const GATE_PASSWORD = process.env.KBC_GATE_PASSWORD;
 
-/** api.<domain> is guarded by the gate on <domain>/__login (poc-runner/deploy/Caddyfile). */
+/** chat.<domain> next to api.<domain> on the VM; the poc-runner chat port when running locally. */
+function chatTarget() {
+  if (process.env.KATE_CHAT_TARGET) return process.env.KATE_CHAT_TARGET.replace(/\/$/, '');
+  const url = new URL(TARGET);
+  return url.hostname.startsWith('api.')
+    ? `${url.protocol}//${url.hostname.replace(/^api\./, 'chat.')}`
+    : 'http://127.0.0.1:7003';
+}
+const CHAT_TARGET = chatTarget();
+
+/** Which requests go where, which headers they may carry, and how the path is rewritten. */
+const ROUTES = [
+  {
+    match: (path) => path.startsWith('/v1/') || path === '/health',
+    target: TARGET,
+    headers: ['content-type', 'authorization', 'accept'],
+    rewrite: (path) => path,
+  },
+  {
+    // The chat page itself lives at /kate-chat/; its scripts and API calls use absolute /api and /vendor paths.
+    match: (path) => /^\/kate-chat(\/|\?|$)/.test(path) || path.startsWith('/api/') || path.startsWith('/vendor/'),
+    target: CHAT_TARGET,
+    headers: ['content-type', 'accept', 'x-session'],
+    rewrite: (path) => path.replace(/^\/kate-chat\/?/, '/'),
+  },
+];
+
+/** The VM hosts are guarded by the gate on <domain>/__login (poc-runner/deploy/Caddyfile). */
 function gateLoginUrl() {
   if (process.env.KBC_GATE_URL) return process.env.KBC_GATE_URL;
   const url = new URL(TARGET);
@@ -63,17 +97,18 @@ function sendJson(res, status, body) {
 function createApiProxy() {
   return async function apiProxy(req, res, next) {
     const path = req.url || '';
-    if (!path.startsWith('/v1/') && path !== '/health') return next();
+    const route = ROUTES.find((r) => r.match(path));
+    if (!route) return next();
 
     try {
       const body = req.method === 'GET' || req.method === 'HEAD' ? undefined : await readBody(req);
       const forward = () => {
         const headers = {};
-        for (const h of ['content-type', 'authorization', 'accept']) {
+        for (const h of route.headers) {
           if (req.headers[h]) headers[h] = req.headers[h];
         }
         if (gateCookie) headers.cookie = gateCookie;
-        return fetch(`${TARGET}${path}`, { method: req.method, headers, body, redirect: 'manual' });
+        return fetch(`${route.target}${route.rewrite(path)}`, { method: req.method, headers, body, redirect: 'manual' });
       };
 
       if (GATE_PASSWORD && !gateCookie) await refreshGateCookie();
@@ -86,13 +121,15 @@ function createApiProxy() {
       if (blockedByGate(upstream)) {
         return sendJson(res, 502, {
           error: 'gate_blocked',
-          message: `${TARGET} is behind the PoC site password. Set KBC_GATE_PASSWORD in .env.local and restart Expo.`,
+          message: `${route.target} is behind the PoC site password. Set KBC_GATE_PASSWORD in .env.local and restart Expo.`,
         });
       }
 
       res.statusCode = upstream.status;
-      const type = upstream.headers.get('content-type');
-      if (type) res.setHeader('content-type', type);
+      for (const h of ['content-type', 'cache-control']) {
+        const value = upstream.headers.get(h);
+        if (value) res.setHeader(h, value);
+      }
       res.end(Buffer.from(await upstream.arrayBuffer()));
     } catch (e) {
       sendJson(res, 502, { error: 'proxy_error', message: e instanceof Error ? e.message : String(e) });
@@ -100,4 +137,4 @@ function createApiProxy() {
   };
 }
 
-module.exports = { createApiProxy, API_TARGET: TARGET };
+module.exports = { createApiProxy, API_TARGET: TARGET, CHAT_TARGET };

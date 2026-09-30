@@ -5,7 +5,8 @@ const { createApiProxy } = require('./scripts/dev-api-proxy');
 
 const config = getDefaultConfig(__dirname);
 
-// Dev server only: proxy /v1 to the KBC Momentum backend, same as nginx in the deployed PoC.
+// Dev server only: proxy /v1 to the KBC Momentum backend and /kate-chat to the Kate chat,
+// same as nginx in the deployed PoC. See scripts/dev-api-proxy.js.
 const apiProxy = createApiProxy();
 const enhanceMiddleware = config.server.enhanceMiddleware;
 config.server.enhanceMiddleware = (middleware, server) => {

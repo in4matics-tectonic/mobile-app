@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { clearSession, getSession } from '@/features/auth/session';
+import { KateChat } from '@/features/kate-chat/KateChat';
 
 import { BirthChecklist } from './components/BirthChecklist';
 import { BottomSheet } from './components/BottomSheet';
@@ -65,6 +66,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
   const [scene, setScene] = useState<LayoutRectangle | null>(null);
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [lastSheet, setLastSheet] = useState<Sheet | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const native = Platform.OS !== 'web';
   const topInset = native ? insets.top : 0;
@@ -74,6 +76,8 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     setLastSheet(next);
   };
   const closeSheet = useCallback(() => setSheet(null), []);
+  const closeChat = useCallback(() => setChatOpen(false), []);
+  const openChat = async () => setChatOpen(true);
 
   const confirm = () => {
     closeSheet();
@@ -113,6 +117,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
             familyLabel={family.islandLabel}
             verified={verified}
             onSelectDomain={selectDomain}
+            onOpenKate={openChat}
             dom={{
               scrollEnabled: false,
               style: { width: sceneWidth, height: (sceneWidth * 300) / 360, backgroundColor: 'transparent' },
@@ -150,7 +155,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
         </View>
       </ScrollView>
 
-      <TabBar bottomInset={native ? insets.bottom : 0} onMore={() => openSheet({ kind: 'account' })} />
+      <TabBar bottomInset={native ? insets.bottom : 0} actions={{ Meer: () => openSheet({ kind: 'account' }) }} />
 
       <BottomSheet open={!!sheet} label={sheetLabel(shown)} onClose={closeSheet}>
         {shown?.kind === 'domain' && (
@@ -193,6 +198,8 @@ function PhoneScreen({ framed }: { framed: boolean }) {
             <ActivityIndicator color={world.blue} style={styles.loading} />
           ))}
       </BottomSheet>
+
+      <KateChat open={chatOpen} onClose={closeChat} topInset={topInset} />
     </View>
   );
 }

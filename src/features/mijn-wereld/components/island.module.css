@@ -25,6 +25,20 @@
   transition: transform 0.2s;
 }
 
+/* Kate orb: opens the chat. Ring shows on hover and keyboard focus. */
+.kateButton {
+  cursor: pointer;
+  outline: none;
+}
+.kateRing {
+  stroke: transparent;
+  transition: stroke 0.2s;
+}
+.kateButton:hover .kateRing,
+.kateButton:focus-visible .kateRing {
+  stroke: #0a5fb4;
+}
+
 .float {
   animation: bob 5s ease-in-out infinite;
 }
