@@ -41,6 +41,8 @@ export interface WorldCommands {
   /** The Street played these places' arrivals: they're no longer new. */
   markArrivalsSeen: (placeIds: CategoryId[]) => void;
   dismissFinding: (id: string) => void;
+  /** Interesse / Niet nu on an opportunity the adviser sent. Resolves false when it failed. */
+  answerKans: (id: string, status: 'interesse' | 'afgewezen') => Promise<boolean>;
 }
 
 const WorldContext = createContext<WorldContextValue | null>(null);
@@ -77,6 +79,7 @@ export function WorldProvider({ children }: { children: ReactNode }) {
 
   const pendingBaby = phase === 'ask';
   const baby = phase === 'confirmed' || phase === 'done';
+  const done = phase === 'done';
   const seenIds = useMemo(() => (state.seen ? new Set(state.seen.map(idOf)) : null), [state.seen]);
   const { data } = state;
   const built = useMemo(
@@ -87,11 +90,11 @@ export function WorldProvider({ children }: { children: ReactNode }) {
             ecosystemen: data.ecosystemen,
             naam: data.profiel.naam,
             onderneming: data.profiel.onderneming?.naam,
-            family: { pendingBaby, baby },
+            family: { pendingBaby, baby, done },
             seen: seenIds,
           })
         : null,
-    [data, pendingBaby, baby, seenIds],
+    [data, pendingBaby, baby, done, seenIds],
   );
 
   // ---- Load ----
@@ -110,7 +113,7 @@ export function WorldProvider({ children }: { children: ReactNode }) {
         worldService.load(),
         AsyncStorage.getItem(storageKey.current).catch(() => null),
       ]);
-      lastUpdate.current = JSON.stringify({ ecosystemen: loaded.ecosystemen, partners: loaded.partners });
+      lastUpdate.current = JSON.stringify({ ecosystemen: loaded.ecosystemen, partners: loaded.partners, kansen: loaded.kansen });
       dispatch({ type: 'WORLD_LOADED', data: loaded });
       if (stateRef.current.seen) return;
       let seen: string[] | null = null;
@@ -125,7 +128,7 @@ export function WorldProvider({ children }: { children: ReactNode }) {
           catalogus: loaded.catalogus,
           ecosystemen: loaded.ecosystemen,
           naam: loaded.profiel.naam,
-          family: { pendingBaby: false, baby: false },
+          family: { pendingBaby: false, baby: false, done: false },
           seen: null,
         });
         seen = drawnLinks(first).map(entry);
@@ -245,6 +248,16 @@ export function WorldProvider({ children }: { children: ReactNode }) {
       },
 
       dismissFinding: (id) => dispatch({ type: 'FINDING_DISMISSED', id }),
+
+      async answerKans(id, status) {
+        try {
+          await worldService.setKans(id, status);
+          await refresh();
+          return true;
+        } catch {
+          return false;
+        }
+      },
     }),
     [load, refresh],
   );

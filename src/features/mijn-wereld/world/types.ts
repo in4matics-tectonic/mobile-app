@@ -62,6 +62,8 @@ export interface Household {
   names: string[];
   /** Kate asks about a family moment: the dashed baby. */
   pendingBaby: boolean;
+  /** Everything for the birth is arranged: a swing hangs in the coin tree. */
+  swing: boolean;
 }
 
 /** Everything the Street needs. */
@@ -70,13 +72,17 @@ export interface WorldView {
   places: Place[];
 }
 
-export type FindingCommand = 'ask-kate' | 'view' | 'connect' | 'confirm' | 'reject' | 'why' | 'checklist' | 'dismiss';
+export type FindingCommand =
+  | 'ask-kate' | 'view' | 'connect' | 'confirm' | 'reject' | 'why' | 'checklist' | 'dismiss'
+  | 'kans-interesse' | 'kans-afwijzen';
 
 export interface Finding {
   id: string;
-  kind: 'moment' | 'suggest' | 'connect' | 'arrived' | 'all-good';
+  kind: 'moment' | 'suggest' | 'connect' | 'arrived' | 'all-good' | 'kans';
   placeId?: CategoryId;
   link?: Link;
+  /** kind 'kans': the opportunity the adviser sent. */
+  kansId?: string;
   /** Kate bar, at most 70 characters. */
   teaser?: string;
   /** Finding card. */

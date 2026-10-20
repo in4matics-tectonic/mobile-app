@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { clearSession, getSession } from '@/features/auth/session';
+import { useShowcaseCommands } from '@/features/auth/useShowcaseBridge';
 import { KateChat } from '@/features/kate-chat/KateChat';
 import type { ChatOpener } from '@/features/kate-chat/types';
 
@@ -119,10 +120,18 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     ? { ready: moment.checklist.ready.length, open: openCount(moment) }
     : null;
   const findings = useMemo(
-    () => selectFindings({ built, phase: moment.phase, checklist, arrived: state.arrived, dismissed: state.dismissed }),
+    () =>
+      selectFindings({
+        built,
+        phase: moment.phase,
+        checklist,
+        kansen: state.data?.kansen,
+        arrived: state.arrived,
+        dismissed: state.dismissed,
+      }),
     // checklist is derived from moment.checklist and the todo states
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [built, moment.phase, moment.checklist, moment.runs, state.arrived, state.dismissed],
+    [built, moment.phase, moment.checklist, moment.runs, state.data?.kansen, state.arrived, state.dismissed],
   );
   const [held, setHeld] = useState(false);
   const [screenReader, setScreenReader] = useState(false);
@@ -170,8 +179,27 @@ function PhoneScreen({ framed }: { framed: boolean }) {
         return openSheet({ kind: 'checklist' });
       case 'dismiss':
         return commands.dismissFinding(f.id);
+      case 'kans-interesse':
+      case 'kans-afwijzen':
+        if (f.kansId) commands.answerKans(f.kansId, command === 'kans-interesse' ? 'interesse' : 'afgewezen');
+        return;
     }
   };
+
+  // The PoC showcase's pitch tour presses the same buttons a customer would (web, in the showcase's iframe only)
+  useShowcaseCommands((c) => {
+    if (c.kateStudio === 'moment' && c.answer === 'confirm' && moment.phase === 'ask') momentCommands.confirm();
+    if (c.kateStudio === 'checklist' && c.open === true) openSheet({ kind: 'checklist' });
+    if (c.kateStudio === 'checklist' && c.open === false && sheet?.kind === 'checklist') closeSheet();
+    if (c.kateStudio === 'checklist' && c.run === 'all' && moment.checklist) {
+      openSheet({ kind: 'checklist' });
+      momentCommands.runAll();
+    }
+    if (c.kateStudio === 'kans') {
+      const kans = state.data?.kansen.find((k) => k.status === 'nieuw' || k.status === 'gezien');
+      if (kans) commands.answerKans(kans.id, c.answer === 'afgewezen' ? 'afgewezen' : 'interesse');
+    }
+  });
 
   const onTextLink = (link: TextLink) => {
     if (link === 'logout') return clearSession();

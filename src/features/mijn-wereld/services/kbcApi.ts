@@ -151,6 +151,20 @@ export interface CatalogusPartner {
   gevoelig: boolean;
 }
 
+/** A possible link an adviser sent to this customer's app (backend routes/kansen.ts). */
+export type KansStatus = 'nieuw' | 'gezien' | 'interesse' | 'afgewezen';
+export interface Kans {
+  id: string;
+  link: Pick<Link, 'id' | 'soort' | 'ref' | 'naam' | 'ecosysteem'> & { ecosysteemNaam: string };
+  /** The rule reasons, in words the customer can read. */
+  waarom: string[];
+  /** The adviser's optional note. */
+  bericht: string | null;
+  status: KansStatus;
+  verstuurdOp: string;
+  bijgewerktOp: string;
+}
+
 export interface CatalogusResponse {
   ecosystemen: { id: EcosysteemId; naam: string; aantalProducten: number; partners: string[] }[];
   producten: CatalogusProduct[];
@@ -253,4 +267,9 @@ export const kbcWorld = {
     kbcRequest<KlantPartner | undefined>('PUT', `${K()}/partners/${encodeURIComponent(partner)}`, { deelt }),
   setToestemming: (toestemming: Record<Bron, boolean>) =>
     kbcRequest<Record<Bron, boolean>>('PUT', `${K()}/toestemming`, toestemming),
+  /** Opportunities an adviser sent, newest first. */
+  kansen: () => kbcRequest<Kans[]>('GET', `${K()}/kansen`),
+  /** The customer answers (or the app marks it shown). */
+  setKans: (id: string, status: Exclude<KansStatus, 'nieuw'>) =>
+    kbcRequest<Kans>('PUT', `${K()}/kansen/${encodeURIComponent(id)}`, { status }),
 };

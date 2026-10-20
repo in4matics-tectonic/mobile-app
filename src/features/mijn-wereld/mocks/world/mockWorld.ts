@@ -9,6 +9,7 @@ import type {
   CatalogusResponse,
   Cluster,
   EcosystemenResponse,
+  Kans,
   KlantPartner,
   KlantProfiel,
   Link,
@@ -162,4 +163,7 @@ export const mockWorld = {
     Object.assign(d.profiel.toestemming, toestemming);
     return delay(d.profiel.toestemming);
   },
+  // Offline there's no adviser: no opportunities come in
+  kansen: () => delay<Kans[]>([]),
+  setKans: (): Promise<Kans> => Promise.reject(new Error('not_found')),
 };

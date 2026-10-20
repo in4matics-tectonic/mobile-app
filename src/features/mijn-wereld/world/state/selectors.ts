@@ -1,7 +1,8 @@
 // What Kate wants to tell the customer (4.9) and the text version of the world (4.10), derived from the built
 // world. The backend supplies facts and reasons (score, waarom); this file supplies Dutch wording and order.
 
-import type { Cluster, Link, LinkStatus } from '../../services/kbcApi';
+import { DONE_BONUS_COINS } from '../../mocks/tomEnLien';
+import type { Cluster, Kans, Link, LinkStatus } from '../../services/kbcApi';
 import type { Phase } from '../../state/types';
 import type { BuiltWorld } from '../buildWorld';
 import { TIP_MIN } from '../categories';
@@ -97,6 +98,28 @@ function connectFinding(link: Link, placeId: CategoryId, v: Voice): Finding {
   };
 }
 
+/** An opportunity the adviser sent: the customer answers it right here. */
+function kansFinding(kans: Kans, placeId: CategoryId | undefined, v: Voice): Finding {
+  const label = linkLabel(kans.link);
+  const teaser = `${v.Je} adviseur stuurt ${v.je} een kans: ${label}.`;
+  return {
+    id: `kans:${kans.id}`,
+    kind: 'kans',
+    kansId: kans.id,
+    placeId,
+    teaser: teaser.length <= TEASER_MAX ? teaser : `Nieuwe kans van ${v.je} adviseur bij KBC.`,
+    text: `${v.Je} adviseur bij KBC stuurt ${v.je} een kans: ${label}.${kans.bericht ? ` “${kans.bericht}”` : ''}`,
+    reasons: kans.waarom,
+    opener: `${v.Je} adviseur stuurde ${v.je} ${label}. Zal ik uitleggen wat dat voor ${v.je} kan betekenen?`,
+    isNew: true,
+    actions: [
+      { label: 'Interesse', command: 'kans-interesse' },
+      { label: 'Vraag Kate', command: 'ask-kate' },
+      { label: 'Niet nu', command: 'kans-afwijzen' },
+    ],
+  };
+}
+
 function arrivedFinding(link: Link, placeId: CategoryId, v: Voice): Finding {
   const label = linkLabel(link);
   const partner = link.soort === 'partner';
@@ -136,6 +159,18 @@ function momentFinding(phase: Phase, v: Voice, checklist: { ready: number; open:
       ],
     };
   }
+  if (phase === 'done') {
+    return {
+      id: 'moment:GEZINSUITBREIDING:done',
+      kind: 'moment',
+      placeId: 'coin-tree',
+      teaser: `Alles geregeld! +${DONE_BONUS_COINS} Kate Coins op het spaarplan.`,
+      text: `Alles is geregeld voor de kleine spruit. +${DONE_BONUS_COINS} Kate Coins staan op het spaarplan.`,
+      opener: 'Alles staat klaar voor de geboorte. Wil je nog iets nakijken?',
+      isNew: false,
+      actions: [{ label: 'Bekijk checklist', command: 'checklist' }],
+    };
+  }
   if (phase === 'confirmed') {
     const status = !checklist
       ? 'Ik zet de checklist klaar…'
@@ -160,6 +195,8 @@ export interface FindingsInput {
   built: BuiltWorld | null;
   phase: Phase;
   checklist: { ready: number; open: number } | null;
+  /** Opportunities the adviser sent; the open ones become findings. */
+  kansen?: Kans[];
   arrived: Arrival[];
   dismissed: string[];
   now?: number;
@@ -172,7 +209,7 @@ export interface Findings {
   bar: Finding[];
 }
 
-export function selectFindings({ built, phase, checklist, arrived, dismissed, now = Date.now() }: FindingsInput): Findings {
+export function selectFindings({ built, phase, checklist, kansen = [], arrived, dismissed, now = Date.now() }: FindingsInput): Findings {
   if (!built) return { cards: [], bar: [] };
   const v = householdVoice(built);
   const keep = (f: Finding | null): f is Finding => !!f && !dismissed.includes(f.id);
@@ -180,6 +217,10 @@ export function selectFindings({ built, phase, checklist, arrived, dismissed, no
   const ecosystemOf: EcosystemOf = (id) => links.get(id)?.ecosysteem;
 
   const moment = [momentFinding(phase, v, checklist)].filter(keep);
+  const kans = kansen
+    .filter((k) => k.status === 'nieuw' || k.status === 'gezien')
+    .map((k) => kansFinding(k, built.linkPlace[k.link.id], v))
+    .filter(keep);
 
   // One tip per place or plot (the highest), from the D21 score.
   const suggest = built.view.places
@@ -205,8 +246,8 @@ export function selectFindings({ built, phase, checklist, arrived, dismissed, no
 
   const fresh = arrivals.filter((x) => now - x.at < FRESH_MS).map((x) => x.finding);
   const older = arrivals.filter((x) => now - x.at >= FRESH_MS).map((x) => x.finding);
-  const cards = [...fresh, ...moment, ...suggest, ...connect, ...older];
-  const bar = [...moment, ...suggest.slice(0, BAR_SUGGESTIONS), ...connect, ...arrivals.map((x) => x.finding)];
+  const cards = [...kans, ...fresh, ...moment, ...suggest, ...connect, ...older];
+  const bar = [...kans, ...moment, ...suggest.slice(0, BAR_SUGGESTIONS), ...connect, ...arrivals.map((x) => x.finding)];
 
   if (!cards.length) {
     cards.push({

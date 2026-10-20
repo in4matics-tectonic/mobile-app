@@ -1,4 +1,5 @@
-// coin-tree: the phase-1 savings tree with gold coins that glint now and then.
+// coin-tree: the phase-1 savings tree with gold coins that glint now and then. Once everything for the birth is
+// arranged, a swing hangs from it.
 
 import styles from '../../street.module.css';
 import type { AvatarProps } from '../types';
@@ -9,7 +10,7 @@ const transform = (width: number) => `translate(${width / 2 - 68 * K} ${420 - 20
 
 export const COIN_TREE_TOP = 420 - (206 - 119) * K;
 
-export function CoinTree({ width }: AvatarProps) {
+export function CoinTree({ width, household }: AvatarProps) {
   return (
     <g transform={transform(width)}>
       <ellipse cx="66" cy="206" rx="28" ry="7" fill="#1d5e24" opacity=".35" filter="url(#soft)" />
@@ -30,6 +31,10 @@ export function CoinTree({ width }: AvatarProps) {
           <circle cx="66.6" cy="162.4" r="1.3" />
           <circle cx="84.8" cy="162.6" r="1.1" />
         </g>
+      </g>
+      <g style={{ opacity: household.swing ? 1 : 0, transition: 'opacity .8s ease' }} aria-hidden={!household.swing}>
+        <path d="M84 172 L84 196 M96 170 L96 196" stroke="#6e4024" strokeWidth="1.4" />
+        <rect x="81" y="195" width="18" height="4" rx="2" fill="#ff8a66" />
       </g>
       {/* now and then a coin catches the light */}
       {[

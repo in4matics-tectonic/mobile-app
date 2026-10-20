@@ -21,8 +21,8 @@ export interface WorldInput {
   naam: string;
   /** The customer's own company (GET K `onderneming.naam`), signed on the business place. */
   onderneming?: string;
-  /** Phase-1 family moment: Kate asks (dashed baby), or it is confirmed (baby). */
-  family: { pendingBaby: boolean; baby: boolean };
+  /** Phase-1 family moment: Kate asks (dashed baby), it is confirmed (baby), and everything is arranged (swing). */
+  family: { pendingBaby: boolean; baby: boolean; done?: boolean };
   /** Link ids the customer has seen before (any status). null on the very first launch: nothing is new. */
   seen: ReadonlySet<string> | null;
 }
@@ -238,5 +238,6 @@ export function buildHousehold(naam: string, family: WorldInput['family']): Hous
     children: family.baby ? 1 : 0,
     names: names.length ? names : [naam],
     pendingBaby: family.pendingBaby && !family.baby,
+    swing: Boolean(family.done),
   };
 }

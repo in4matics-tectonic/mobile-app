@@ -10,6 +10,8 @@ import {
   type Bron,
   type CatalogusResponse,
   type EcosystemenResponse,
+  type Kans,
+  type KansStatus,
   type KlantPartner,
   type KlantProfiel,
 } from './kbcApi';
@@ -21,9 +23,11 @@ export interface WorldData {
   profiel: KlantProfiel;
   ecosystemen: EcosystemenResponse;
   partners: KlantPartner[];
+  /** Opportunities the adviser sent to the app. */
+  kansen: Kans[];
 }
 
-export type WorldUpdate = Pick<WorldData, 'ecosystemen' | 'partners'>;
+export type WorldUpdate = Pick<WorldData, 'ecosystemen' | 'partners' | 'kansen'>;
 
 const api = USE_MOCK ? mockWorld : kbcWorld;
 
@@ -42,25 +46,29 @@ export const worldService = {
   klantId: () => (USE_MOCK ? 'mock' : (getSession()?.user.klantId ?? 'unknown')),
 
   async load(): Promise<WorldData> {
-    const [cat, profiel, ecosystemen, partners] = await Promise.all([
+    const [cat, profiel, ecosystemen, partners, kansen] = await Promise.all([
       getCatalogus(),
       api.profiel(),
       api.ecosystemen(),
       api.partners(),
+      api.kansen(),
     ]);
-    return { catalogus: cat, profiel, ecosystemen, partners };
+    return { catalogus: cat, profiel, ecosystemen, partners, kansen };
   },
 
   /** What changes while the screen is open: polled, and re-read right after every write. */
   async refresh(): Promise<WorldUpdate> {
-    const [ecosystemen, partners] = await Promise.all([api.ecosystemen(), api.partners()]);
-    return { ecosystemen, partners };
+    const [ecosystemen, partners, kansen] = await Promise.all([api.ecosystemen(), api.partners(), api.kansen()]);
+    return { ecosystemen, partners, kansen };
   },
 
   profiel: () => api.profiel(),
 
   /** Koppel / Stop delen. */
   setDeling: (partner: string, deelt: boolean) => api.setDeling(partner, deelt),
+
+  /** The customer's answer to an opportunity. */
+  setKans: (id: string, status: Exclude<KansStatus, 'nieuw'>) => api.setKans(id, status),
 
   /** "Op jouw maat". The backend accepts a partial body; we send the whole set to be explicit. */
   setToestemming: (toestemming: Record<Bron, boolean>) => api.setToestemming(toestemming),
