@@ -82,20 +82,24 @@ export function KateFlag({ x, y }: { x: number; y: number }) {
   );
 }
 
+/** Eight four-point stars burst out of the place's centre: gold and white, big and small. */
 export function Sparkles({ cx, cy, spread = 50 }: { cx: number; cy: number; spread?: number }) {
-  const points = [0, 60, 120, 180, 240, 300].map((deg) => {
-    const r = (deg * Math.PI) / 180;
-    return [cx + Math.cos(r) * spread, cy + Math.sin(r) * spread * 0.7] as const;
+  const stars = [0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
+    const r = ((deg - 20) * Math.PI) / 180;
+    const reach = spread * (i % 2 ? 0.75 : 1.05);
+    return { dx: Math.cos(r) * reach, dy: Math.sin(r) * reach * 0.75, size: i % 2 ? 5.5 : 8.5, color: i % 3 === 1 ? '#ffffff' : '#ffd34d' };
   });
   return (
     <g aria-hidden>
-      {points.map(([x, y], i) => (
+      {stars.map(({ dx, dy, size: s, color }, i) => (
         <path
           key={i}
           className={styles.sparkle}
-          style={{ animationDelay: `${i * 30}ms` }}
-          d={`M${x} ${y - 8} L${x + 2.4} ${y - 2.4} L${x + 8} ${y} L${x + 2.4} ${y + 2.4} L${x} ${y + 8} L${x - 2.4} ${y + 2.4} L${x - 8} ${y} L${x - 2.4} ${y - 2.4} Z`}
-          fill="#ffd34d"
+          style={{ animationDelay: `${120 + i * 25}ms`, '--dx': `${dx}px`, '--dy': `${dy}px` } as object}
+          d={`M${cx} ${cy - s} L${cx + s * 0.3} ${cy - s * 0.3} L${cx + s} ${cy} L${cx + s * 0.3} ${cy + s * 0.3} L${cx} ${cy + s} L${cx - s * 0.3} ${cy + s * 0.3} L${cx - s} ${cy} L${cx - s * 0.3} ${cy - s * 0.3} Z`}
+          fill={color}
+          stroke={color === '#ffffff' ? '#ffe27a' : '#ffffff'}
+          strokeWidth={0.8}
         />
       ))}
     </g>

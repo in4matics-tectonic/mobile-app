@@ -88,6 +88,9 @@ export function Place({
         onKeyDown={onActivate(select)}
         style={{ pointerEvents: locked ? 'none' : undefined }}>
         <rect className={styles.focusRing} x={-6} y={top - 12} width={width + 12} height={GROUND_Y - top + 22} rx={14} fill="transparent" />
+        {phase === 'arriving' && (
+          <circle className={styles.burst} cx={width / 2} cy={top + (GROUND_Y - top) * 0.6} r={Math.max(60, width * 0.75)} fill="url(#burst)" />
+        )}
         {fromPlot !== undefined && phase !== 'arriving' && (
           <g className={phase === 'sinking' ? styles.sinking : undefined}>
             <Plot width={width} name={fromPlot} />
@@ -102,8 +105,13 @@ export function Place({
                 <g className={cx(styles.layer, place.state === 'ghost' && styles.hidden)}>
                   <Avatar {...avatarProps} />
                 </g>
-                <g className={cx(styles.layer, styles.ghost, styles.breathe, place.state !== 'ghost' && styles.hidden)} aria-hidden>
-                  <Avatar {...avatarProps} />
+                <g className={cx(styles.layer, styles.breathe, place.state !== 'ghost' && styles.hidden)} aria-hidden>
+                  <g className={styles.ghostFill}>
+                    <Avatar {...avatarProps} />
+                  </g>
+                  <g className={styles.ghost}>
+                    <Avatar {...avatarProps} />
+                  </g>
                 </g>
               </>
             )}

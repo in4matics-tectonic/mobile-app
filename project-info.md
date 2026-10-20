@@ -94,6 +94,10 @@ U = decided by the user, P = proposal by Claude (confirm before treating it as f
 | D23 | Backend drift | **Follow the live backend as it is.** Commit `cc209bb` (2026-10-20) reworked Tom & Lien (they rent; no Q8 or Setle; Immoscoop, VAB and De Immowinkel instead) and seeded Jonas. The Tom table (4.4), the success criteria and the demo script follow it | U | The backend is the source of truth |
 | D24 | Chat opener | Built in `poc-runner/chat` in the same round: `POST /api/kate/opener`, the URL's `opener`/`finding` on first open, a `kate:opener` message after that. Kate's opener stays in the chat history, so the model has the context | U | Closes Q8; one tap from a finding to a conversation about it (D16) |
 | D25 | Where category metadata lives | Label, zone and width per category sit in `world/categories.ts` (one table), not in a `meta.ts` per avatar. `avatars/index.ts` adds each drawing's anchors (top, Kate flag, attachments) | P | One mapping table, as 4.4 asks; avatars stay pure drawings |
+| D26 | Ghost look | Dashed outline (`#7f9cc0`) over a faint white silhouette of the same drawing (4.6). (Was: no fill, `#9db4cf` dashes, changed 2026-10-20) | U | Ghosts all but disappeared on the grass |
+| D27 | Ambient life | **Lively**: shaded clouds in two depths, birds, a hot-air balloon, sun rays, people on a footpath, chimney smoke, the NMBS train, sparkles on the sea (4.8). Every loop is a cheap transform or opacity change, stops with reduced motion, and pauses while the world is scrolled out of view (web) | U | The world should shine; an empty sky and lawn read as unfinished |
+| D28 | Avatar scope for this round | New art for every placeholder in Tom's and Jonas' worlds (shop, estate agency, train station, stock exchange, business, bench), plus upgrades to the existing avatars. The other nine categories stay placeholders (M7) | U | No placeholder in the demo, without drawing categories nobody has yet |
+| D29 | Kate's ✕ in the chat | The app always opens the chat with `close=0`, which hides the chat page's ✕ (new conversation): the app's own ✕ closes the chat, and two ✕s read as two close buttons | U | One way out of the chat |
 
 ## 3. Glossary
 
@@ -178,11 +182,12 @@ The world draws in **world units**. It's **600 units tall**, scaled to the band 
 | Layer (back → front) | y-range | Scrolls with street at | Content |
 |---|---|---|---|
 | Sky | 0–600, fixed | 0× (fixed) | Gradient `#8fd0ff → #cdeeff` (phase-1 `world.skyTop/skyBottom`), sun |
-| Clouds | 40–260 | 0.3× | Phase-1 clouds; their drift animation continues |
+| Clouds | 40–260 | 0.3× | Shaded cumulus in two depths (`scene/Cloud.tsx`), birds, the hot-air balloon |
+| Far range | 300–430 | 0.35× | Soft mountains on the horizon |
 | Plane lane | 90–170 | 0.6× | The plane, when the customer has a Brussels Airport link |
-| Back layer | 230–420 | 0.5× | Rolling hills at home, a skyline in town, the horizon line at sea |
+| Back layer | 230–420 | 0.5× | Rolling hills with little trees on the crests, a village with a church tower past home, a skyline with lit windows in town, the horizon line at sea |
 | Main row | ground line **y = 420** | 1× | Places and plots standing on the ground line |
-| Road | 420–475 | 1× | Road with dashes, pavement; the sea surface in `away` |
+| Road | 420–505 | 1× | Curb, road with dashes and edge lines, the lawn with a footpath (y 490) where people walk; the sea surface with sparkles and foam in `away` |
 | Foreground | 460–600 | 1.15× | Trees, the household figures, the car, the passing De Lijn bus, waves |
 | Overlays (fixed) | — | — | Zone strip (bottom, y 560–590) |
 
@@ -372,12 +377,12 @@ export const BRANDS: Partial<Record<PartnerId | 'kbc', BrandStyle>> = {
 ```
 
 - A place disappears when its last link goes away. It fades out over 300ms, and the places to its right slide back. Essentials fall back to an unbranded ghost instead.
-- The **ghost look** is a single CSS class on the place wrapper:
-  - fills `none`
-  - stroke `#9db4cf`, width 1.6, `stroke-dasharray: 5 4`
-  - `filter: none`
-  - signage at 35% opacity
-  - the phase-1 `breathe` opacity animation (2.4s)
+- The **ghost look** (D26) is the avatar drawn twice inside the ghost layer:
+  - a white silhouette (`.ghostFill`): every shape white, at 50% group opacity, signage hidden
+  - the dashed outline (`.ghost`) over it: fills `none`, stroke `#7f9cc0`, width 1.7, `stroke-dasharray: 5 4`, `filter: none`
+  - signage at 40% opacity
+  - the phase-1 `breathe` opacity animation (2.4s) on both
+  - chimney smoke and the car's charging flow don't show on a ghost
 - The **plot look** has its own small avatar, shared by every plot:
   - a patch of lighter grass with a low wooden fence
   - a signpost with the Kate logo and the ecosystem's Dutch name ("Energie?"), using the backend cluster `naam`
@@ -399,6 +404,8 @@ The camera is a CSS transform (translate, scale, rotate) on the world content gr
 | 3.0s | (0, 0) | 1.0 | 0° | Resting view, with the street scrolled to home |
 
 - **Easing**: `cubic-bezier(.45,0,.2,1)` between keyframes; the last segment uses the phase-1 overshoot `cubic-bezier(.2,.9,.3,1.1)`.
+- **The cloud bank** (`scene/FlyClouds.tsx`): ten shaded cumulus clouds in three depths, each its own composited HTML layer. From 0.1s they part outward from the centre, near clouds first and fastest (scale 2.5), far ones last (scale 1.5, fading early so none lingers over the street); the white haze clears in 0.7s and a flash of sunlight from the sun's position peaks around 0.9s. All clouds are gone by about 1.6s.
+- **The wave**: at 2.1s the household hops and each adult raises the outer arm and waves (1.3s). The timer belongs to the flight, so a re-render during the flight doesn't cancel it.
 - **Loading**: while the world data is still loading, the fly-in holds at 0.0s with the clouds drifting. The clouds are the loading state. The fly-in continues once the data is in.
 - **Skip**: a tap anywhere jumps to the resting view.
 - **During the fly-in**: horizontal scrolling and place taps are locked. They unlock on `onFlyInDone`.
@@ -409,14 +416,14 @@ The camera is a CSS transform (translate, scale, rotate) on the world content gr
 
 | Animation | Spec |
 |---|---|
-| **Arrival** (new place) | After the fly-in, new places play one after another. For each: the street smooth-scrolls until the place is centred (600ms). The place grows from the ground line (scaleY 0 → 1.08 → 1, 500ms, `cubic-bezier(.2,.9,.3,1.1)`), then a burst of 6 sparkles plays (400ms), followed by a 600ms pause. As each place lands, its finding jumps to the front of the Kate bar (with the new-finding animation from 4.9) and to the top of the finding cards. The street stays at the last arrival. |
+| **Arrival** (new place) | After the fly-in, new places play one after another. For each: the street smooth-scrolls until the place is centred (600ms). The place grows from the ground line (scaleY 0 → 1.08 → 1, 500ms, `cubic-bezier(.2,.9,.3,1.1)`) in a burst of warm light (800ms), while 8 gold and white stars fly out from its centre (650ms), followed by a 600ms pause. As each place lands, its finding jumps to the front of the Kate bar (with the new-finding animation from 4.9) and to the top of the finding cards. The street stays at the last arrival. |
 | **Plot → place** | The fence and signpost sink into the ground (250ms), then the arrival plays in the same spot. |
 | **Ghost → linked** | The dashes close (dash offset animates to solid), fills fade in, and the signage goes to full opacity. Total 600ms. |
 | **Linked → ghost** (stop sharing) | The reverse, 400ms. |
 | **Layout shift** | Places to the right of an arrival slide over in 400ms, ease-out. |
-| **Idle** | Clouds drift (22s, phase 1), the windmill turns (6s, phase 1), the plane crosses its lane (14s loop), the De Lijn bus drives through the neighbourhood every ~20s, the train pulls in at the NMBS station every ~25s, boats bob (4s), Kate flags bob (3.2s). The Kate bar's own motion is specified in 4.9. |
+| **Idle** | Clouds drift (26s near, 38s far), birds cross the sky (46s), the balloon bobs and drifts (6s, 40s), the sun's rays turn (90s), the windmill turns (6s, phase 1), the plane crosses its lane (14s loop), the De Lijn bus drives through the neighbourhood every ~20s, the train pulls in at the NMBS station every ~25s (the station clock's minute hand turns), people walk the footpath (a dog walker at home, a shopper in the neighbourhood, a cyclist in town), chimney smoke rises, the car's charging cable flows, coins and the sea glint, the stock ticker runs, the robin on the bench hops, plot seedlings sway, the household blinks, boats bob (4s), Kate flags bob (3.2s). The Kate bar's own motion is specified in 4.9. On web, every loop pauses while the world is scrolled out of view. |
 | **Parallax** | Layers scroll at the factors in [4.2](#42-the-world-coordinate-system-and-layers). |
-| **Reduced motion** | Scrolls jump instead of animating, arrivals appear without the overshoot or sparkles, and idle loops and parallax stop. |
+| **Reduced motion** | Scrolls jump instead of animating, arrivals appear without the overshoot, burst or sparkles, and idle loops and parallax stop. Things that travel stand still where they belong: walkers at the start of their stretch, the plane over the sea, the train at the platform. |
 
 ### 4.9 Kate bar and findings
 
@@ -471,7 +478,7 @@ Both read from the same list of findings.
 - `KateChat` gets an `opener?: { findingId: string; text: string }` prop.
 - The chat shows `text` as Kate's first message, and sends it along as conversation context, so a reply like "Ja, vertel meer" makes sense to the model.
 - **Transport**: the chat view is created on first open and then kept (phase 1), so:
-  - On first open, the URL carries it: `?app=kate&opener=<url-encoded text>`.
+  - On first open, the URL carries it: `?app=kate&close=0&opener=<url-encoded text>`. (`close=0` hides the chat page's own ✕, D29.)
   - On later opens, it's a `postMessage({ type: 'kate:opener', findingId, text })`: the iframe's `contentWindow.postMessage` on web, the WebView's message channel on native.
 - **Dependency**: today `poc-runner/chat/public/index.html` reads no URL parameters and listens to no messages, so it needs a small change (Q8). Until then the chat opens plain, with no error. That's the fallback.
 - The same opener serves the "Vraag Kate" button on finding cards.
@@ -982,7 +989,7 @@ Draw the remaining avatars, Tom's world first:
 12. `business` (for Jonas)
 13. the rest of 4.4
 
-Done on 2026-10-20: `bank`, `car-share`, `bike-station`, `airport` + plane, `island`, signposts for attachments and stickers on the car, plus the re-based phase-1 `house`, `household`, `car`, `energy` and `coin-tree`. Still placeholders (a building in the brand's colours with its sign): `train-station`, `shop`, `estate-agency`, `stock-exchange`, `business` and the rest. Of the idle loops in 4.8, the clouds, windmill, plane, De Lijn bus, boats and Kate flags run; the NMBS train doesn't yet.
+Done on 2026-10-20: `bank`, `car-share`, `bike-station`, `airport` + plane, `island`, signposts for attachments and stickers on the car, plus the re-based phase-1 `house`, `household`, `car`, `energy` and `coin-tree`. In a second round the same day (D26–D28): `shop`, `estate-agency` (a Flemish stepped gable), `train-station` (clock tower, the train pulling in), `stock-exchange` (ticker board, bull), `business` and `bench`; arms, a wave and blinking for the household; smoke, a flower box and a hedge for the house; charging for the car; glints for the coin tree; windows and lanterns for the bank; seedlings on plots. Still placeholders (a building in the brand's colours with its sign): `fuel-station`, `bus-stop`, `telecom-shop`, `newsstand`, `post-office`, `watchtower`, `metro`, `parking` and `farm`, none of which Tom or Jonas has. All idle loops in 4.8 run.
 
 - [ ] Add each one's idle animation from 4.8
 

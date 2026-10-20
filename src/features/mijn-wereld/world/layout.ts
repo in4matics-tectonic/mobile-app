@@ -19,7 +19,7 @@ export const SIGN_W = 70;
 export const SEA_W = 320;
 
 /** How fast each layer scrolls relative to the street. */
-export const PARALLAX = { clouds: 0.3, plane: 0.6, back: 0.5, main: 1, foreground: 1.15 } as const;
+export const PARALLAX = { clouds: 0.3, far: 0.35, plane: 0.6, back: 0.5, main: 1, foreground: 1.15 } as const;
 
 export interface PositionedPlace {
   place: Place;

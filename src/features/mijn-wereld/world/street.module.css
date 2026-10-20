@@ -2,6 +2,8 @@
 
 .root {
   position: relative;
+  /* The fly-in clouds stack by depth; keep that inside the street, under the native header. */
+  isolation: isolate;
   width: 100%;
   overflow: hidden;
   user-select: none;
@@ -9,12 +11,37 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ---------- Sky and sun (screen-fixed) ---------- */
+
 .sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(#8fd0ff, #cdeeff 70%);
+  background: linear-gradient(#5ab6f5 0%, #8fd0ff 34%, #c6ecff 64%, #e9f8ff 100%);
 }
 
+/* The sun sits 61px from the right and 177px from the top; its glow and rays centre there. */
+.sunGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at calc(100% - 61px) 177px,
+    rgba(255, 238, 168, 0.6) 0,
+    rgba(255, 238, 168, 0.22) 110px,
+    rgba(255, 238, 168, 0) 300px
+  );
+}
+.sunRays {
+  position: absolute;
+  right: -89px;
+  top: 27px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 249, 220, 0.38) 0deg 6deg, rgba(255, 249, 220, 0) 6deg 18deg);
+  -webkit-mask-image: radial-gradient(circle, #000 14%, transparent 60%);
+  mask-image: radial-gradient(circle, #000 14%, transparent 60%);
+  animation: spin 90s linear infinite;
+}
 .sun {
   position: absolute;
   right: 34px;
@@ -22,9 +49,24 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 38%, #fffbe0, #ffe27a 55%, #ffd34d);
-  box-shadow: 0 0 0 10px rgba(255, 236, 150, 0.35), 0 0 40px 18px rgba(255, 230, 140, 0.35);
+  background: radial-gradient(circle at 38% 34%, #fffdf0, #ffe98f 45%, #ffd24a 80%, #ffc53a);
+  box-shadow: 0 0 0 9px rgba(255, 238, 160, 0.35), 0 0 46px 20px rgba(255, 228, 130, 0.45);
 }
+/* Sunlight floods in as the fly-in's clouds part. */
+.sunFlash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at calc(100% - 61px) 177px,
+    rgba(255, 252, 232, 0.95) 0,
+    rgba(255, 246, 205, 0.5) 180px,
+    rgba(255, 246, 205, 0) 520px
+  );
+}
+
+/* ---------- Scrolling, camera ---------- */
 
 .scroller {
   position: absolute;
@@ -91,32 +133,54 @@
   pointer-events: none;
 }
 
-/* Ghost: one class, dashed outlines of the same drawing. Signage stays readable, faintly. */
+/* Ghost: dashed outlines of the same drawing over a faint white silhouette, so a place waiting to be
+   connected reads on grass as well as on sky. Signage stays readable, faintly. */
 .ghost :not(.sign):not(.sign *):not(.keep):not(.keep *) {
   fill: none !important;
-  stroke: #9db4cf !important;
-  stroke-width: 1.6px !important;
+  stroke: #7f9cc0 !important;
+  stroke-width: 1.7px !important;
   stroke-dasharray: 5 4 !important;
   filter: none !important;
 }
 .ghost .sign {
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .ghost .sign rect,
 .ghost .sign path {
   fill: #ffffff !important;
-  stroke: #9db4cf !important;
+  stroke: #7f9cc0 !important;
   stroke-width: 1.4px !important;
   stroke-dasharray: 4 3 !important;
 }
 .ghost .sign text {
-  fill: #6f87a6 !important;
+  fill: #5f7899 !important;
+}
+/* The silhouette: every shape white, flattened by the group's opacity so overlaps don't stack. */
+.ghostFill {
+  opacity: 0.5;
+}
+.ghostFill * {
+  fill: #ffffff !important;
+  stroke: none !important;
+  filter: none !important;
+}
+.ghostFill .sign,
+.ghostFill .keep,
+.ghostFill text {
+  display: none;
+}
+/* A place nobody lives in yet doesn't smoke or flow. */
+.ghost .smoke,
+.ghostFill .smoke,
+.ghost .chargeFlow,
+.ghostFill .chargeFlow {
+  display: none;
 }
 .breathe {
   animation: breathe 2.4s ease-in-out infinite;
 }
 
-/* Arrival: grows from the ground line, then sparkles. */
+/* Arrival: grows from the ground line in a burst of light, then sparkles fly out. */
 .grow {
   transform-box: fill-box;
   transform-origin: 50% 100%;
@@ -133,10 +197,15 @@
   transform-origin: 50% 100%;
   animation: sink 250ms ease-in both;
 }
+.burst {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: burst 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 .sparkle {
   transform-box: fill-box;
   transform-origin: 50% 50%;
-  animation: sparkle 400ms ease-out both;
+  animation: sparkle 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .attachment {
@@ -183,6 +252,84 @@
 .hop {
   animation: hop 400ms ease-out 2;
 }
+.flock {
+  animation: flock 46s linear infinite;
+}
+.flap {
+  transform-box: fill-box;
+  transform-origin: 50% 70%;
+  animation: flap 0.42s ease-in-out infinite alternate;
+}
+.balloonDrift {
+  animation: balloonDrift 40s ease-in-out infinite alternate;
+}
+.balloonBob {
+  animation: bob 6s ease-in-out infinite;
+}
+.foam {
+  animation: foam 4.4s ease-in-out infinite alternate;
+}
+/* Walkers: the outer group walks there and back, the inner one turns at each end, in step. */
+.patrol {
+  animation: patrol 46s linear infinite;
+}
+.patrolTurn {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: turn 46s linear infinite;
+}
+.stride {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: stride 0.45s ease-in-out infinite alternate;
+}
+.wag {
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: wag 0.3s ease-in-out infinite alternate;
+}
+.smoke {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: smoke 3.6s ease-out infinite;
+}
+.blink {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: blink 5s ease-in-out infinite;
+}
+.waveArm,
+.waveArmL {
+  transform-box: fill-box;
+  transform-origin: 50% 8%;
+  animation: waveArm 1.3s ease-in-out both;
+}
+.waveArmL {
+  animation-name: waveArmL;
+}
+.chargeFlow {
+  animation: chargeFlow 1.2s linear infinite;
+}
+.pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.ticker {
+  animation: ticker 9s linear infinite;
+}
+.clockHand {
+  transform-origin: 0 0;
+  animation: spin 60s linear infinite;
+}
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sway 3.4s ease-in-out infinite alternate;
+}
+.hopBird {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: hopBird 7s ease-in-out infinite;
+}
 
 /* ---------- Fly-in clouds (the loading state) ---------- */
 
@@ -190,14 +337,18 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  will-change: transform, opacity;
+}
+.flyHaze {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, 0.55), rgba(236, 246, 255, 0.25) 70%);
 }
 .flyCloud {
   position: absolute;
-  border-radius: 999px;
-  background: radial-gradient(circle at 40% 30%, #ffffff, #e3effa 70%);
-  box-shadow: 0 10px 30px rgba(11, 42, 74, 0.12);
-  animation: puff 6s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.flyPuff {
+  animation: puff 7s ease-in-out infinite alternate;
 }
 
 /* ---------- Zone strip ---------- */
@@ -271,13 +422,29 @@
     opacity: 0;
   }
 }
-@keyframes sparkle {
+@keyframes burst {
   0% {
-    transform: scale(0);
+    transform: scale(0.15);
+    opacity: 0;
+  }
+  25% {
     opacity: 1;
   }
   100% {
-    transform: scale(1.4);
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+@keyframes sparkle {
+  0% {
+    transform: translate(0, 0) scale(0.2) rotate(0deg);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1.1) rotate(90deg);
     opacity: 0;
   }
 }
@@ -330,24 +497,213 @@
     transform: translateX(var(--to));
   }
 }
+/* Pulls in, waits at the platform, leaves; fades at the ends of the track. */
 @keyframes train {
   0% {
     transform: translateX(var(--from));
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
   }
   30%,
   65% {
     transform: translateX(0);
   }
+  94% {
+    opacity: 1;
+  }
   100% {
     transform: translateX(var(--to));
+    opacity: 0;
   }
 }
 @keyframes puff {
   to {
-    transform: translateX(14px) scale(1.04);
+    transform: translate(14px, -6px) scale(1.04);
+  }
+}
+@keyframes flock {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(var(--fly));
+    opacity: 0;
+  }
+}
+@keyframes flap {
+  to {
+    transform: scaleY(-0.45);
+  }
+}
+@keyframes balloonDrift {
+  to {
+    transform: translate(70px, -14px);
+  }
+}
+@keyframes foam {
+  to {
+    opacity: 0.4;
+  }
+}
+@keyframes patrol {
+  0% {
+    transform: translateX(var(--from));
+  }
+  48%,
+  50% {
+    transform: translateX(var(--to));
+  }
+  98%,
+  100% {
+    transform: translateX(var(--from));
+  }
+}
+@keyframes turn {
+  0%,
+  48.5% {
+    transform: scaleX(1);
+  }
+  49.5%,
+  98.5% {
+    transform: scaleX(-1);
+  }
+  99.5%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+@keyframes stride {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(20deg);
+  }
+}
+@keyframes wag {
+  from {
+    transform: rotate(-16deg);
+  }
+  to {
+    transform: rotate(18deg);
+  }
+}
+@keyframes smoke {
+  0% {
+    transform: translate(0, 0) scale(0.45);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(9px, -30px) scale(1.5);
+    opacity: 0;
+  }
+}
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes waveArm {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22% {
+    transform: rotate(-150deg);
+  }
+  38% {
+    transform: rotate(-122deg);
+  }
+  54% {
+    transform: rotate(-158deg);
+  }
+  70% {
+    transform: rotate(-126deg);
+  }
+  84% {
+    transform: rotate(-150deg);
+  }
+}
+@keyframes waveArmL {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22% {
+    transform: rotate(150deg);
+  }
+  38% {
+    transform: rotate(122deg);
+  }
+  54% {
+    transform: rotate(158deg);
+  }
+  70% {
+    transform: rotate(126deg);
+  }
+  84% {
+    transform: rotate(150deg);
+  }
+}
+@keyframes chargeFlow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes ticker {
+  to {
+    transform: translateX(var(--run));
+  }
+}
+@keyframes sway {
+  from {
+    transform: rotate(-7deg);
+  }
+  to {
+    transform: rotate(7deg);
+  }
+}
+@keyframes hopBird {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+  80% {
+    transform: translateY(0);
+  }
+  85% {
+    transform: translateY(-3px);
+  }
+  90% {
+    transform: translateY(0);
   }
 }
 
+/* Reduced motion: idle loops stop; state changes (ghost ↔ linked, arrivals) stay, without the flourish. */
 @media (prefers-reduced-motion: reduce) {
   .cloud,
   .blades,
@@ -360,8 +716,42 @@
   .sparkleIdle,
   .breathe,
   .hop,
-  .flyCloud {
+  .flyPuff,
+  .sunRays,
+  .flock,
+  .flap,
+  .balloonDrift,
+  .balloonBob,
+  .foam,
+  .patrol,
+  .patrolTurn,
+  .stride,
+  .wag,
+  .smoke,
+  .blink,
+  .waveArm,
+  .waveArmL,
+  .chargeFlow,
+  .pulse,
+  .ticker,
+  .clockHand,
+  .sway,
+  .hopBird,
+  .burst,
+  .sparkle {
     animation: none;
+  }
+  .smoke,
+  .burst,
+  .sparkle {
+    opacity: 0;
+  }
+  /* Without their loops, things that travel stand still where they belong rather than at x = 0. */
+  .patrol {
+    transform: translateX(var(--from));
+  }
+  .plane {
+    transform: translateX(var(--park));
   }
 }
 .reduced .cloud,
@@ -375,12 +765,51 @@
 .reduced .sparkleIdle,
 .reduced .breathe,
 .reduced .hop,
-.reduced .flyCloud {
+.reduced .flyPuff,
+.reduced .sunRays,
+.reduced .flock,
+.reduced .flap,
+.reduced .balloonDrift,
+.reduced .balloonBob,
+.reduced .foam,
+.reduced .patrol,
+.reduced .patrolTurn,
+.reduced .stride,
+.reduced .wag,
+.reduced .smoke,
+.reduced .blink,
+.reduced .waveArm,
+.reduced .waveArmL,
+.reduced .chargeFlow,
+.reduced .pulse,
+.reduced .ticker,
+.reduced .clockHand,
+.reduced .sway,
+.reduced .hopBird,
+.reduced .burst,
+.reduced .sparkle {
   animation: none;
+}
+.reduced .smoke,
+.reduced .burst,
+.reduced .sparkle {
+  opacity: 0;
+}
+.reduced .patrol {
+  transform: translateX(var(--from));
+}
+.reduced .plane {
+  transform: translateX(var(--park));
 }
 .reduced .slot,
 .reduced .layer {
   transition: none;
+}
+
+/* Scrolled out of view: every loop holds still until the world is back. */
+.paused,
+.paused * {
+  animation-play-state: paused !important;
 }
 
 /* Marker classes: signage keeps its colours in the ghost look (faintly); .keep opts a detail out of it. */

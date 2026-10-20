@@ -1,5 +1,6 @@
-// coin-tree: the phase-1 savings tree with gold coins.
+// coin-tree: the phase-1 savings tree with gold coins that glint now and then.
 
+import styles from '../../street.module.css';
 import type { AvatarProps } from '../types';
 
 const K = 1.25;
@@ -23,7 +24,27 @@ export function CoinTree({ width }: AvatarProps) {
         <circle cx="76" cy="146" r="5" fill="url(#coin)" />
         <circle cx="68" cy="164" r="5" fill="url(#coin)" />
         <circle cx="86" cy="164" r="4.5" fill="url(#coin)" />
+        <g fill="#fff" opacity=".8">
+          <circle cx="52.6" cy="148.4" r="1.3" />
+          <circle cx="74.6" cy="144.4" r="1.3" />
+          <circle cx="66.6" cy="162.4" r="1.3" />
+          <circle cx="84.8" cy="162.6" r="1.1" />
+        </g>
       </g>
+      {/* now and then a coin catches the light */}
+      {[
+        [76, 146, 0],
+        [54, 150, -1.4],
+        [86, 164, -2.6],
+      ].map(([x, y, delay]) => (
+        <path
+          key={x}
+          className={styles.sparkleIdle}
+          style={{ animationDelay: `${delay}s`, animationDuration: '4.2s' }}
+          d={`M${x + 2} ${y - 7} l1.1 3 l3 1.1 l-3 1.1 l-1.1 3 l-1.1 -3 l-3 -1.1 l3 -1.1 Z`}
+          fill="#fff"
+        />
+      ))}
     </g>
   );
 }

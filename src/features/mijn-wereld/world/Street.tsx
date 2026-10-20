@@ -23,8 +23,9 @@ import {
 import { ZONE_LABELS } from './categories';
 import { layoutWorld, PARALLAX, WORLD_H, type PositionedPlace } from './layout';
 import { Place, type ArrivalPhase } from './Place';
-import { BackLayer, Clouds, Foreground, Ground, Plane } from './scene/Backdrop';
+import { BackLayer, Clouds, FarLayer, Foreground, Ground, Plane } from './scene/Backdrop';
 import { SceneDefs } from './scene/Defs';
+import { FLY_CLOUDS, FlyClouds, PART, partVector } from './scene/FlyClouds';
 import { IN_NATIVE_WEBVIEW } from './scene/font';
 import styles from './street.module.css';
 import type { WorldView, ZoneId } from './types';
@@ -56,14 +57,8 @@ const CAMERA = [
 const cameraTransform = (k: (typeof CAMERA)[number], scale: number) =>
   `translate(${-k.x * scale}px, ${-k.y * scale}px) scale(${k.s}) rotate(${k.r}deg)`;
 
-const FLY_CLOUDS = [
-  { left: '-18%', top: '8%', w: 70, h: 26, dx: -260 },
-  { left: '40%', top: '2%', w: 80, h: 30, dx: 300 },
-  { left: '-10%', top: '42%', w: 90, h: 34, dx: -320 },
-  { left: '38%', top: '36%', w: 85, h: 32, dx: 320 },
-  { left: '6%', top: '70%', w: 95, h: 34, dx: -280 },
-  { left: '52%', top: '72%', w: 70, h: 30, dx: 260 },
-];
+/** Clouds rush past with growing speed, as if the camera dives through them. */
+const PART_EASE = 'cubic-bezier(.45,0,.85,.4)';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -98,7 +93,9 @@ export default function Street({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<HTMLDivElement>(null);
   const cloudsRef = useRef<HTMLDivElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
   const cloudLayer = useRef<SVGGElement>(null);
+  const farLayer = useRef<SVGGElement>(null);
   const planeLayer = useRef<SVGGElement>(null);
   const backLayer = useRef<SVGGElement>(null);
   const foreLayer = useRef<SVGGElement>(null);
@@ -137,6 +134,16 @@ export default function Street({
     if (!root) return;
     // Fires once right away, then on every resize.
     const observer = new ResizeObserver(() => setViewport(root.clientWidth || window.innerWidth));
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  // Idle loops stop while the world is scrolled out of view (on web; a native webview is always "in view").
+  const [offscreen, setOffscreen] = useState(false);
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => setOffscreen(!entry.isIntersecting));
     observer.observe(root);
     return () => observer.disconnect();
   }, []);
@@ -191,6 +198,7 @@ export default function Street({
       if (!reduced) {
         const shift = (g: SVGGElement | null, f: number) => g?.setAttribute('transform', `translate(${s * (1 - f)} 0)`);
         shift(cloudLayer.current, PARALLAX.clouds);
+        shift(farLayer.current, PARALLAX.far);
         shift(planeLayer.current, PARALLAX.plane);
         shift(backLayer.current, PARALLAX.back);
         shift(foreLayer.current, PARALLAX.foreground);
@@ -278,6 +286,8 @@ export default function Street({
   const wave = waveKey === flyInKey;
   const animations = useRef<Animation[]>([]);
   const started = useRef(false);
+  /** The household waves near the end of the flight; owned by the flight, not by the effect that starts it. */
+  const waveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const household = layout.items.find((i) => i.place.id === 'household');
   const origin = household
     ? `${(household.x + household.width / 2) * scale}px ${380 * scale}px`
@@ -288,6 +298,7 @@ export default function Street({
     animations.current.forEach((a) => a.cancel());
     animations.current = [];
     started.current = false;
+    clearTimeout(waveTimer.current);
     const camera = cameraRef.current;
     if (camera) {
       camera.style.transform = reduced ? 'none' : cameraTransform(CAMERA[0], scale);
@@ -327,20 +338,36 @@ export default function Street({
       CAMERA.map((k) => ({ offset: k.t / 3, transform: cameraTransform(k, scale), easing: k.easing })),
       { duration: FLY_MS, fill: 'forwards' },
     );
-    const clouds = [...(cloudsRef.current?.children ?? [])].map((el, i) =>
-      (el as HTMLElement).animate(
+    // The cloud bank parts outward from the centre; the haze clears first, and sunlight floods in behind it.
+    const bank = cloudsRef.current;
+    const ratio = bank ? bank.clientWidth / Math.max(1, bank.clientHeight) : 0.6;
+    const clouds = [...(bank?.querySelectorAll<HTMLElement>('[data-cloud]') ?? [])].map((el) => {
+      const c = FLY_CLOUDS[Number(el.dataset.cloud)];
+      const { delay, duration, scale: grow, hold } = PART[c.depth];
+      const out = partVector(c, ratio);
+      const from = Number(el.style.opacity || 1);
+      return el.animate(
         [
-          { transform: 'translateX(0) scale(1)', opacity: 1 },
-          { transform: `translateX(${FLY_CLOUDS[i]?.dx ?? 0}px) scale(1.9)`, opacity: 0 },
+          { transform: 'translate(0, 0) scale(1)', opacity: from },
+          { opacity: from, offset: hold },
+          { transform: `translate(${out.x}%, ${out.y}%) scale(${grow})`, opacity: 0 },
         ],
-        { duration: 900, delay: 350, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' },
-      ),
+        { duration, delay, easing: PART_EASE, fill: 'forwards' },
+      );
+    });
+    const haze = bank?.querySelector<HTMLElement>('[data-haze]');
+    const hazeOut = haze?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+    const flash = flashRef.current?.animate(
+      [{ opacity: 0 }, { opacity: 0.75, offset: 0.35 }, { opacity: 0 }],
+      { duration: 1500, delay: 380, easing: 'ease-in-out', fill: 'forwards' },
     );
-    animations.current = [fly, ...clouds];
-    const waveTimer = setTimeout(() => setWaveKey(flyInKey), 2100);
+    animations.current = [fly, ...clouds, ...(hazeOut ? [hazeOut] : []), ...(flash ? [flash] : [])];
+    // Not cleared when this effect re-runs mid-flight (a new prop, a poll): the flight has already started then.
+    waveTimer.current = setTimeout(() => setWaveKey(flyInKey), 2100);
     fly.finished.then(land, () => {});
-    return () => clearTimeout(waveTimer);
   }, [world, flying, reduced, origin, scale, land, flyInKey]);
+
+  useEffect(() => () => clearTimeout(waveTimer.current), []);
 
   const skipFlyIn = useCallback(() => {
     if (flying && started.current) animations.current.forEach((a) => a.finish());
@@ -420,10 +447,12 @@ export default function Street({
   return (
     <div
       ref={rootRef}
-      className={`${styles.root} ${reduced ? styles.reduced : ''}`}
+      className={`${styles.root} ${reduced ? styles.reduced : ''} ${offscreen ? styles.paused : ''}`}
       style={{ height }}
       onPointerDownCapture={flying ? skipFlyIn : undefined}>
       <div className={styles.sky} />
+      <div className={styles.sunGlow} />
+      <div className={styles.sunRays} />
       <div className={styles.sun} />
       <div
         ref={scrollerRef}
@@ -442,6 +471,9 @@ export default function Street({
               <SceneDefs />
               <g ref={cloudLayer}>
                 <Clouds layout={layout} vw={vw} flat={reduced} />
+              </g>
+              <g ref={farLayer}>
+                <FarLayer layout={layout} vw={vw} flat={reduced} />
               </g>
               <g ref={planeLayer}>{airport && <Plane layout={layout} vw={vw} flat={reduced} ghost={airport.state === 'ghost'} />}</g>
               <g ref={backLayer}>
@@ -479,17 +511,8 @@ export default function Street({
         </div>
       </div>
 
-      {flying && !reduced && (
-        <div ref={cloudsRef} className={styles.flyClouds} aria-hidden>
-          {FLY_CLOUDS.map((c, i) => (
-            <div
-              key={i}
-              className={styles.flyCloud}
-              style={{ left: c.left, top: c.top, width: `${c.w}%`, height: `${c.h}%`, animationDelay: `${-i * 0.9}s` }}
-            />
-          ))}
-        </div>
-      )}
+      {flying && !reduced && <FlyClouds cloudsRef={cloudsRef} />}
+      {!reduced && <div ref={flashRef} className={styles.sunFlash} aria-hidden />}
 
       {world && !flying && layout.zones.length > 1 && (
         <nav className={styles.zones} aria-label="Zones">

@@ -133,6 +133,49 @@ export function SceneDefs() {
         <stop offset="0" stopColor="#fff0a0" />
         <stop offset="1" stopColor="#f2c230" />
       </linearGradient>
+      {/* ---- Street polish: clouds, distance, paving, new avatars, the arrival burst ---- */}
+      <linearGradient id="cloudBody" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset=".6" stopColor="#f4f9fe" />
+        <stop offset="1" stopColor="#d9e7f5" />
+      </linearGradient>
+      <linearGradient id="farRange" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#bfe2f3" />
+        <stop offset="1" stopColor="#a8d8c6" />
+      </linearGradient>
+      <linearGradient id="paving" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#f6ecd2" />
+        <stop offset="1" stopColor="#e4d2a6" />
+      </linearGradient>
+      <linearGradient id="brick" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#e3866a" />
+        <stop offset="1" stopColor="#bf5d40" />
+      </linearGradient>
+      <linearGradient id="slate" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#6d819c" />
+        <stop offset="1" stopColor="#46566d" />
+      </linearGradient>
+      <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#e7ae6c" />
+        <stop offset="1" stopColor="#8a5a2b" />
+      </linearGradient>
+      <linearGradient id="trainBody" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset="1" stopColor="#dbe4ee" />
+      </linearGradient>
+      <linearGradient id="balloon" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#1f74d0" />
+        <stop offset=".5" stopColor="#4fb0ff" />
+        <stop offset="1" stopColor="#1557a6" />
+      </linearGradient>
+      <radialGradient id="burst" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stopColor="#fffbe0" stopOpacity=".95" />
+        <stop offset=".45" stopColor="#ffe27a" stopOpacity=".5" />
+        <stop offset="1" stopColor="#ffe27a" stopOpacity="0" />
+      </radialGradient>
+      <pattern id="litWindows" width="9" height="11" patternUnits="userSpaceOnUse">
+        <rect x="2" y="2" width="4" height="5" rx="1" fill="#ffffff" opacity=".55" />
+      </pattern>
       <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
         <feGaussianBlur stdDeviation="3" />
       </filter>

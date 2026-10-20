@@ -26,6 +26,14 @@ export function Plot({ width, name }: { width: number; name: string }) {
           <rect key={i} x={4 + (i * (width - 12)) / (posts - 1)} y={398} width={4} height={22} rx={1.5} fill="#b07a45" />
         ))}
       </g>
+      {/* seedlings: this is where the world can grow */}
+      {[0.16, 0.3, 0.42].map((f, i) => (
+        <g key={f} className={styles.sway} style={{ animationDelay: `${-i * 1.1}s` }}>
+          <path d={`M${width * f} 419 q-0.5 -6 0.5 -11`} stroke="#3f9d3c" strokeWidth={1.6} fill="none" strokeLinecap="round" />
+          <path d={`M${width * f + 0.4} 410 q-6 -1 -7 -5 q5 -1 7 5 Z`} fill="#6fd052" />
+          <path d={`M${width * f + 0.4} 409 q5 -3 7 -1 q-3 4 -7 1 Z`} fill="#8be06a" />
+        </g>
+      ))}
       {/* Kate signpost */}
       <rect x={signX - 2} y={356} width={4} height={64} rx={2} fill="#8a6a4a" />
       <g className={styles.sign} filter="url(#lift)">

@@ -1,5 +1,7 @@
-// house: the phase-1 house with solar panels, scaled onto the street (art in its original island coordinates).
+// house: the phase-1 house with solar panels, scaled onto the street (art in its original island coordinates),
+// with a lived-in touch: a flower box, a hedge and letterbox, smoke from the chimney.
 
+import styles from '../../street.module.css';
 import type { AvatarProps } from '../types';
 
 const K = 1.85;
@@ -34,7 +36,24 @@ export function House({ width }: AvatarProps) {
         <rect x="82" y="128" width="8" height="9" rx="2" fill="url(#win)" />
         <path d="M126 130 L140 126 L140 138 L126 142 Z" fill="url(#win)" />
         <path d="M78 164 L118 164 L152 152" stroke="#000" strokeOpacity=".08" strokeWidth="2" fill="none" />
+        {/* window bars, a flower box, the door lamp */}
+        <path d="M86 128 V137 M82 132.5 H90 M133 128 V140 M126 136 L140 132" stroke="#fff" strokeWidth=".8" />
+        <path d="M125 142.6 L141 138 L141 141 L125 145.6 Z" fill="#8a5431" />
+        <circle cx="128" cy="141.4" r="1.4" fill="#ff6b8a" />
+        <circle cx="131.6" cy="140.4" r="1.4" fill="#ffd34d" />
+        <circle cx="135.2" cy="139.4" r="1.4" fill="#ff6b8a" />
+        <circle cx="138.8" cy="138.4" r="1.4" fill="#fff" />
+        <rect x="107" y="141" width="2.2" height="3.2" rx="1" fill="#ffd34d" />
+        {/* hedge and letterbox by the front corner */}
+        <circle cx="66" cy="160" r="5" fill="url(#leaf)" />
+        <circle cx="73" cy="159" r="5.6" fill="url(#leaf)" />
+        <rect x="62.6" y="152" width="1.2" height="12" fill="#5a6b82" />
+        <rect x="59.6" y="149" width="7" height="5" rx="1.6" fill="#e2001a" />
       </g>
+      {/* chimney smoke, outside the shadowed group */}
+      {[0, 1, 2].map((i) => (
+        <circle key={i} className={styles.smoke} style={{ animationDelay: `${-i * 1.2}s` }} cx="142" cy="66" r="4" fill="#ffffff" />
+      ))}
     </g>
   );
 }

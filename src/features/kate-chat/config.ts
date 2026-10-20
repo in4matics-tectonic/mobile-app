@@ -16,6 +16,10 @@ const LIVE_URL = `https://chat.${POC_VM.domain}/?app=kate`;
  */
 const DEV_WEB_URL = '/kate-chat/?app=kate';
 
-/** Opened in a WebView on iOS/Android and in an iframe on web. Override with EXPO_PUBLIC_KATE_CHAT_URL. */
-export const KATE_CHAT_URL =
-  process.env.EXPO_PUBLIC_KATE_CHAT_URL ?? (__DEV__ && Platform.OS === 'web' ? DEV_WEB_URL : LIVE_URL);
+const BASE_URL = process.env.EXPO_PUBLIC_KATE_CHAT_URL ?? (__DEV__ && Platform.OS === 'web' ? DEV_WEB_URL : LIVE_URL);
+
+/**
+ * Opened in a WebView on iOS/Android and in an iframe on web. Override with EXPO_PUBLIC_KATE_CHAT_URL.
+ * The app closes the chat with its own ✕, so `close=0` hides the page's ✕ (new conversation), on any base URL.
+ */
+export const KATE_CHAT_URL = `${BASE_URL}${BASE_URL.includes('?') ? '&' : '?'}close=0`;
