@@ -54,8 +54,9 @@ export default function LoginScreen() {
 function LoginForm({ framed }: { framed: boolean }) {
   const insets = useSafeAreaInsets();
   const native = Platform.OS !== 'web';
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // The demo login is filled in from the start: one tap on "Inloggen" (the demo is open to visitors)
+  const [username, setUsername] = useState(DEMO_USERS[0]);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const passwordRef = useRef<TextInput>(null);
