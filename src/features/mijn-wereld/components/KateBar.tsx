@@ -1,5 +1,5 @@
 // The Kate bar (D14, 4.9): looks like a chat input, rotates what Kate found, and opens the chat on a tap.
-// Two copies share one ticker: the one in the page flow and the one docked above the tab bar (D17).
+// It sits fixed right above the tab bar (D17).
 
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -29,15 +29,12 @@ export const KATE_BAR_HEIGHT = 56;
 export function KateBar({
   ticker,
   reduced,
-  announce = false,
   onPress,
   onHold,
   style,
 }: {
   ticker: KateTicker;
   reduced: boolean;
-  /** Only one copy speaks to the screen reader. */
-  announce?: boolean;
   onPress: () => void;
   /** Pressed or focused: rotation pauses. */
   onHold: (held: boolean) => void;
@@ -164,11 +161,9 @@ export function KateBar({
           </Svg>
         </View>
       </Pressable>
-      {announce && (
-        <Text aria-live="polite" style={styles.srOnly}>
-          {announced?.teaser ?? ''}
-        </Text>
-      )}
+      <Text aria-live="polite" style={styles.srOnly}>
+        {announced?.teaser ?? ''}
+      </Text>
     </Animated.View>
   );
 }

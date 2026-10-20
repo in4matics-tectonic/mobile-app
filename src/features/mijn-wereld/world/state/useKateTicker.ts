@@ -1,4 +1,4 @@
-// The Kate bar's rotation (4.9), shared by the in-flow bar and its docked copy so the teaser never jumps.
+// The Kate bar's rotation (4.9): which finding the bar shows, and which new finding it announces.
 // Every 6s the next teaser takes over. Findings that weren't there before each take the front once, in turn
 // (an arrival first), with the bar's new-finding animation; after that the bar follows priority.
 

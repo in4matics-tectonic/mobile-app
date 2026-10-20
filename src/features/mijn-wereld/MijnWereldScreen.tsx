@@ -1,6 +1,6 @@
-// "Mijn wereld": the customer's world as a street (phase 2). The page scrolls vertically through four bands
-// (project-info.md 4.1): the world (≥ 80% of the first view), the Kate bar, Kate's finding cards, and the
-// world in text. The street scrolls horizontally inside the world band.
+// "Mijn wereld": the customer's world as a street (phase 2). The Kate bar is fixed right above the tab bar;
+// everything above it scrolls vertically (project-info.md 4.1): the world, which fills that whole area in
+// the first view, then Kate's finding cards and the world in text. The street scrolls horizontally.
 
 import { useFocusEffect } from 'expo-router';
 import { StatusBar as SystemStatusBar } from 'expo-status-bar';
@@ -14,10 +14,8 @@ import {
   Text,
   useWindowDimensions,
   View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
 } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -55,11 +53,10 @@ type Sheet =
   | { kind: 'consent' }
   | { kind: 'partners' };
 
-/** The world band: 82% of what's visible above the tab bar, never under 520px (4.1). */
-const WORLD_SHARE = 0.82;
-const WORLD_MIN = 520;
-/** The Kate bar with its 12px margins. */
-const BAR_BAND = KATE_BAR_HEIGHT + 24;
+/** The Kate bar with its margins. */
+const BAR_BAND = KATE_BAR_HEIGHT + 20;
+/** The world fills the scroll area, but stays drawable in a short landscape window. */
+const WORLD_MIN = 320;
 
 export default function MijnWereldScreen() {
   const scheme = useColorScheme();
@@ -86,9 +83,12 @@ function PhoneScreen({ framed }: { framed: boolean }) {
 
   // ---- Sizes ----
 
+  // The world band is exactly the scroll area's height: everything between the top and the Kate bar.
+  // Until the scroll area is measured, it's estimated from the screen.
   const [screen, setScreen] = useState({ width: windowWidth, height: windowHeight });
   const [tabHeight, setTabHeight] = useState(84);
-  const bandHeight = Math.max(WORLD_MIN, Math.round((screen.height - tabHeight) * WORLD_SHARE));
+  const [viewport, setViewport] = useState<number | null>(null);
+  const bandHeight = Math.max(WORLD_MIN, Math.round(viewport ?? screen.height - tabHeight - BAR_BAND));
 
   // ---- Fly-in on every focus (D7) ----
 
@@ -178,23 +178,6 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     openSheet({ kind: link });
   };
 
-  // ---- Sticky Kate bar (D17) ----
-
-  const [barY, setBarY] = useState(0);
-  const [docked, setDocked] = useState(false);
-  const dock = useSharedValue(0);
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const out = e.nativeEvent.contentOffset.y > barY + 12 + KATE_BAR_HEIGHT;
-    if (out !== docked) setDocked(out);
-  };
-  useEffect(() => {
-    dock.value = withTiming(docked ? 1 : 0, { duration: reduced ? 0 : 200 });
-  }, [docked, dock, reduced]);
-  const dockStyle = useAnimatedStyle(() => ({
-    opacity: dock.value,
-    transform: [{ translateY: (1 - dock.value) * (KATE_BAR_HEIGHT + 24) }],
-  }));
-
   // ---- Render ----
 
   const shown = sheet ?? lastSheet;
@@ -206,9 +189,8 @@ function PhoneScreen({ framed }: { framed: boolean }) {
       {native && <SystemStatusBar style="dark" />}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 16 + (docked ? BAR_BAND : 0) }}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
+        contentContainerStyle={styles.content}
+        onLayout={(e) => setViewport(e.nativeEvent.layout.height)}
         showsVerticalScrollIndicator={false}>
         {/* 1 · World */}
         <View style={{ height: bandHeight }}>
@@ -241,12 +223,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
           )}
         </View>
 
-        {/* 2 · Kate bar */}
-        <View style={styles.barBand} onLayout={(e) => setBarY(e.nativeEvent.layout.y)}>
-          <KateBar ticker={ticker} reduced={reduced} announce onPress={() => openChat(openerOf(ticker.current))} onHold={setHeld} />
-        </View>
-
-        {/* 3 · Finding cards, 4 · the world in text */}
+        {/* 2 · Finding cards, 3 · the world in text */}
         <View style={styles.body}>
           {state.status === 'loading' ? (
             <ActivityIndicator color={world.blue} style={styles.loading} />
@@ -266,11 +243,10 @@ function PhoneScreen({ framed }: { framed: boolean }) {
         </View>
       </ScrollView>
 
-      <Animated.View
-        style={[styles.dock, { bottom: tabHeight + 10, pointerEvents: docked ? 'box-none' : 'none' }, dockStyle]}
-        aria-hidden={!docked}>
+      {/* Kate bar, always right above the tab bar */}
+      <View style={styles.barBand}>
         <KateBar ticker={ticker} reduced={reduced} onPress={() => openChat(openerOf(ticker.current))} onHold={setHeld} />
-      </Animated.View>
+      </View>
 
       <View onLayout={(e) => setTabHeight(e.nativeEvent.layout.height)}>
         <TabBar
@@ -386,9 +362,9 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: world.ground, overflow: 'hidden' },
   scroll: { flex: 1 },
   header: { position: 'absolute', top: 0, left: 0, right: 0, pointerEvents: 'box-none' },
-  barBand: { paddingVertical: 12 },
-  body: { gap: 12, paddingHorizontal: 16 },
-  dock: { position: 'absolute', left: 0, right: 0 },
+  content: { paddingBottom: 16 },
+  barBand: { height: BAR_BAND, justifyContent: 'center', backgroundColor: world.ground },
+  body: { gap: 12, paddingTop: 16, paddingHorizontal: 16 },
   loading: { marginTop: 24 },
   error: {
     position: 'absolute',

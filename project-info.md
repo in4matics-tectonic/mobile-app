@@ -74,7 +74,7 @@ U = decided by the user, P = proposal by Claude (confirm before treating it as f
 | D3 | Phase-1 content | **World replaces the island; Kate stays** (chat, coins, voice; the orb gave way to the Kate bar, D14). The family moment becomes one world event | U | Keeps Kate's value, makes the world the hero |
 | D4 | Tapping a ghost | **Partner sheet with Koppel**. Koppel is the backend's `PUT K/partners/:partner {deelt: true}` (D18) | U | The demo shows the world growing because of the customer's own action |
 | D5 | Partners | **Real brands**, as listed in the backend catalogue (40 partners: Q8, NMBS, De Lijn, Cambio, Brussels Airport, Joyn, …) plus KBC itself. Engie, wanted for the windmill, isn't in the catalogue yet (Q2) | U | Recognisable for the jury, and a believable "beyond banking" world |
-| D6 | Screen proportions | **World ≥ 80% of the first view**, then the Kate bar, then finding cards, then text sections further down | U | The world is the hero; text is secondary |
+| D6 | Screen proportions | **The world fills the first view** down to the Kate bar; finding cards and text sections follow when the page scrolls. (Was: world ≥ 80% of the first view, changed 2026-10-20) | U | The world is the hero; text is secondary |
 | D7 | Opening animation | **Fly-in every time the screen opens**: from the sky, circling down, focusing on the customer | U | A memorable, emotional first moment |
 | D8 | Rendering | The world is one **Expo DOM component** (`'use dom'`) with plain SVG and CSS, as phase 1's `IslandScene` | U | Reuses phase-1 art and animations, and keeps the ghost look to a single CSS class. Identical on web, iOS and Android |
 | D9 | When a place counts as new | Seen links (`linkId:status`) are kept in AsyncStorage. A place with an unseen `actief` or `gekend` link is new once, and the first launch marks everything seen | U | Only real arrivals celebrate, including ones that happened since the last visit |
@@ -85,7 +85,7 @@ U = decided by the user, P = proposal by Claude (confirm before treating it as f
 | D14 | Kate's entry point | The **Kate bar** replaces the Kate orb: a horizontal bar directly under the world that looks like an AI chat input and keeps animating with what Kate wants to tell the customer | U | It's obvious you can talk to Kate, and her findings get a visible, living home |
 | D15 | Findings below the bar | **Bar + cards**: the bar rotates short teasers; full finding cards with their buttons follow below it | U | The bar invites; the cards let the customer act |
 | D16 | Tapping the bar | Opens the **Kate chat with the shown finding as Kate's first message**. Until the chat page supports that, it opens the plain chat | U | One tap from a hint to a conversation about it |
-| D17 | Bar position on scroll | **Sticky**: once the bar scrolls out of view, a docked copy sits above the tab bar | U | Kate stays one tap away, as the orb was |
+| D17 | Bar position | **Fixed right above the tab bar**; only the page above it scrolls. (Was: in the page flow with a docked copy, changed 2026-10-20) | U | Kate stays one tap away, as the orb was |
 | D18 | Data model | The world is built from the backend's **ecosystem clusters** (`GET K/ecosystemen`) and **partner relations** (`GET K/partners`). The statuses map one-to-one: `actief` → linked, `gekend` → ghost, `mogelijk` → tip or plot | U | The backend is done; the app draws what it computes |
 | D19 | Mapping | Every backend partner and ecosystem maps to a drawn **category**, as its own place or as an **attachment** on another place, in one table (4.4) | U | 40 partners as 40 buildings would make an endless street; attachments keep it readable |
 | D20 | New ecosystems | An ecosystem with only `mogelijk` links (`samenvatting.nieuweEcosystemen`) shows as an empty **plot** with a Kate sign at its anchor's spot | U | Matches the backend's intent ("that's where the world can grow") and makes growth visible before it happens |
@@ -124,14 +124,14 @@ Use these words in code, comments and copy discussions. Backend terms stay Dutch
 - **Fly-in**: the camera animation that opens the world.
 - **Arrival**: the animation of a new place appearing.
 - **Finding**: one thing Kate wants to tell the customer about their world. Its short teaser rotates in the Kate bar; its full text is a card below.
-- **Kate bar**: the horizontal, chat-input-like bar directly under the world. It rotates finding teasers and opens the Kate chat.
+- **Kate bar**: the horizontal, chat-input-like bar fixed right above the tab bar, directly under the world in the first view. It rotates finding teasers and opens the Kate chat.
 - **Opener**: the message Kate starts the chat with when the customer taps a finding.
 
 ## 4. Experience spec
 
 ### 4.1 Screen anatomy
 
-The page scrolls **vertically** through four bands. The world inside band 1 scrolls **horizontally**.
+The Kate bar is fixed right above the tab bar. Everything above it scrolls **vertically**: the world, which fills that whole area in the first view, then the finding cards and the text section. The world inside band 1 scrolls **horizontally**.
 
 ```
 ┌──────────────────────────────┐ ─┐
@@ -139,21 +139,21 @@ The page scrolls **vertically** through four bands. The world inside band 1 scro
 │ Mijn wereld                  │  │
 │      ☁        ✈        ☁     │  │
 │   ▲▲  hills / skyline  ▲▲    │  │  1 · WORLD BAND
-│ 🌀🏠👨‍👩‍👧 🚗 ┆🚙┆ 🏦KBC 🛒Joyn →│  │     ≥ 80% of the first view
+│ 🌀🏠👨‍👩‍👧 🚗 ┆🚙┆ 🏦KBC 🛒Joyn →│  │     fills the first view
 │ ▔▔▔▔▔▔▔▔▔ road ▔▔▔▔▔▔▔▔▔▔▔▔▔ │  │     street scrolls horizontally
 │  🌳     🚌             🌳    │  │
 │ ● Thuis ○ Buurt ○ Stad ○ Reis│  │  Zone strip: fixed
-├──────────────────────────────┤ ─┘
-│╭────────────────────────────╮│     2 · KATE BAR: looks like a chat input,
-││(K) Je liet Setle je     ➤ ││         rotates finding teasers, docks
-││    renovatie schatten… •●•││         above the tab bar when scrolled past
-│╰────────────────────────────╯│
-│ KATE VOND                    │     3 · FINDING CARDS (the top peeks
-│ ┌ Een energielening? …     ┐ │         into the first view)
-│ │ [Vraag Kate] [Bekijk]    │ │
+├╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤ ─┘  ↓ scrolling up brings in:
+┊ KATE VOND                    ┊     3 · FINDING CARDS
+┊ ┌ Een energielening? …     ┐ ┊
+┊ │ [Vraag Kate] [Bekijk]    │ ┊
+┊ Mijn wereld in tekst         ┊     4 · TEXT SECTION (proposal)
+┊ Wonen · Woonkrediet · actief ┊
 ├──────────────────────────────┤
-│ Mijn wereld in tekst         │     4 · TEXT SECTION (proposal)
-│ Wonen · Woonkrediet · actief │
+│╭────────────────────────────╮│     2 · KATE BAR: fixed, looks like a chat
+││(K) Je liet Setle je     ➤ ││         input, rotates finding teasers
+││    renovatie schatten… •●•││
+│╰────────────────────────────╯│
 ├──────────────────────────────┤
 │ Mijn wereld  Rekeningen  …   │     Tab bar (phase 1, unchanged)
 └──────────────────────────────┘
@@ -161,12 +161,12 @@ The page scrolls **vertically** through four bands. The world inside band 1 scro
 
 | Band | Size | Content |
 |---|---|---|
-| 1 · World | `round((visibleHeight − tabBarHeight) × 0.82)`, at least 520px. Inside the 390×812 web phone frame that comes to about 600px | The world (DOM component). The native Header is overlaid at the top, inside the safe area. The zone strip is a fixed overlay inside the DOM component |
-| 2 · Kate bar | 56px tall, 12px above and below; fully visible in the first view | See [4.9](#49-kate-bar-and-findings). Sticky (D17) |
-| 3 · Finding cards | Content height. Its top ~50px shows in the first view | 1–3 finding cards, then "Toon meer" if there are more |
+| 1 · World | The scroll area's height (screen − Kate bar band − tab bar), at least 320px. Inside the 390×812 web phone frame that comes to about 650px | The world (DOM component). The native Header is overlaid at the top, inside the safe area. The zone strip is a fixed overlay inside the DOM component |
+| 2 · Kate bar | 56px tall, 10px above and below, on `world.ground`; always visible | See [4.9](#49-kate-bar-and-findings). Fixed above the tab bar (D17) |
+| 3 · Finding cards | Content height, starting 16px under the world | 1–3 finding cards, then "Toon meer" if there are more |
 | 4 · Text section | Content height | See [4.10](#410-text-section-proposal) |
 
-In the 812px phone frame the sum works out as: tab bar ≈ 84px, world ≈ 597px, Kate bar with its margins 80px, leaving ≈ 51px for the top of the finding cards.
+In the 812px phone frame the sum works out as: tab bar ≈ 84px, Kate bar with its margins 76px, world ≈ 652px. The finding cards don't peek into the first view; the bar's rotating teasers point to them.
 
 - The domain tiles from phase 1 are dropped. `SkyBackground` is dropped too, because the sky is part of the world.
 - The status bar on native stays dark-on-light, as in phase 1.
@@ -193,7 +193,7 @@ The header overlays roughly y 0–110 of the world. Places are kept below y 180 
 - **Order** left → right: `home`, `neighbourhood`, `town`, `away`. Within a zone, places follow the order of the category table in [4.4](#44-from-backend-links-to-places).
 - **Growth rule**: a zone renders when it holds at least one place or plot, ghosts included. `home` and `neighbourhood` therefore always render, because they hold the essentials. `town` and `away` appear with their first link.
 - **Spacing**: each zone has 40 units of padding on both sides and 24 units between places. Between zones a **connector** marks the transition: a road sign "Buurt"/"Stad" between land zones, and a 320-unit stretch of open sea (boats, waves) before `away`, so the island reads as far away.
-- **First view**: on a 390-unit-wide viewport the whole `home` zone is visible, and the first place of `neighbourhood` peeks in at the right edge to show the street continues.
+- **First view**: on a 390-unit-wide viewport the whole `home` zone is visible, and the first place of `neighbourhood` peeks in at the right edge to show the street continues. (That held for the ~600px band; since the world fills the first view (D6) the street is drawn larger, about 650px in the phone frame, and the peek is lost.)
 - **Stable layout**: the same data always lays out the same way. When a place arrives, the places to its right slide over (400ms ease-out) before the arrival plays.
 
 ### 4.4 From backend links to places
@@ -462,11 +462,9 @@ Both read from the same list of findings.
 - The whole bar is one target: `role="button"`, `aria-label="Chat met Kate: {teaser}"`, or "Chat met Kate" when there's no teaser. Its rotating text is `aria-live="polite"` only for new findings, not for each rotation.
 - A tap opens the Kate chat (`KateChat`). If a finding is showing, Kate starts with that finding's opener (see below). Without a finding, the chat opens plain.
 
-**Sticky (D17).**
-- The bar sits in the page flow directly under the world.
-- When it scrolls out of view at the top, a docked copy slides up (200ms) and sits above the tab bar. It slides away again when the in-flow bar comes back into view.
-- Both copies share one rotation state (`useKateTicker`), so the teaser doesn't jump when the bar docks.
-- While the docked copy shows, the page's bottom padding grows by 80px so it never covers the last row. Bottom sheets and the chat open above it.
+**Position (D17).**
+- The bar is fixed right above the tab bar, outside the scroll area, so it never covers page content. There is one bar, so no docking or second copy.
+- Bottom sheets and the chat open above it.
 
 #### Chat opener (D16)
 
@@ -628,7 +626,7 @@ These carry over from phase 1 and match the backend's rules:
 src/features/mijn-wereld/
   MijnWereldScreen.tsx        four-band page; owns sheet state and the Street ref
   components/
-    KateBar.tsx               the Kate bar: look, rotation, new-finding animation, in-flow + docked (4.9)
+    KateBar.tsx               the Kate bar: look, rotation, new-finding animation; fixed above the tab bar (4.9)
     KateFindings.tsx          finding cards (reuses KateCard visuals)
     WorldText.tsx             text section (4.10)
     PlaceSheet.tsx            linked place sheet (+ Stop delen)
@@ -897,8 +895,8 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - [x] Remove `DomainTiles` and `SkyBackground` from the screen (`SkyBackground` stays for the login screen)
 
 **Done when**, on web at 390×812 and on the iOS simulator:
-- the world band covers ≥ 80% of the first view
-- the Kate bar is fully visible under it, and the top of the finding cards peeks in
+- the world band fills the first view down to the Kate bar (changed from ≥ 80%, D6)
+- the Kate bar is fixed right above the tab bar
 - the page scrolls vertically to the text section
 
 ### M2 · Static street
@@ -954,7 +952,7 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 ### M6 · Kate bar, findings and text section
 - [x] `selectFindings` (4.9): every kind with teaser, text and opener, built from links, scores and `waarom`; the D21 limits
 - [x] `KateBar.tsx` + `useKateTicker.ts`: chat-input look, rotation, new-finding animation, idle shimmer, pauses, reduced motion, accessibility
-- [x] Sticky dock: track the in-flow bar's position on scroll; slide the docked copy in and out above the tab bar; bottom padding
+- [x] ~~Sticky dock: track the in-flow bar's position on scroll; slide the docked copy in and out above the tab bar; bottom padding~~ replaced by one bar fixed above the tab bar (D17, 2026-10-20)
 - [x] `KateChat` `opener` prop: URL parameter on first open, `postMessage` on later opens, plain chat as fallback
 - [x] Chat-page change (read `opener`, listen for `kate:opener`) made in `poc-runner/chat` (D24); it still needs a commit and a redeploy of the chat container
 - [x] `KateFindings.tsx` cards with actions wired to `scrollToPlace`, the sheets, `setDeling` and the chat opener
