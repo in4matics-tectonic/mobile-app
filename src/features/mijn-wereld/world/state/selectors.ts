@@ -98,22 +98,26 @@ function connectFinding(link: Link, placeId: CategoryId, v: Voice): Finding {
   };
 }
 
-/** An opportunity the adviser sent: the customer answers it right here. */
+/** A proposal from Kate (the agent) or an adviser, or a partner pair to approve: answered right here. */
 function kansFinding(kans: Kans, placeId: CategoryId | undefined, v: Voice): Finding {
-  const label = linkLabel(kans.link);
-  const teaser = `${v.Je} adviseur stuurt ${v.je} een kans: ${label}.`;
+  const label = linkLabel({ soort: kans.link.soort === 'product' ? 'product' : 'partner', ref: kans.link.ref, naam: kans.link.naam });
+  const paar = kans.link.soort === 'koppeling';
+  const wie = kans.afzender === 'kate' ? 'Kate' : `${v.Je} adviseur`;
+  const teaser = paar ? `${wie} stelt een samenwerking voor: ${label}.` : `${wie} heeft een voorstel voor ${v.je}: ${label}.`;
   return {
     id: `kans:${kans.id}`,
     kind: 'kans',
     kansId: kans.id,
     placeId,
-    teaser: teaser.length <= TEASER_MAX ? teaser : `Nieuwe kans van ${v.je} adviseur bij KBC.`,
-    text: `${v.Je} adviseur bij KBC stuurt ${v.je} een kans: ${label}.${kans.bericht ? ` “${kans.bericht}”` : ''}`,
+    teaser: teaser.length <= TEASER_MAX ? teaser : `Nieuw voorstel van ${wie === 'Kate' ? 'Kate' : `${v.je} adviseur`}.`,
+    text: paar
+      ? `${wie} stelt voor om ${label.replace(' ↔ ', ' en ')} te laten samenwerken: ${kans.waarom[0] ?? ''}`
+      : `${wie} heeft een voorstel voor ${v.je}: ${label}.${kans.bericht ? ` “${kans.bericht}”` : ''}`,
     reasons: kans.waarom,
-    opener: `${v.Je} adviseur stuurde ${v.je} ${label}. Zal ik uitleggen wat dat voor ${v.je} kan betekenen?`,
+    opener: `${wie === 'Kate' ? 'Ik stuurde' : `${v.Je} adviseur stuurde`} ${v.je} ${label}. Zal ik uitleggen wat dat voor ${v.je} kan betekenen?`,
     isNew: true,
     actions: [
-      { label: 'Interesse', command: 'kans-interesse' },
+      { label: paar ? 'Akkoord' : 'Interesse', command: 'kans-interesse' },
       { label: 'Vraag Kate', command: 'ask-kate' },
       { label: 'Niet nu', command: 'kans-afwijzen' },
     ],
@@ -219,7 +223,7 @@ export function selectFindings({ built, phase, checklist, kansen = [], arrived, 
   const moment = [momentFinding(phase, v, checklist)].filter(keep);
   const kans = kansen
     .filter((k) => k.status === 'nieuw' || k.status === 'gezien')
-    .map((k) => kansFinding(k, built.linkPlace[k.link.id], v))
+    .map((k) => kansFinding(k, built.linkPlace[k.link.id as Link['id']], v))
     .filter(keep);
 
   // One tip per place or plot (the highest), from the D21 score.

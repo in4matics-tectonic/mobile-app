@@ -43,6 +43,8 @@ export interface WorldCommands {
   dismissFinding: (id: string) => void;
   /** Interesse / Niet nu on an opportunity the adviser sent. Resolves false when it failed. */
   answerKans: (id: string, status: 'interesse' | 'afgewezen') => Promise<boolean>;
+  /** The app showed the proposal: the adviser sees "gezien". */
+  seenKans: (id: string) => void;
 }
 
 const WorldContext = createContext<WorldContextValue | null>(null);
@@ -248,6 +250,10 @@ export function WorldProvider({ children }: { children: ReactNode }) {
       },
 
       dismissFinding: (id) => dispatch({ type: 'FINDING_DISMISSED', id }),
+
+      seenKans(id) {
+        worldService.setKans(id, 'gezien').catch(() => {});
+      },
 
       async answerKans(id, status) {
         try {

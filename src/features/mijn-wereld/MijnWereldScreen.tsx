@@ -30,6 +30,7 @@ import { BottomSheet } from './components/BottomSheet';
 import { Header, StatusBar } from './components/Header';
 import { KATE_BAR_HEIGHT, KateBar } from './components/KateBar';
 import { KateFindings } from './components/KateFindings';
+import { KansPopup } from './components/KansPopup';
 import { Veil } from './components/Overlay';
 import { PhoneFrame, usePhoneFramed } from './components/PhoneFrame';
 import { AccountSheet, WhySheet } from './components/SheetContent';
@@ -195,6 +196,26 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     }
   };
 
+  // ---- A proposal that comes in pops up, oldest first, once nothing else is open ----
+
+  const kansen = useMemo(() => state.data?.kansen ?? [], [state.data?.kansen]);
+  const [popId, setPopId] = useState<string | null>(null);
+  const [later, setLater] = useState<string[]>([]);
+  const popKans = popId ? (kansen.find((k) => k.id === popId) ?? null) : null;
+  const busy = !!sheet || chat.open;
+  const next = popId || busy ? undefined : [...kansen].reverse().find((k) => k.status === 'nieuw' && !later.includes(k.id));
+  if (next) setPopId(next.id);
+  useEffect(() => {
+    if (popId) commands.seenKans(popId);
+  }, [popId, commands]);
+  // Answered (here, in a finding card, or by the tour): show the confirmation a moment, then close
+  const answered = popKans?.status === 'interesse' || popKans?.status === 'afgewezen' || (popId !== null && !popKans);
+  useEffect(() => {
+    if (!answered) return;
+    const t = setTimeout(() => setPopId(null), 1700);
+    return () => clearTimeout(t);
+  }, [answered]);
+
   // The PoC showcase's pitch tour presses the same buttons a customer would (web, in the showcase's iframe only)
   useShowcaseCommands((c) => {
     if (c.kateStudio === 'moment' && c.answer === 'confirm' && moment.phase === 'ask') momentCommands.confirm();
@@ -205,7 +226,8 @@ function PhoneScreen({ framed }: { framed: boolean }) {
       momentCommands.runAll();
     }
     if (c.kateStudio === 'kans') {
-      const kans = state.data?.kansen.find((k) => k.status === 'nieuw' || k.status === 'gezien');
+      const open = (k: { status: string }) => k.status === 'nieuw' || k.status === 'gezien';
+      const kans = popKans && open(popKans) ? popKans : [...kansen].reverse().find(open);
       if (kans) commands.answerKans(kans.id, c.answer === 'afgewezen' ? 'afgewezen' : 'interesse');
     }
   });
@@ -355,6 +377,17 @@ function PhoneScreen({ framed }: { framed: boolean }) {
             <ActivityIndicator color={world.blue} style={styles.loading} />
           ))}
       </BottomSheet>
+
+      <KansPopup
+        kans={popKans}
+        voice={voice}
+        reduced={reduced}
+        onAnswer={(k) => commands.answerKans(k.id, 'interesse')}
+        onLater={() => {
+          if (popId) setLater((l) => [...l, popId]);
+          setPopId(null);
+        }}
+      />
 
       <KateChat
         open={chat.open}

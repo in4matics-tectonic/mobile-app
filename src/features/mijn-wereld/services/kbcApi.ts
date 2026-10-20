@@ -155,7 +155,10 @@ export interface CatalogusPartner {
 export type KansStatus = 'nieuw' | 'gezien' | 'interesse' | 'afgewezen';
 export interface Kans {
   id: string;
-  link: Pick<Link, 'id' | 'soort' | 'ref' | 'naam' | 'ecosysteem'> & { ecosysteemNaam: string };
+  /** A partner pair (soort 'koppeling', id koppeling:<a>~<b>) asks the customer to let two partners work together. */
+  link: Pick<Link, 'ref' | 'naam' | 'ecosysteem'> & { id: string; soort: Link['soort'] | 'koppeling'; ecosysteemNaam: string };
+  /** kate: the agent sent it on its own; adviseur: a KBC adviser did. */
+  afzender: 'kate' | 'adviseur';
   /** The rule reasons, in words the customer can read. */
   waarom: string[];
   /** The adviser's optional note. */
