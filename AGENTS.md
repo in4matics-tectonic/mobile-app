@@ -1,5 +1,7 @@
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
+**Read [project-info.md](project-info.md) first** for any work on the "Mijn wereld" dashboard: the street, avatars and categories, product/partner data and the API mapping, the connect flow, or the demo. It holds the product decisions and the phase-2 build plan (milestones M0–M9).
+
 ## Expo has changed — do not trust your training data
 
 Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
