@@ -6,7 +6,7 @@ This is the high-level plan for phase 2 of the KBC Mobile hackathon app. It hold
 - When a decision changes, update the [decision log](#2-decision-log) and the section it affects in the same edit.
 - Items marked **proposal** were filled in by Claude and still need the user's confirmation. Items in [Open questions](#11-open-questions) are blocked on the user: ask instead of choosing.
 - **The backend is the source of truth for data.** It lives in `../backend`. Its integration guide is `../backend/AGENTS.md`, and the ecosystem engine is `../backend/src/ecosysteem.ts` with its catalogue in `../backend/src/catalogus.ts`. When the backend changes, re-check [section 6](#6-data--api) and the mapping tables in [4.4](#44-from-backend-links-to-places).
-- Before writing code that touches Expo or React Native APIs, follow the doc-check rule in `AGENTS.md`. API names in this plan were checked against `node_modules` on 2026-10-20 and still need a check against the SDK 57 docs.
+- Before writing code that touches Expo or React Native APIs, follow the doc-check rule in `AGENTS.md`. API names in this plan were checked against `node_modules` (expo 57.0.25) and the Expo DOM components guide on 2026-10-20.
 
 **Contents**
 1. [Context](#1-context)
@@ -54,10 +54,10 @@ When the customer connects a partner, confirms a life moment, or acquires a prod
 
 **Success criteria**
 - Opening the screen always plays the fly-in, and it lands on the customer's household.
-- Tom's world, built from the live backend, shows:
-  - linked: KBC, Setle, Joyn, Q8, NMBS
-  - dotted: Cambio, VAB, Brussels Airport
-  - empty plots: Energie, Sparen, Pensioen
+- Tom's world, built from the live backend (commit `cc209bb`, D23), shows:
+  - linked: KBC, Joyn, NMBS, Immoscoop, and VAB on the car
+  - dotted: Cambio, Brussels Airport, and De Immowinkel on the house
+  - empty plots: Energie, Beleggen, Pensioen
 - Connecting a dotted partner turns it linked in under 2 seconds, with the transition visible. Connecting a partner that was only a tip makes a new place rise out of the ground.
 - A change on the backend (connect, consent, a confirmed moment) shows within one polling interval.
 - The Kate bar reads at a glance as "chat with Kate", keeps cycling what Kate found, and one tap opens the chat about the finding it shows.
@@ -65,7 +65,7 @@ When the customer connects a partner, confirms a life moment, or acquires a prod
 
 ## 2. Decision log
 
-U = decided by the user, P = proposal by Claude (confirm before treating it as fixed). All dated 2026-10-20.
+U = decided by the user, P = proposal by Claude (confirm before treating it as fixed). All dated 2026-10-20. The user accepted every proposal up to D22 on 2026-10-20.
 
 | # | Decision | Choice | By | Why |
 |---|---|---|---|---|
@@ -76,21 +76,24 @@ U = decided by the user, P = proposal by Claude (confirm before treating it as f
 | D5 | Partners | **Real brands**, as listed in the backend catalogue (40 partners: Q8, NMBS, De Lijn, Cambio, Brussels Airport, Joyn, …) plus KBC itself. Engie, wanted for the windmill, isn't in the catalogue yet (Q2) | U | Recognisable for the jury, and a believable "beyond banking" world |
 | D6 | Screen proportions | **World ≥ 80% of the first view**, then the Kate bar, then finding cards, then text sections further down | U | The world is the hero; text is secondary |
 | D7 | Opening animation | **Fly-in every time the screen opens**: from the sky, circling down, focusing on the customer | U | A memorable, emotional first moment |
-| D8 | Rendering | The world is one **Expo DOM component** (`'use dom'`) with plain SVG and CSS, as phase 1's `IslandScene` | P | Reuses phase-1 art and animations, and keeps the ghost look to a single CSS class. Identical on web, iOS and Android |
-| D9 | When a place counts as new | Seen links (`linkId:status`) are kept in AsyncStorage. A place with an unseen `actief` or `gekend` link is new once, and the first launch marks everything seen | P | Only real arrivals celebrate, including ones that happened since the last visit |
-| D10 | Kate findings source | Built in the app from the backend links (`mogelijk` → tips, `gekend` → connect, newly `actief` → arrived) and the moment, in one selector | P | The backend computes the reasoning; the app only words and orders it |
-| D11 | Brand rendering | Brand name and colours on **drawn** signage in our style; no logo image files | P | Keeps one visual style across the world |
+| D8 | Rendering | The world is one **Expo DOM component** (`'use dom'`) with plain SVG and CSS, as phase 1's `IslandScene` | U | Reuses phase-1 art and animations, and keeps the ghost look to a single CSS class. Identical on web, iOS and Android |
+| D9 | When a place counts as new | Seen links (`linkId:status`) are kept in AsyncStorage. A place with an unseen `actief` or `gekend` link is new once, and the first launch marks everything seen | U | Only real arrivals celebrate, including ones that happened since the last visit |
+| D10 | Kate findings source | Built in the app from the backend links (`mogelijk` → tips, `gekend` → connect, newly `actief` → arrived) and the moment, in one selector | U | The backend computes the reasoning; the app only words and orders it |
+| D11 | Brand rendering | Brand name and colours on **drawn** signage in our style; no logo image files | U | Keeps one visual style across the world |
 | D12 | ~~Proposed brands (Colruyt, TheFork, Kinepolis, TUI, Booking.com, Brussels Airlines)~~ | Superseded by D5/D18: brands come from the backend catalogue | — | — |
-| D13 | Text section | "Mijn wereld in tekst": the customer's ecosystems with their links and statuses, plus account links | P | Secondary overview, and the accessible version of the world; see Q4 |
+| D13 | Text section | "Mijn wereld in tekst": the customer's ecosystems with their links and statuses, plus account links | U | Secondary overview, and the accessible version of the world; see Q4 |
 | D14 | Kate's entry point | The **Kate bar** replaces the Kate orb: a horizontal bar directly under the world that looks like an AI chat input and keeps animating with what Kate wants to tell the customer | U | It's obvious you can talk to Kate, and her findings get a visible, living home |
 | D15 | Findings below the bar | **Bar + cards**: the bar rotates short teasers; full finding cards with their buttons follow below it | U | The bar invites; the cards let the customer act |
 | D16 | Tapping the bar | Opens the **Kate chat with the shown finding as Kate's first message**. Until the chat page supports that, it opens the plain chat | U | One tap from a hint to a conversation about it |
 | D17 | Bar position on scroll | **Sticky**: once the bar scrolls out of view, a docked copy sits above the tab bar | U | Kate stays one tap away, as the orb was |
 | D18 | Data model | The world is built from the backend's **ecosystem clusters** (`GET K/ecosystemen`) and **partner relations** (`GET K/partners`). The statuses map one-to-one: `actief` → linked, `gekend` → ghost, `mogelijk` → tip or plot | U | The backend is done; the app draws what it computes |
-| D19 | Mapping | Every backend partner and ecosystem maps to a drawn **category**, as its own place or as an **attachment** on another place, in one table (4.4) | P | 40 partners as 40 buildings would make an endless street; attachments keep it readable |
-| D20 | New ecosystems | An ecosystem with only `mogelijk` links (`samenvatting.nieuweEcosystemen`) shows as an empty **plot** with a Kate sign at its anchor's spot | P | Matches the backend's intent ("that's where the world can grow") and makes growth visible before it happens |
-| D21 | Which tips Kate mentions | `mogelijk` links with score ≥ 0.35, at most one per place or plot (the highest), top 3 in the Kate bar | P | The backend shows from 0.25; a higher bar keeps Kate focused |
-| D22 | Places the backend can't feed | Restaurant, cinema, hotel and workplace are **on hold** until the backend has data for them (Q2) | P | A ghost with nothing to connect would be a dead end |
+| D19 | Mapping | Every backend partner and ecosystem maps to a drawn **category**, as its own place or as an **attachment** on another place, in one table (4.4) | U | 40 partners as 40 buildings would make an endless street; attachments keep it readable |
+| D20 | New ecosystems | An ecosystem with only `mogelijk` links (`samenvatting.nieuweEcosystemen`) shows as an empty **plot** with a Kate sign at its anchor's spot | U | Matches the backend's intent ("that's where the world can grow") and makes growth visible before it happens |
+| D21 | Which tips Kate mentions | `mogelijk` links with score ≥ 0.35, at most one per place or plot (the highest), top 3 in the Kate bar | U | The backend shows from 0.25; a higher bar keeps Kate focused |
+| D22 | Places the backend can't feed | Restaurant, cinema, hotel and workplace are **on hold** until the backend has data for them (Q2) | U | A ghost with nothing to connect would be a dead end |
+| D23 | Backend drift | **Follow the live backend as it is.** Commit `cc209bb` (2026-10-20) reworked Tom & Lien (they rent; no Q8 or Setle; Immoscoop, VAB and De Immowinkel instead) and seeded Jonas. The Tom table (4.4), the success criteria and the demo script follow it | U | The backend is the source of truth |
+| D24 | Chat opener | Built in `poc-runner/chat` in the same round: `POST /api/kate/opener`, the URL's `opener`/`finding` on first open, a `kate:opener` message after that. Kate's opener stays in the chat history, so the model has the context | U | Closes Q8; one tap from a finding to a conversation about it (D16) |
+| D25 | Where category metadata lives | Label, zone and width per category sit in `world/categories.ts` (one table), not in a `meta.ts` per avatar. `avatars/index.ts` adds each drawing's anchors (top, Kate flag, attachments) | P | One mapping table, as 4.4 asks; avatars stay pure drawings |
 
 ## 3. Glossary
 
@@ -296,23 +299,41 @@ The backend has no household data yet (Q1). Until it does:
 
 #### Tom & Lien from the live backend
 
-This is the expected result. The engine output was checked on 2026-10-20 against commit `015a5f6`.
+This is the expected result. `buildWorld` on the responses recorded from commit `cc209bb` (`mocks/world/tom.json`) gives exactly this on 2026-10-20.
 
 | Zone | Place | State | From |
 |---|---|---|---|
-| home | `house` | linked; shield; Setle attachment linked; tip | `home-loan`, `home-insurance` (actief), `setle` (actief); top tip `renovation-loan` 0.65 |
-| home | `household` | linked; shields; 2 adults; tip | `family-insurance`, `hospitalisation-insurance`; top tip `life-insurance` 0.51 |
-| home | `energy` | **plot** | ENERGIE only `mogelijk`: `energy-loan` 0.67 |
-| home | `coin-tree` | **plot** | SPAREN only `mogelijk`: `savings-accounts` 0.30 (below D21, so no Kate flag) |
-| home | `bench` | **plot** | PENSIOEN only `mogelijk`: `pension-savings-fund` 0.44 |
-| home | `car` | linked; shield; VAB attachment ghost; tip | `car-insurance`, `vab` (gekend); top tip `blue-bike` / `calculate-monthly-car-costs` 0.55 |
-| neighbourhood | `bank` | linked | `kbc-plus-account` |
+| home | `house` | linked; shield; De Immowinkel attachment ghost; tip | `home-insurance`, `rental-guarantee` (actief), `de-immowinkel` (gekend, KBC_MOBILE); top tip `calculate-housing-budget` 0.65 |
+| home | `household` | linked; shields; 2 adults | `family-insurance`, `hospitalisation-insurance`; no tip ≥ 0.35 until the family moment is confirmed |
+| home | `energy` | **plot** | ENERGIE only `mogelijk`: `calculate-solar-panels-and-request-a-quote` 0.48 |
+| home | `coin-tree` | linked | `savings-accounts` |
+| home | `bench` | **plot** | PENSIOEN only `mogelijk`: `pension-savings-fund` 0.58 |
+| home | `car` | linked; shield; VAB attachment linked; tip | `electric-car-insurance`, `electric-car-loan`, `vab` (actief); top tip `blue-bike` 0.55 |
+| neighbourhood | `bank` | linked | `kbc-plus-account`; `wero` tip 0.25 (below D21) |
 | neighbourhood | `shop` | linked; tip | `joyn` (actief); top tip `digital-loyalty-cards` 0.40 |
 | neighbourhood | `car-share` | ghost | `cambio` (gekend, REKENING) |
-| town | `fuel-station` | linked | `q8` (actief) |
+| neighbourhood | `estate-agency` | linked | `immoscoop` (actief) |
 | town | `train-station` | linked | `nmbs` (actief) |
+| town | `stock-exchange` | **plot** | BELEGGEN only `mogelijk`: `invest-spare-change` 0.44 |
 | away | `airport` + plane | ghost | `brussels-airport` (gekend, REKENING) |
-| away | `island` | ghost; tip | mirrors REIZEN; tip `travel-insurance` 0.37 |
+| away | `island` | ghost; tip | mirrors REIZEN; tip `travel-insurance` 0.46, and 0.66 once Brussels Airport is connected |
+
+#### Jonas from the live backend
+
+`mocks/world/jonas.json`, same commit.
+
+| Zone | Place | State | From |
+|---|---|---|---|
+| home | `house` | ghost (unbranded essential) | no WONEN cluster |
+| home | `household` | linked; 1 adult | "Jonas" |
+| home | `energy` | linked; Encon and Kube linked, Sweco ghost; tip | `energy-loan`, `encon` (KLANT), `kube`, `sweco` (gekend); top tip `business-co2-insights-and-sector-comparison` 0.72 |
+| home | `coin-tree` | **plot** | SPAREN only `mogelijk` (0.30: no Kate flag) |
+| home | `bench` | linked; tip | `supplementary-pension-for-the-self-employed`; tip `individual-pension-commitment` 0.40 |
+| home | `car` | ghost; MoveSmart attachment ghost | `movesmart` (gekend) |
+| neighbourhood | `bank` | linked | `kbc-plus-account` |
+| neighbourhood | `shop` | ghost (unbranded essential) | — |
+| town | `business` | linked; "Stroomvaart BV" sign (`onderneming.naam`); Billit linked, Go Solid and NOWJOBS ghost; shield; tip | ONDERNEMEN, WERK, BESCHERMING_ONDERNEMING and INTERNATIONAAL products; top tip `guaranteed-income-insurance-for-the-self-employed` 0.55 |
+| away | `island` | ghost; Firsty attachment ghost | `firsty` (gekend) |
 
 ### 4.5 Partners & brands
 
@@ -655,6 +676,12 @@ export function FuelStation({ brands, attachments }: AvatarProps) { … }
 
 Adding a category takes three steps: create the folder, add a line in `avatars/index.ts`, and add the mapping in `categories.ts`. A category without art yet uses `placeholder`, so the data pipeline works before the drawing exists.
 
+**As built (2026-10-20)**, where it differs from the tree above:
+- No `meta.ts` per avatar: label, zone and width are in `categories.ts` (D25). `avatars/index.ts` gives each avatar its `top`, Kate-flag anchor and attachment placement.
+- `PlaceSheet`, `ConnectSheet`, `PlotSheet`, `ConsentSheet` ("Op jouw maat") and `PartnersSheet` ("Gekoppelde partners") share one file, `components/WorldSheets.tsx`.
+- `scene/` holds `Defs.tsx`, `font.ts`, `Backdrop.tsx` (clouds, hills, skyline, road, sea, island land, boat, bus, trees, waves, plane), `Badges.tsx` (signs, shields, Kate flag, sparkles) and `Plot.tsx`.
+- `kate-chat/types.ts` holds `ChatOpener`; `ChatView` exposes `post()` for the `kate:opener` message.
+
 ### 5.3 Types (sketch)
 
 **Backend types** live in `services/kbcApi.ts`. They mirror `../backend/src/ecosysteem.ts`, `catalogus.ts` and `routes/ecosystemen.ts`, with field names as in the API:
@@ -786,22 +813,23 @@ PUT K/partners/:partner {deelt} ◀── ConnectSheet / PlaceSheet / PlotSheet 
 
 ### 6.1 Personas and mock data
 
-| Persona | Login | Customer | What the backend gives (commit `015a5f6`) |
+| Persona | Login | Customer | What the backend gives (commit `cc209bb`) |
 |---|---|---|---|
-| **Tom & Lien** | `tom` / `lien` (shared customer) | `K-2024-0417` | Products: zichtrekening, woonkrediet, woonverzekering, autoverzekering, hospitalisatie, familiale. Partners: Setle, NMBS, Q8, Joyn (sharing); Cambio, VAB, Brussels Airport (seen on the account). The expected world is the table in 4.4 |
-| **Jonas** (entrepreneur) | *not seeded yet* | *not seeded yet* | Q7. The seeded customer `K-2025-0102` ("Sarah") already carries an entrepreneur's data: Billit (connected by the customer) with ONDERNEMEN tips (business PRO account, Start it @KBC), De Lijn, and Velo Antwerpen / Bolero / Immoscoop / Firsty as known relations. It's the likely base for Jonas |
+| **Tom & Lien** | `tom` / `lien` (shared customer) | `K-2024-0417` | Products: zichtrekening, spaarrekening, huurwaarborg, woonverzekering, autolening (elektrisch), autoverzekering, hospitalisatie, familiale. Partners: Immoscoop, VAB, NMBS, Joyn (sharing); Cambio, Brussels Airport (seen on the account); De Immowinkel (seen in KBC Mobile). Moments on the demo clock: GEZINSUITBREIDING, HUIS_KOPEN, TROUWEN. The expected world is the table in 4.4 |
+| **Jonas** (entrepreneur) | `jonas` | `K-2022-0311` | Founder of Stroomvaart BV (emission-free inland shipping, 6 employees). Business account, investment and energy loans, business insurances, VAPZ. Partners: Billit, Encon, Kube (sharing); Sweco, NOWJOBS, Go Solid, MoveSmart, Firsty (seen on the account). Moment on the demo clock: ZAAK_UITBREIDEN. No geofencing consent. The expected world is in 4.4 |
 
-The app no longer uses the phase-1 persona Sarah. The backend still seeds her until the colleague replaces her.
+Sarah is gone: Jonas replaced her in the backend (`cc209bb`).
 
-Jonas's world, as a proposal, centres on the `business` place: his company, with Billit and his other ONDERNEMEN partners as attachments, `BESCHERMING_ONDERNEMING` shields, and ONDERNEMEN tips. The life moment `ZAAK_STARTEN` (in the backend's `REGELS`) may become his world event, the way `GEZINSUITBREIDING` is Tom & Lien's.
+Jonas's world, as a proposal, centres on the `business` place: his company, with Billit and his other ONDERNEMEN partners as attachments, `BESCHERMING_ONDERNEMING` shields, and ONDERNEMEN tips. His demo-clock moment is `ZAAK_UITBREIDEN`; drawing it as a world event, the way `GEZINSUITBREIDING` is Tom & Lien's, isn't built yet.
 
 **Mock mode** (`EXPO_PUBLIC_SIGNALS_SOURCE=mock`, offline):
-- `mocks/world/` holds recorded responses of `GET /v1/catalogus`, `GET K/ecosystemen` and `GET K/partners` for Tom. Record them from the running backend.
+- `mocks/world/` holds responses recorded from the running backend (`cc209bb`, 2026-10-20): `catalogus.json`, and `GET K`, `GET K/ecosystemen` and `GET K/partners` for Tom (`tom.json`) and Jonas (`jonas.json`). The mock serves Jonas when the session user is `jonas`, else Tom.
 - A tiny mock handles `PUT deelt`:
   - flips the partner's status between `gekend` and `actief`
   - creates a `herkomst: KLANT` link for a new partner
+- Consent works as in the backend: a relation from a source without consent disappears.
 - It doesn't re-run the suggestion rules; tips stay as recorded.
-- An optional mock timeline adds a `KLANT` partner after a delay, for an offline arrival demo.
+- `EXPO_PUBLIC_MOCK_TIMELINE=1` connects De Lijn after 25s (a `KLANT` relation), for an offline arrival demo.
 
 ### 6.2 API used by the app
 
@@ -841,6 +869,8 @@ All calls go through `kbcRequest` in `services/kbcApi.ts` (the token from the ph
 
 ## 7. Build plan
 
+**Status 2026-10-20:** M0–M6 are built. They were verified on web against a local `../backend` at `cc209bb` (headless Chrome, in the phone frame and at 390px): the fly-in, the street, connect (Cambio), growth (Blue-bike), the Brussels Airport transition with the travel-insurance tip, consent off and on, a backend reset, the family moment, the chat opener (URL and message), Jonas, mock mode and reduced motion. **Not yet verified on the iOS simulator or an Android device** (R1, R2). M7 is partly done; see there.
+
 Milestones in order:
 - M0 → M1 → M2 are sequential.
 - After M2, M3–M7 touch different files and can run in parallel.
@@ -850,21 +880,21 @@ Milestones in order:
 Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGENTS.md`).
 
 ### M0 · Foundations (data before pixels)
-- [ ] Backend types and calls in `services/kbcApi.ts` (6.2, 5.3)
-- [ ] `world/types.ts` (5.3)
-- [ ] `world/categories.ts`: every partner, ecosystem and shield product from 4.4; skip rules for `gevoelig`, `B2B`, `DIGITAAL`, `INTEGRATIES`
-- [ ] `world/labels.ts`: Dutch labels and "via" phrases for at least everything in Tom's world and tips
-- [ ] `world/partners.ts`: colours for every partner with signage in Tom's world
-- [ ] `world/layout.ts`: the numbers from 4.2 and 4.3, and `layoutWorld(places) → positioned places + total width`
-- [ ] `world/buildWorld.ts` with the state rules of 4.4
-- [ ] `services/worldService.ts` (API + mock) and `mocks/world/` recorded from the running backend
+- [x] Backend types and calls in `services/kbcApi.ts` (6.2, 5.3)
+- [x] `world/types.ts` (5.3)
+- [x] `world/categories.ts`: every partner, ecosystem and shield product from 4.4; skip rules for `gevoelig`, `B2B`, `DIGITAAL`, `INTEGRATIES`
+- [x] `world/labels.ts`: Dutch labels and "via" phrases for at least everything in Tom's world and tips
+- [x] `world/partners.ts`: colours for every partner with signage in Tom's world
+- [x] `world/layout.ts`: the numbers from 4.2 and 4.3, and `layoutWorld(places) → positioned places + total width`
+- [x] `world/buildWorld.ts` with the state rules of 4.4
+- [x] `services/worldService.ts` (API + mock) and `mocks/world/` recorded from the running backend
 
 **Done when** `buildWorld` on Tom's recorded responses yields exactly the Tom table in 4.4, a `gevoelig` partner injected into the data yields nothing, and typecheck passes.
 
 ### M1 · Page layout
-- [ ] Rewrite `MijnWereldScreen.tsx` into the four bands of 4.1 (world band height formula, Header overlay, a static Kate bar that opens the plain chat, finding-card and text placeholders)
-- [ ] Temporarily render the phase-1 `IslandScene` in the world band so the page works end-to-end
-- [ ] Remove `DomainTiles` and `SkyBackground` from the screen
+- [x] Rewrite `MijnWereldScreen.tsx` into the four bands of 4.1 (world band height formula, Header overlay, a static Kate bar that opens the plain chat, finding-card and text placeholders)
+- [x] ~~Temporarily render the phase-1 `IslandScene` in the world band~~ skipped: went straight to the Street
+- [x] Remove `DomainTiles` and `SkyBackground` from the screen (`SkyBackground` stays for the login screen)
 
 **Done when**, on web at 390×812 and on the iOS simulator:
 - the world band covers ≥ 80% of the first view
@@ -872,11 +902,11 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - the page scrolls vertically to the text section
 
 ### M2 · Static street
-- [ ] `Street.tsx` DOM component: sky, cloud and back layers, road, sea, places and plots laid out from `WorldView`, horizontal scroll container, parallax, zone strip
-- [ ] `Place.tsx` wrapper: hotspot, focus, aria-label, shields, attachments slot, Kate flag
-- [ ] Move and re-base `Huis` → `house`, `Gezin` → `household`, `Auto` → `car`, `Windmolen` → `energy`, `Boom` → `coin-tree`; move `Defs` and `font` to `world/scene/`
-- [ ] `placeholder` avatar for every other category, and the shared plot avatar
-- [ ] Swap `IslandScene` out of the screen and retire it
+- [x] `Street.tsx` DOM component: sky, cloud and back layers, road, sea, places and plots laid out from `WorldView`, horizontal scroll container, parallax, zone strip
+- [x] `Place.tsx` wrapper: hotspot, focus, aria-label, shields, attachments slot, Kate flag
+- [x] Move and re-base `Huis` → `house`, `Gezin` → `household`, `Auto` → `car`, `Windmolen` → `energy`, `Boom` → `coin-tree`; move `Defs` and `font` to `world/scene/`
+- [x] `placeholder` avatar for every other category, and the shared plot avatar
+- [x] Swap `IslandScene` out of the screen and retire it
 
 **Done when**:
 - Tom's world from the **live backend** renders every place and plot of the 4.4 table (placeholders allowed)
@@ -884,10 +914,10 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - tapping a place calls `onSelectPlace` with its id
 
 ### M3 · Ghosts, plots, sheets, connect
-- [ ] Ghost CSS class, plot avatar, Kate flag (4.6) and the ghost ↔ linked transitions (4.8)
-- [ ] `PlaceSheet` (with Stop delen), `ConnectSheet`, `PlotSheet` (4.11), wired from `onSelectPlace` / `onSelectAttachment`
-- [ ] `setDeling` through `worldService` (`PUT K/partners/:partner`), reducer actions, immediate refetch
-- [ ] Household sheet: "Bekijk checklist" opens `BirthChecklist` when the moment is confirmed
+- [x] Ghost CSS class, plot avatar, Kate flag (4.6) and the ghost ↔ linked transitions (4.8)
+- [x] `PlaceSheet` (with Stop delen), `ConnectSheet`, `PlotSheet` (4.11), wired from `onSelectPlace` / `onSelectAttachment`
+- [x] `setDeling` through `worldService` (`PUT K/partners/:partner`), reducer actions, immediate refetch
+- [x] Household sheet: "Bekijk checklist" opens `BirthChecklist` when the moment is confirmed
 
 **Done when**, against the live backend as Tom:
 - tapping the dotted Cambio car-share → Koppel turns it linked with the transition
@@ -897,10 +927,10 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - `POST /v1/demo/reset` (as `adviseur`) brings everything back
 
 ### M4 · Growth and arrivals
-- [ ] Polling in `WorldProvider` (focused only, back-off on 429)
-- [ ] Seen-set in AsyncStorage (5.4) and `isNew`
-- [ ] Arrival queue in `Street` (4.8): scroll, plot → place, grow, sparkles, layout shift, `onArrivalsDone`
-- [ ] Mock timeline (6.1) for offline demos
+- [x] Polling in `WorldProvider` (focused only, back-off on 429)
+- [x] Seen-set in AsyncStorage (5.4) and `isNew`
+- [x] Arrival queue in `Street` (4.8): scroll, plot → place, grow, sparkles, layout shift, `onArrivalsDone`
+- [x] Mock timeline (6.1) for offline demos
 
 **Done when**:
 - as Tom, connecting the **Blue-bike tip** from the car's sheet makes a bike station rise in the neighbourhood with its arrival
@@ -909,11 +939,11 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - reloading the app replays no arrival
 
 ### M5 · Fly-in
-- [ ] Camera group and keyframes (4.7) in `street.module.css`
-- [ ] Clouds as the loading state; continue when data is in
-- [ ] `flyInKey` bumped from `useFocusEffect` (expo-router) in the screen
-- [ ] Tap to skip, locks during the fly-in, `onFlyInDone`
-- [ ] Reduced-motion fade
+- [x] Camera group and keyframes (4.7) in `street.module.css`
+- [x] Clouds as the loading state; continue when data is in
+- [x] `flyInKey` bumped from `useFocusEffect` (expo-router) in the screen
+- [x] Tap to skip, locks during the fly-in, `onFlyInDone`
+- [x] Reduced-motion fade
 
 **Done when**:
 - every screen open (mount, login, focus) plays the fly-in and lands on the household
@@ -922,13 +952,13 @@ Every milestone ends with `npx expo lint` and `npx tsc --noEmit` clean (see `AGE
 - with reduced motion on (OS setting), the world only fades in
 
 ### M6 · Kate bar, findings and text section
-- [ ] `selectFindings` (4.9): every kind with teaser, text and opener, built from links, scores and `waarom`; the D21 limits
-- [ ] `KateBar.tsx` + `useKateTicker.ts`: chat-input look, rotation, new-finding animation, idle shimmer, pauses, reduced motion, accessibility
-- [ ] Sticky dock: track the in-flow bar's position on scroll; slide the docked copy in and out above the tab bar; bottom padding
-- [ ] `KateChat` `opener` prop: URL parameter on first open, `postMessage` on later opens, plain chat as fallback
-- [ ] Hand the chat-page change (read `opener`, listen for `kate:opener`) to whoever owns `poc-runner/chat` (Q8)
-- [ ] `KateFindings.tsx` cards with actions wired to `scrollToPlace`, the sheets, `setDeling` and the chat opener
-- [ ] `WorldText.tsx` (4.10) with the consent switches
+- [x] `selectFindings` (4.9): every kind with teaser, text and opener, built from links, scores and `waarom`; the D21 limits
+- [x] `KateBar.tsx` + `useKateTicker.ts`: chat-input look, rotation, new-finding animation, idle shimmer, pauses, reduced motion, accessibility
+- [x] Sticky dock: track the in-flow bar's position on scroll; slide the docked copy in and out above the tab bar; bottom padding
+- [x] `KateChat` `opener` prop: URL parameter on first open, `postMessage` on later opens, plain chat as fallback
+- [x] Chat-page change (read `opener`, listen for `kate:opener`) made in `poc-runner/chat` (D24); it still needs a commit and a redeploy of the chat container
+- [x] `KateFindings.tsx` cards with actions wired to `scrollToPlace`, the sheets, `setDeling` and the chat opener
+- [x] `WorldText.tsx` (4.10) with the consent switches
 
 **Done when**:
 - the Kate bar rotates Tom's top tips (energy loan, renovation loan, …) and his `connect` findings (Cambio, VAB, Brussels Airport)
@@ -954,6 +984,8 @@ Draw the remaining avatars, Tom's world first:
 12. `business` (for Jonas)
 13. the rest of 4.4
 
+Done on 2026-10-20: `bank`, `car-share`, `bike-station`, `airport` + plane, `island`, signposts for attachments and stickers on the car, plus the re-based phase-1 `house`, `household`, `car`, `energy` and `coin-tree`. Still placeholders (a building in the brand's colours with its sign): `train-station`, `shop`, `estate-agency`, `stock-exchange`, `business` and the rest. Of the idle loops in 4.8, the clouds, windmill, plane, De Lijn bus, boats and Kate flags run; the NMBS train doesn't yet.
+
 - [ ] Add each one's idle animation from 4.8
 
 **Done when** no placeholder is visible anywhere in the demo script (section 10), and each avatar holds up at the fly-in close-up (scale 1.8).
@@ -962,7 +994,7 @@ Draw the remaining avatars, Tom's world first:
 - [ ] Household composition → replace the `naam` split (Q1)
 - [ ] New partners (Engie, restaurant, cinema, hotel, employer) → add them to `categories.ts`, `partners.ts` and avatars; lift D22 (Q2)
 - [ ] Dutch product names from the backend, if provided → slim down `labels.ts` (Q5)
-- [ ] Jonas seeded → record his mock, add his expected world to 4.4 and his test to M0 (Q7)
+- [x] Jonas seeded → record his mock, add his expected world to 4.4 and his test to M0 (Q7)
 - [ ] Demo endpoint for new products or relations → wire the backoffice-driven arrival into the demo (Q9)
 
 **Done when** each item's data shows in the world without changes outside `worldService`, `buildWorld`, `categories.ts`, `labels.ts` and `partners.ts`.
@@ -986,8 +1018,8 @@ At the end of each milestone, check against the milestone's "Done when" and run:
 | Web, phone frame | `npx expo start --web`, a wide window (phone frame) and 390px wide |
 | iOS | iOS simulator through `npx expo start` |
 | Android | A physical device: gestures and webview performance differ most there |
-| Backend mode | `.env.local` per `.env.example` (`KBC_API_TARGET`, `KBC_GATE_PASSWORD`), or a local `../backend` (`pnpm dev`) with `KBC_API_TARGET=http://127.0.0.1:3000` |
-| Mock mode | `EXPO_PUBLIC_SIGNALS_SOURCE=mock` in `.env.local` |
+| Backend mode | `.env.local` per `.env.example` (`KBC_API_TARGET`, `KBC_GATE_PASSWORD`), or a local `../backend` (`pnpm dev`) with `KBC_API_TARGET=http://127.0.0.1:3000`. The dev proxy only uses the site gate for `api.` hosts, so a local target works with `KBC_GATE_PASSWORD` still set. Don't start Expo with `CI=1` while editing: Metro then stops watching files |
+| Mock mode | `EXPO_PUBLIC_SIGNALS_SOURCE=mock` in `.env.local` (`EXPO_PUBLIC_MOCK_TIMELINE=1` adds the offline arrival) |
 | Backend reset | `POST /v1/demo/reset` as `adviseur` between test runs |
 | Consent | Switch `REKENING` off in the text section: the REKENING-origin ghosts disappear |
 | Reduced motion | OS accessibility setting; in browser devtools, emulate `prefers-reduced-motion` |
@@ -1015,18 +1047,18 @@ At the end of each milestone, check against the milestone's "Done when" and run:
 
 Reset the backend first (`POST /v1/demo/reset` as `adviseur`).
 
-1. **Open as Tom.** The fly-in drops through the clouds, circles home and lands on Tom & Lien, who wave. The street:
-   - home: the house with Setle scaffolding and a KBC shield, the car with a shield and a dotted VAB badge, plots with Kate signs for Energie, Sparen and Pensioen
-   - neighbourhood: the KBC bank, the Joyn shop, a dotted Cambio car-share
-   - town: Q8 and NMBS
-   - away: across the sea, a dotted island with a dotted Brussels Airport plane
-2. **Kate.** Under the world the Kate bar rotates: "Je hebt een woonkrediet. Een energielening om zuiniger te wonen?", then "Je gebruikt Cambio. Koppel het aan je wereld?". Tap the bar: the chat opens and Kate continues about the energy loan.
-3. **Connect.** Tap the dotted Cambio car-share, then Koppel. It fills in with its brand, and Kate notes it.
+1. **Open as Tom.** The fly-in drops through the clouds, circles home and lands on Tom & Lien. The street:
+   - home: the house with a KBC shield and a dotted De Immowinkel sign, Tom & Lien with their shields, plots with Kate signs for Energie and Pensioen, the coin tree, the car with a shield and its VAB sticker
+   - neighbourhood: the KBC bank, the Joyn shop, dotted Cambio cars, Immoscoop
+   - town: the NMBS station and a Beleggen plot
+   - away: across the sea, a dotted Brussels Airport with a dotted plane, and a dotted island
+2. **Kate.** Under the world the Kate bar rotates: "Jullie huren. Jullie woonbudget eens berekenen?", "Jullie bankieren bij KBC. Interesse in een pensioenspaarfonds?", "Jullie reizen met de trein. Blue-bike eens proberen?", then the connect findings (De Immowinkel, Cambio, Brussels Airport). Tap the bar: the chat opens and Kate starts with that finding.
+3. **Connect.** Tap the dotted Cambio cars, then Koppel. They fill in with their brand, and the bar pulses: "Nieuw in jullie wereld: Cambio."
 4. **Grow.** Open the car and tap Koppel on the Blue-bike tip. A bike station rises in the neighbourhood.
-5. **Travel.** Tap the dotted island and connect Brussels Airport. The island and the plane turn solid. The Kate bar pulses with a new tip: "Je vloog via Brussels Airport. Interesse in een reisverzekering?" Its score jumped because the link is now active.
-6. **Trust** (optional). In "Mijn wereld in tekst", switch off transaction consent. The places KBC only knew from the account fade away.
-7. **Family** (optional). Advance the backend demo clock until the family moment asks, then confirm. The baby joins the house and new family tips appear.
-8. **Contrast.** Log in as Jonas, the entrepreneur, once he's seeded (Q7). His world centres on his own business.
+5. **Travel.** Tap the dotted island and connect Brussels Airport. The airport, the island and the plane turn solid. The Kate bar pulses with "Nieuw in jullie wereld: Brussels Airport.", then with a new tip: "Jullie vlogen via Brussels Airport. Interesse in een reisverzekering?" Its score jumped from 0.46 to 0.66 because the link is now active.
+6. **Trust** (optional). In "Mijn wereld in tekst", open "Op jouw maat" and switch off "Betalingen op je rekening". Cambio and Brussels Airport disappear, and Reizen becomes a plot.
+7. **Family** (optional). Advance the backend demo clock to week 10: the dashed baby appears and Kate asks. Confirm: the baby joins Tom & Lien, the checklist card appears, and new family tips follow (sparen voor iemand anders, levensverzekering).
+8. **Contrast.** Log in as `jonas`. His world centres on his own business in town, Stroomvaart BV, with Billit, Go Solid and NOWJOBS.
 
 ## 11. Open questions
 
@@ -1037,9 +1069,9 @@ Each one is blocked on the user (and often the backend colleague). When work rea
 | Q1 | Can the backend return the household (adults, children)? Until then the app splits `naam` | Household accuracy (M8) |
 | Q2 | Partners missing from the catalogue: Engie for the windmill (the user asked for it), restaurant, cinema, hotel, and the customer's employer for a workplace. Does the colleague add them, or do those places stay out (D22)? | Engie signage, the restaurant essential, M8 |
 | Q3 | Is a watchtower with a KBC shield the right picture for `VEILIGHEID` (online fraud insurance)? | M7 `watchtower` |
-| Q4 | Is the text section's content right: clusters with their links and statuses, plus consent and partner switches (4.10)? | M6 `WorldText` |
-| Q5 | Product names in the catalogue are English. Does the backend add Dutch names, or does the app keep `labels.ts`? | Copy (R9) |
+| Q4 | ~~Is the text section's content right?~~ **Accepted** with D13 on 2026-10-20 | — |
+| Q5 | Product names in the catalogue are English. Does the backend add Dutch names, or does the app keep `labels.ts`? Meanwhile `labels.ts` covers every product the backend's rules can suggest (2026-10-20) | Copy (R9) |
 | Q6 | What earns Kate Coins in phase 2 (e.g. connecting a partner)? | Connect reward |
-| Q7 | Jonas: is he the reworked `K-2025-0102` record? What's his login, what is his business, and is `ZAAK_STARTEN` his world event? | Jonas's mock, M0 test, demo step 8 |
-| Q8 | Who changes `poc-runner/chat` so it accepts an opener, and is the proposed contract OK (URL `opener` on first open, `kate:opener` message later, shown as Kate's first message and passed as context)? | M6 chat opener (the fallback works without it) |
+| Q7 | ~~Who is Jonas?~~ **Answered by the backend (`cc209bb`):** login `jonas`, customer `K-2022-0311`, Stroomvaart BV, demo moment `ZAAK_UITBREIDEN` | — |
+| Q8 | ~~Who changes `poc-runner/chat` for the opener?~~ **Done** in this round (D24); it needs a commit and a redeploy of the chat container on the VM | — |
 | Q9 | Should the backend get a demo endpoint (adviseur) that gives a customer a new product or partner relation, so the backoffice can make the world grow live? | Backoffice-driven arrivals in the demo (R11) |

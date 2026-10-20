@@ -1,0 +1,1009 @@
+{
+ "profiel": {
+  "id": "K-2024-0417",
+  "naam": "Tom en Lien",
+  "toestemming": {
+   "EIGEN_AI": true,
+   "DOCCLE": true,
+   "GEOFENCE": true,
+   "APP": true,
+   "REKENING": true
+  },
+  "producten": [
+   "ZICHTREKENING",
+   "SPAARREKENING",
+   "HUURWAARBORG",
+   "WOONVERZEKERING",
+   "AUTOLENING_ELEKTRISCH",
+   "AUTOVERZEKERING",
+   "HOSPITALISATIE",
+   "FAMILIALE"
+  ],
+  "landschap": {
+   "huis": "kans",
+   "auto": "geregeld",
+   "gezin": "geregeld",
+   "bescherming": "kans",
+   "sparen": "geregeld",
+   "gezondheid": "geregeld",
+   "reizen": "kans",
+   "onderneming": "kans"
+  }
+ },
+ "ecosystemen": {
+  "week": 0,
+  "samenvatting": {
+   "actief": 12,
+   "gekend": 3,
+   "mogelijk": 19,
+   "ecosystemen": 11,
+   "nieuweEcosystemen": [
+    "BELEGGEN",
+    "ENERGIE",
+    "PENSIOEN"
+   ]
+  },
+  "clusters": [
+   {
+    "ecosysteem": "WONEN",
+    "naam": "Wonen",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:home-insurance",
+      "soort": "product",
+      "ref": "home-insurance",
+      "naam": "Home insurance",
+      "ecosysteem": "WONEN",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "partner:immoscoop",
+      "soort": "partner",
+      "ref": "immoscoop",
+      "naam": "Immoscoop",
+      "ecosysteem": "WONEN",
+      "status": "actief",
+      "herkomst": "KBC_MOBILE",
+      "sinds": "2026-05-18"
+     },
+     {
+      "id": "product:rental-guarantee",
+      "soort": "product",
+      "ref": "rental-guarantee",
+      "naam": "Rental guarantee",
+      "ecosysteem": "WONEN",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "partner:de-immowinkel",
+      "soort": "partner",
+      "ref": "de-immowinkel",
+      "naam": "De Immowinkel",
+      "ecosysteem": "WONEN",
+      "status": "gekend",
+      "herkomst": "KBC_MOBILE",
+      "sinds": "2026-09-14"
+     },
+     {
+      "id": "product:calculate-housing-budget",
+      "soort": "product",
+      "ref": "calculate-housing-budget",
+      "naam": "Calculate housing budget",
+      "ecosysteem": "WONEN",
+      "status": "mogelijk",
+      "score": 0.65,
+      "waarom": [
+       {
+        "via": "product:rental-guarantee",
+        "naam": "Rental guarantee",
+        "reden": "Huurders denken vaak aan een eigen woning"
+       },
+       {
+        "via": "partner:immoscoop",
+        "naam": "Immoscoop",
+        "reden": "Op zoek naar een woning via Immoscoop"
+       }
+      ]
+     },
+     {
+      "id": "product:home-loan",
+      "soort": "product",
+      "ref": "home-loan",
+      "naam": "Home loan",
+      "ecosysteem": "WONEN",
+      "status": "mogelijk",
+      "score": 0.45,
+      "waarom": [
+       {
+        "via": "partner:immoscoop",
+        "naam": "Immoscoop",
+        "reden": "Op zoek naar een woning via Immoscoop"
+       }
+      ]
+     },
+     {
+      "id": "product:home-assistance-insurance",
+      "soort": "product",
+      "ref": "home-assistance-insurance",
+      "naam": "Home assistance insurance",
+      "ecosysteem": "WONEN",
+      "status": "mogelijk",
+      "score": 0.4,
+      "waarom": [
+       {
+        "via": "product:home-insurance",
+        "naam": "Home insurance",
+        "reden": "Bij een woonverzekering hoort hulp bij pech in huis"
+       }
+      ]
+     },
+     {
+      "id": "product:indicative-online-property-valuation",
+      "soort": "product",
+      "ref": "indicative-online-property-valuation",
+      "naam": "Indicative online property valuation",
+      "ecosysteem": "WONEN",
+      "status": "mogelijk",
+      "score": 0.35,
+      "waarom": [
+       {
+        "via": "partner:immoscoop",
+        "naam": "Immoscoop",
+        "reden": "Op zoek naar een woning via Immoscoop"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "MOBILITEIT",
+    "naam": "Mobiliteit",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:electric-car-insurance",
+      "soort": "product",
+      "ref": "electric-car-insurance",
+      "naam": "Electric car insurance",
+      "ecosysteem": "MOBILITEIT",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "product:electric-car-loan",
+      "soort": "product",
+      "ref": "electric-car-loan",
+      "naam": "Electric car loan",
+      "ecosysteem": "MOBILITEIT",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "partner:nmbs",
+      "soort": "partner",
+      "ref": "nmbs",
+      "naam": "NMBS",
+      "ecosysteem": "MOBILITEIT",
+      "status": "actief",
+      "herkomst": "KBC_MOBILE",
+      "sinds": "2024-09-01"
+     },
+     {
+      "id": "partner:vab",
+      "soort": "partner",
+      "ref": "vab",
+      "naam": "VAB",
+      "ecosysteem": "MOBILITEIT",
+      "status": "actief",
+      "herkomst": "KBC_MOBILE",
+      "sinds": "2025-03-02"
+     },
+     {
+      "id": "partner:cambio",
+      "soort": "partner",
+      "ref": "cambio",
+      "naam": "Cambio",
+      "ecosysteem": "MOBILITEIT",
+      "status": "gekend",
+      "herkomst": "REKENING",
+      "sinds": "2025-06-10"
+     },
+     {
+      "id": "partner:blue-bike",
+      "soort": "partner",
+      "ref": "blue-bike",
+      "naam": "Blue-bike",
+      "ecosysteem": "MOBILITEIT",
+      "status": "mogelijk",
+      "score": 0.55,
+      "waarom": [
+       {
+        "via": "partner:nmbs",
+        "naam": "NMBS",
+        "reden": "Reist met de trein"
+       },
+       {
+        "via": "partner:cambio",
+        "naam": "Cambio",
+        "reden": "Deelt auto’s via Cambio"
+       }
+      ]
+     },
+     {
+      "id": "product:calculate-monthly-car-costs",
+      "soort": "product",
+      "ref": "calculate-monthly-car-costs",
+      "naam": "Calculate monthly car costs",
+      "ecosysteem": "MOBILITEIT",
+      "status": "mogelijk",
+      "score": 0.4,
+      "waarom": [
+       {
+        "via": "product:electric-car-insurance",
+        "naam": "Electric car insurance",
+        "reden": "Rijdt elektrisch"
+       },
+       {
+        "via": "partner:vab",
+        "naam": "VAB",
+        "reden": "Lid van VAB"
+       }
+      ]
+     },
+     {
+      "id": "partner:de-lijn",
+      "soort": "partner",
+      "ref": "de-lijn",
+      "naam": "De Lijn",
+      "ecosysteem": "MOBILITEIT",
+      "status": "mogelijk",
+      "score": 0.35,
+      "waarom": [
+       {
+        "via": "partner:nmbs",
+        "naam": "NMBS",
+        "reden": "Reist met de trein"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "GEZIN",
+    "naam": "Gezin en bescherming",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:family-insurance",
+      "soort": "product",
+      "ref": "family-insurance",
+      "naam": "Family insurance",
+      "ecosysteem": "GEZIN",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "product:accident-insurance",
+      "soort": "product",
+      "ref": "accident-insurance",
+      "naam": "Accident insurance",
+      "ecosysteem": "GEZIN",
+      "status": "mogelijk",
+      "score": 0.3,
+      "waarom": [
+       {
+        "via": "product:family-insurance",
+        "naam": "Family insurance",
+        "reden": "Een gezin wil goed beschermd zijn"
+       }
+      ]
+     },
+     {
+      "id": "product:life-insurance",
+      "soort": "product",
+      "ref": "life-insurance",
+      "naam": "Life insurance",
+      "ecosysteem": "GEZIN",
+      "status": "mogelijk",
+      "score": 0.25,
+      "waarom": [
+       {
+        "via": "product:family-insurance",
+        "naam": "Family insurance",
+        "reden": "Een gezin wil goed beschermd zijn"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "WINKELEN",
+    "naam": "Winkelen en dagelijkse diensten",
+    "status": "actief",
+    "links": [
+     {
+      "id": "partner:joyn",
+      "soort": "partner",
+      "ref": "joyn",
+      "naam": "Joyn",
+      "ecosysteem": "WINKELEN",
+      "status": "actief",
+      "herkomst": "KBC_MOBILE",
+      "sinds": "2024-05-22"
+     },
+     {
+      "id": "product:digital-loyalty-cards",
+      "soort": "product",
+      "ref": "digital-loyalty-cards",
+      "naam": "Digital loyalty cards",
+      "ecosysteem": "WINKELEN",
+      "status": "mogelijk",
+      "score": 0.4,
+      "waarom": [
+       {
+        "via": "partner:joyn",
+        "naam": "Joyn",
+        "reden": "Spaart Joyn-punten"
+       }
+      ]
+     },
+     {
+      "id": "product:kate-coins",
+      "soort": "product",
+      "ref": "kate-coins",
+      "naam": "Kate Coins",
+      "ecosysteem": "WINKELEN",
+      "status": "mogelijk",
+      "score": 0.35,
+      "waarom": [
+       {
+        "via": "partner:joyn",
+        "naam": "Joyn",
+        "reden": "Spaart Joyn-punten"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "DAGELIJKS_BANKIEREN",
+    "naam": "Dagelijks bankieren en betalen",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:kbc-plus-account",
+      "soort": "product",
+      "ref": "kbc-plus-account",
+      "naam": "KBC Plus Account",
+      "ecosysteem": "DAGELIJKS_BANKIEREN",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     },
+     {
+      "id": "partner:wero",
+      "soort": "partner",
+      "ref": "wero",
+      "naam": "Wero",
+      "ecosysteem": "DAGELIJKS_BANKIEREN",
+      "status": "mogelijk",
+      "score": 0.25,
+      "waarom": [
+       {
+        "via": "product:kbc-plus-account",
+        "naam": "KBC Plus Account",
+        "reden": "Dagelijks bankieren bij KBC"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "SPAREN",
+    "naam": "Sparen",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:savings-accounts",
+      "soort": "product",
+      "ref": "savings-accounts",
+      "naam": "Savings accounts",
+      "ecosysteem": "SPAREN",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     }
+    ]
+   },
+   {
+    "ecosysteem": "GEZONDHEID",
+    "naam": "Gezondheid en welzijn",
+    "status": "actief",
+    "links": [
+     {
+      "id": "product:hospitalisation-insurance",
+      "soort": "product",
+      "ref": "hospitalisation-insurance",
+      "naam": "Hospitalisation insurance",
+      "ecosysteem": "GEZONDHEID",
+      "status": "actief",
+      "herkomst": "KBC_PRODUCT"
+     }
+    ]
+   },
+   {
+    "ecosysteem": "REIZEN",
+    "naam": "Reizen",
+    "status": "gekend",
+    "links": [
+     {
+      "id": "partner:brussels-airport",
+      "soort": "partner",
+      "ref": "brussels-airport",
+      "naam": "Brussels Airport",
+      "ecosysteem": "REIZEN",
+      "status": "gekend",
+      "herkomst": "REKENING",
+      "sinds": "2026-07-02"
+     },
+     {
+      "id": "product:travel-insurance",
+      "soort": "product",
+      "ref": "travel-insurance",
+      "naam": "Travel insurance",
+      "ecosysteem": "REIZEN",
+      "status": "mogelijk",
+      "score": 0.46,
+      "waarom": [
+       {
+        "via": "partner:vab",
+        "naam": "VAB",
+        "reden": "Lid van VAB"
+       },
+       {
+        "via": "partner:brussels-airport",
+        "naam": "Brussels Airport",
+        "reden": "Vliegt via Brussels Airport"
+       }
+      ]
+     },
+     {
+      "id": "partner:firsty",
+      "soort": "partner",
+      "ref": "firsty",
+      "naam": "Firsty",
+      "ecosysteem": "REIZEN",
+      "status": "mogelijk",
+      "score": 0.25,
+      "waarom": [
+       {
+        "via": "partner:brussels-airport",
+        "naam": "Brussels Airport",
+        "reden": "Vliegt via Brussels Airport"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "BELEGGEN",
+    "naam": "Beleggen",
+    "status": "mogelijk",
+    "links": [
+     {
+      "id": "product:invest-spare-change",
+      "soort": "product",
+      "ref": "invest-spare-change",
+      "naam": "Invest spare change",
+      "ecosysteem": "BELEGGEN",
+      "status": "mogelijk",
+      "score": 0.44,
+      "waarom": [
+       {
+        "via": "product:kbc-plus-account",
+        "naam": "KBC Plus Account",
+        "reden": "Dagelijks bankieren bij KBC"
+       },
+       {
+        "via": "product:savings-accounts",
+        "naam": "Savings accounts",
+        "reden": "Spaart al bij KBC"
+       }
+      ]
+     },
+     {
+      "id": "product:kbc-investment-plan",
+      "soort": "product",
+      "ref": "kbc-investment-plan",
+      "naam": "KBC investment plan",
+      "ecosysteem": "BELEGGEN",
+      "status": "mogelijk",
+      "score": 0.4,
+      "waarom": [
+       {
+        "via": "product:savings-accounts",
+        "naam": "Savings accounts",
+        "reden": "Spaart al bij KBC"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "ENERGIE",
+    "naam": "Energie en duurzaamheid",
+    "status": "mogelijk",
+    "links": [
+     {
+      "id": "product:calculate-solar-panels-and-request-a-quote",
+      "soort": "product",
+      "ref": "calculate-solar-panels-and-request-a-quote",
+      "naam": "Calculate solar panels and request a quote",
+      "ecosysteem": "ENERGIE",
+      "status": "mogelijk",
+      "score": 0.48,
+      "waarom": [
+       {
+        "via": "product:electric-car-loan",
+        "naam": "Electric car loan",
+        "reden": "Elektrisch rijden en thuis laden"
+       },
+       {
+        "via": "product:electric-car-insurance",
+        "naam": "Electric car insurance",
+        "reden": "Rijdt elektrisch"
+       }
+      ]
+     },
+     {
+      "id": "product:calculate-a-home-battery-and-request-a-quote",
+      "soort": "product",
+      "ref": "calculate-a-home-battery-and-request-a-quote",
+      "naam": "Calculate a home battery and request a quote",
+      "ecosysteem": "ENERGIE",
+      "status": "mogelijk",
+      "score": 0.35,
+      "waarom": [
+       {
+        "via": "product:electric-car-loan",
+        "naam": "Electric car loan",
+        "reden": "Elektrisch rijden en thuis laden"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "ecosysteem": "PENSIOEN",
+    "naam": "Pensioen",
+    "status": "mogelijk",
+    "links": [
+     {
+      "id": "product:pension-savings-fund",
+      "soort": "product",
+      "ref": "pension-savings-fund",
+      "naam": "Pension savings fund",
+      "ecosysteem": "PENSIOEN",
+      "status": "mogelijk",
+      "score": 0.58,
+      "waarom": [
+       {
+        "via": "product:kbc-plus-account",
+        "naam": "KBC Plus Account",
+        "reden": "Dagelijks bankieren bij KBC"
+       },
+       {
+        "via": "product:savings-accounts",
+        "naam": "Savings accounts",
+        "reden": "Spaart al bij KBC"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "partners": [
+  {
+   "partner": "4411",
+   "naam": "4411",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "apple",
+   "naam": "Apple Pay",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "bancontact",
+   "naam": "Bancontact",
+   "ecosysteem": "ONDERNEMEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "base",
+   "naam": "BASE",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "billit",
+   "naam": "Billit",
+   "ecosysteem": "ONDERNEMEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "blue-bike",
+   "naam": "Blue-bike",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "bolero",
+   "naam": "Bolero",
+   "ecosysteem": "BELEGGEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "brussels-airport",
+   "naam": "Brussels Airport",
+   "ecosysteem": "REIZEN",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": false,
+   "herkomst": "REKENING",
+   "sinds": "2026-07-02"
+  },
+  {
+   "partner": "cambio",
+   "naam": "Cambio",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": false,
+   "herkomst": "REKENING",
+   "sinds": "2025-06-10"
+  },
+  {
+   "partner": "de-immowinkel",
+   "naam": "De Immowinkel",
+   "ecosysteem": "WONEN",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": false,
+   "herkomst": "KBC_MOBILE",
+   "sinds": "2026-09-14"
+  },
+  {
+   "partner": "de-lijn",
+   "naam": "De Lijn",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "de-tijd",
+   "naam": "De Tijd",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "encon",
+   "naam": "Encon",
+   "ecosysteem": "ENERGIE",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "firsty",
+   "naam": "Firsty",
+   "ecosysteem": "REIZEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "go-solid",
+   "naam": "Go Solid",
+   "ecosysteem": "ONDERNEMEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "helena",
+   "naam": "Helena",
+   "ecosysteem": "GEZONDHEID",
+   "gevoelig": true,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "immoscoop",
+   "naam": "Immoscoop",
+   "ecosysteem": "WONEN",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": true,
+   "herkomst": "KBC_MOBILE",
+   "sinds": "2026-05-18"
+  },
+  {
+   "partner": "impact-us-today",
+   "naam": "Impact us today",
+   "ecosysteem": "WONEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "ipex",
+   "naam": "IPEX",
+   "ecosysteem": "ADMINISTRATIE",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "joyn",
+   "naam": "Joyn",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": true,
+   "herkomst": "KBC_MOBILE",
+   "sinds": "2024-05-22"
+  },
+  {
+   "partner": "kom-op-tegen-kanker",
+   "naam": "Kom op tegen Kanker",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": true,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "kube",
+   "naam": "Kube",
+   "ecosysteem": "ENERGIE",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "leadlife",
+   "naam": "Leadlife",
+   "ecosysteem": "GEZONDHEID",
+   "gevoelig": true,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "mivb",
+   "naam": "MIVB",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "mobit",
+   "naam": "Mobit",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "movesmart",
+   "naam": "MoveSmart",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "nmbs",
+   "naam": "NMBS",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": true,
+   "herkomst": "KBC_MOBILE",
+   "sinds": "2024-09-01"
+  },
+  {
+   "partner": "nowjobs",
+   "naam": "NOWJOBS",
+   "ecosysteem": "WERK",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "orange",
+   "naam": "Orange",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "paypal",
+   "naam": "PayPal",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "proximus",
+   "naam": "Proximus",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "q-park",
+   "naam": "Q-Park",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "q8",
+   "naam": "Q8",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "setle",
+   "naam": "Setle",
+   "ecosysteem": "WONEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "soluz-io",
+   "naam": "Soluz.io",
+   "ecosysteem": "ONDERNEMEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "sweco",
+   "naam": "Sweco",
+   "ecosysteem": "ENERGIE",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "vab",
+   "naam": "VAB",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": true,
+   "deelt": true,
+   "herkomst": "KBC_MOBILE",
+   "sinds": "2025-03-02"
+  },
+  {
+   "partner": "velo-antwerpen",
+   "naam": "Velo Antwerpen",
+   "ecosysteem": "MOBILITEIT",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "vrt-nws",
+   "naam": "VRT NWS",
+   "ecosysteem": "WINKELEN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  },
+  {
+   "partner": "wero",
+   "naam": "Wero",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "gevoelig": false,
+   "klantBijPartner": false,
+   "deelt": false,
+   "herkomst": null,
+   "sinds": null
+  }
+ ]
+}

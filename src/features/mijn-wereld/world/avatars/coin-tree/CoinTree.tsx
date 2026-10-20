@@ -1,10 +1,16 @@
-// SPAREN: coin tree. The swing appears once everything for the birth is arranged.
+// coin-tree: the phase-1 savings tree with gold coins.
 
-import styles from '../island.module.css';
+import type { AvatarProps } from '../types';
 
-export function Boom({ showSwing }: { showSwing: boolean }) {
+const K = 1.25;
+/** Phase-1 art spans x 31–105 and stands on y 206. */
+const transform = (width: number) => `translate(${width / 2 - 68 * K} ${420 - 206 * K}) scale(${K})`;
+
+export const COIN_TREE_TOP = 420 - (206 - 119) * K;
+
+export function CoinTree({ width }: AvatarProps) {
   return (
-    <>
+    <g transform={transform(width)}>
       <ellipse cx="66" cy="206" rx="28" ry="7" fill="#1d5e24" opacity=".35" filter="url(#soft)" />
       <path d="M61 206 C 63 190, 62 180, 60 170 L72 170 C 70 180, 69 190, 71 206 Z" fill="#8a5431" />
       <g filter="url(#lift)" fill="url(#leaf)">
@@ -18,10 +24,6 @@ export function Boom({ showSwing }: { showSwing: boolean }) {
         <circle cx="68" cy="164" r="5" fill="url(#coin)" />
         <circle cx="86" cy="164" r="4.5" fill="url(#coin)" />
       </g>
-      <g className={styles.fade} style={{ opacity: showSwing ? 1 : 0 }} aria-hidden={!showSwing}>
-        <path d="M84 172 L84 196 M96 170 L96 196" stroke="#6e4024" strokeWidth="1.4" />
-        <rect x="81" y="195" width="18" height="4" rx="2" fill="#ff8a66" />
-      </g>
-    </>
+    </g>
   );
 }

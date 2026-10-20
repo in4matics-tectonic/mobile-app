@@ -1,9 +1,12 @@
-// "Mijn wereld": the customer's life as a floating island. Reads the shared store and
-// hands each child the slice it needs.
+// "Mijn wereld": the customer's world as a street (phase 2). The page scrolls vertically through four bands
+// (project-info.md 4.1): the world (≥ 80% of the first view), the Kate bar, Kate's finding cards, and the
+// world in text. The street scrolls horizontally inside the world band.
 
+import { useFocusEffect } from 'expo-router';
 import { StatusBar as SystemStatusBar } from 'expo-status-bar';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentProps } from 'react';
 import {
+  AccessibilityInfo,
   ActivityIndicator,
   Platform,
   ScrollView,
@@ -11,40 +14,52 @@ import {
   Text,
   useWindowDimensions,
   View,
-  type LayoutRectangle,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
 } from 'react-native';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { clearSession, getSession } from '@/features/auth/session';
 import { KateChat } from '@/features/kate-chat/KateChat';
+import type { ChatOpener } from '@/features/kate-chat/types';
 
 import { BirthChecklist } from './components/BirthChecklist';
 import { BottomSheet } from './components/BottomSheet';
-import { DomainTiles } from './components/DomainTiles';
 import { Header, StatusBar } from './components/Header';
-import IslandScene from './components/IslandScene';
-import { KateCard } from './components/KateCard';
+import { KATE_BAR_HEIGHT, KateBar } from './components/KateBar';
+import { KateFindings } from './components/KateFindings';
 import { PhoneFrame, usePhoneFramed } from './components/PhoneFrame';
-import { AccountSheet, DomainSheet, WhySheet } from './components/SheetContent';
-import { SkyBackground } from './components/SkyBackground';
+import { AccountSheet, WhySheet } from './components/SheetContent';
 import { TabBar } from './components/TabBar';
 import { PillButton } from './components/ui';
+import { ConnectSheet, ConsentSheet, PartnersSheet, PlaceSheet, PlotSheet } from './components/WorldSheets';
+import { WorldText, type TextLink } from './components/WorldText';
 import { openCount } from './state/reducer';
-import { familyView, selectTiles } from './state/selectors';
 import { useMijnWereld, useMijnWereldCommands } from './state/store';
-import type { Domain } from './state/types';
+import { PARTNER_PLACEMENT } from './world/categories';
+import { householdVoice, selectFindings, selectTextGroups } from './world/state/selectors';
+import { useWorld, useWorldCommands } from './world/state/store';
+import { useKateTicker } from './world/state/useKateTicker';
+import Street, { type StreetHandle } from './world/Street';
+import type { CategoryId, Finding, FindingCommand } from './world/types';
 import { font, page, world } from './theme';
 
 type Sheet =
-  | { kind: 'domain'; domain: Domain }
+  | { kind: 'place'; placeId: CategoryId; partnerId?: string }
   | { kind: 'why' }
   | { kind: 'checklist' }
-  | { kind: 'account' };
+  | { kind: 'account' }
+  | { kind: 'consent' }
+  | { kind: 'partners' };
 
-/** Where the sky ends inside the island, as in the prototype (42% of 812px). */
-const SKY_STOP_IN_SCENE = 0.836;
+/** The world band: 82% of what's visible above the tab bar, never under 520px (4.1). */
+const WORLD_SHARE = 0.82;
+const WORLD_MIN = 520;
+/** The Kate bar with its 12px margins. */
+const BAR_BAND = KATE_BAR_HEIGHT + 24;
 
 export default function MijnWereldScreen() {
   const scheme = useColorScheme();
@@ -59,123 +74,252 @@ export default function MijnWereldScreen() {
 }
 
 function PhoneScreen({ framed }: { framed: boolean }) {
-  const state = useMijnWereld();
-  const commands = useMijnWereldCommands();
+  const moment = useMijnWereld();
+  const momentCommands = useMijnWereldCommands();
+  const { state, built } = useWorld();
+  const commands = useWorldCommands();
   const insets = useSafeAreaInsets();
-  const { width: windowWidth } = useWindowDimensions();
-  const [scene, setScene] = useState<LayoutRectangle | null>(null);
-  const [sheet, setSheet] = useState<Sheet | null>(null);
-  const [lastSheet, setLastSheet] = useState<Sheet | null>(null);
-  const [chatOpen, setChatOpen] = useState(false);
-
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const reduced = useReducedMotion();
   const native = Platform.OS !== 'web';
   const topInset = native ? insets.top : 0;
 
+  // ---- Sizes ----
+
+  const [screen, setScreen] = useState({ width: windowWidth, height: windowHeight });
+  const [tabHeight, setTabHeight] = useState(84);
+  const bandHeight = Math.max(WORLD_MIN, Math.round((screen.height - tabHeight) * WORLD_SHARE));
+
+  // ---- Fly-in on every focus (D7) ----
+
+  const [flyInKey, setFlyInKey] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      setFlyInKey((k) => k + 1);
+    }, []),
+  );
+  const street = useRef<StreetHandle>(null);
+
+  // ---- Sheets and chat ----
+
+  const [sheet, setSheet] = useState<Sheet | null>(null);
+  const [lastSheet, setLastSheet] = useState<Sheet | null>(null);
+  const [chat, setChat] = useState<{ open: boolean; opener: ChatOpener | null }>({ open: false, opener: null });
   const openSheet = (next: Sheet) => {
     setSheet(next);
     setLastSheet(next);
   };
   const closeSheet = useCallback(() => setSheet(null), []);
-  const closeChat = useCallback(() => setChatOpen(false), []);
-  const openChat = async () => setChatOpen(true);
+  const closeChat = useCallback(() => setChat((c) => ({ ...c, open: false })), []);
+  const openChat = (opener: ChatOpener | null) => setChat({ open: true, opener });
 
-  const confirm = () => {
-    closeSheet();
-    commands.confirm();
+  // ---- Kate ----
+
+  const checklist = moment.checklist
+    ? { ready: moment.checklist.ready.length, open: openCount(moment) }
+    : null;
+  const findings = useMemo(
+    () => selectFindings({ built, phase: moment.phase, checklist, arrived: state.arrived, dismissed: state.dismissed }),
+    // checklist is derived from moment.checklist and the todo states
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [built, moment.phase, moment.checklist, moment.runs, state.arrived, state.dismissed],
+  );
+  const [held, setHeld] = useState(false);
+  const [screenReader, setScreenReader] = useState(false);
+  useEffect(() => {
+    AccessibilityInfo.isScreenReaderEnabled().then(setScreenReader).catch(() => {});
+    const sub = AccessibilityInfo.addEventListener('screenReaderChanged', setScreenReader);
+    return () => sub.remove();
+  }, []);
+  const ticker = useKateTicker(findings.bar, { paused: held || chat.open || screenReader, reduced });
+  const voice = householdVoice(built);
+
+  const openerOf = (f: Finding | undefined): ChatOpener | null => (f?.opener ? { findingId: f.id, text: f.opener } : null);
+
+  // Koppel / Stop delen. After a connect, the sheet closes and the street shows the place.
+  const deling = async (partner: string, deelt: boolean) => {
+    const ok = await commands.setDeling(partner, deelt);
+    if (ok && deelt) {
+      closeSheet();
+      const target = PARTNER_PLACEMENT[partner]?.category;
+      if (target) setTimeout(() => street.current?.scrollToPlace(target), 50);
+    }
+    return ok;
   };
-  const reject = () => {
-    closeSheet();
-    commands.reject();
+
+  const onCommand = (f: Finding, command: FindingCommand) => {
+    switch (command) {
+      case 'ask-kate':
+        return openChat(openerOf(f));
+      case 'view':
+        if (f.placeId) {
+          street.current?.scrollToPlace(f.placeId);
+          openSheet({ kind: 'place', placeId: f.placeId });
+        }
+        return;
+      case 'connect':
+        if (f.link) deling(f.link.ref, true);
+        return;
+      case 'confirm':
+        return momentCommands.confirm();
+      case 'reject':
+        return momentCommands.reject();
+      case 'why':
+        return openSheet({ kind: 'why' });
+      case 'checklist':
+        return openSheet({ kind: 'checklist' });
+      case 'dismiss':
+        return commands.dismissFinding(f.id);
+    }
   };
 
-  const selectDomain = async (domain: Domain) => openSheet({ kind: 'domain', domain });
+  const onTextLink = (link: TextLink) => {
+    if (link === 'logout') return clearSession();
+    openSheet({ kind: link });
+  };
 
-  const { customer, phase } = state;
-  const family = familyView(phase, customer?.displayName ?? '');
-  const verified = Object.fromEntries(state.domains.map((d) => [d.id, d.verified]));
-  const sceneWidth = scene?.width ?? Math.min(windowWidth, 366);
-  const skyHeight = scene ? scene.y + scene.height * SKY_STOP_IN_SCENE : 341;
+  // ---- Sticky Kate bar (D17) ----
+
+  const [barY, setBarY] = useState(0);
+  const [docked, setDocked] = useState(false);
+  const dock = useSharedValue(0);
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const out = e.nativeEvent.contentOffset.y > barY + 12 + KATE_BAR_HEIGHT;
+    if (out !== docked) setDocked(out);
+  };
+  useEffect(() => {
+    dock.value = withTiming(docked ? 1 : 0, { duration: reduced ? 0 : 200 });
+  }, [docked, dock, reduced]);
+  const dockStyle = useAnimatedStyle(() => ({
+    opacity: dock.value,
+    transform: [{ translateY: (1 - dock.value) * (KATE_BAR_HEIGHT + 24) }],
+  }));
+
+  // ---- Render ----
+
   const shown = sheet ?? lastSheet;
+  const displayName = (state.data?.profiel.naam ?? moment.customer?.displayName ?? '').replace(/\s+en\s+/i, ' & ');
+  const confirmed = moment.phase === 'confirmed' || moment.phase === 'done';
 
   return (
-    <View style={styles.screen}>
+    <View style={styles.screen} onLayout={(e) => setScreen(e.nativeEvent.layout)}>
       {native && <SystemStatusBar style="dark" />}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={[styles.content, { paddingTop: topInset }]}
+        contentContainerStyle={{ paddingBottom: 16 + (docked ? BAR_BAND : 0) }}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}>
-        <SkyBackground height={skyHeight} />
-        {framed && <StatusBar />}
-        <Header
-          displayName={customer?.displayName ?? ''}
-          coins={state.coins}
-        />
-
-        <View style={styles.scene} onLayout={(e) => setScene(e.nativeEvent.layout)}>
-          <IslandScene
-            phase={phase}
-            familyLabel={family.islandLabel}
-            verified={verified}
-            onSelectDomain={selectDomain}
-            onOpenKate={openChat}
-            dom={{
-              scrollEnabled: false,
-              style: { width: sceneWidth, height: (sceneWidth * 300) / 360, backgroundColor: 'transparent' },
+        {/* 1 · World */}
+        <View style={{ height: bandHeight }}>
+          <Street
+            ref={street}
+            world={built?.view ?? null}
+            height={bandHeight}
+            flyInKey={flyInKey}
+            reducedMotion={reduced}
+            onSelectPlace={async (id) => openSheet({ kind: 'place', placeId: id as CategoryId })}
+            onSelectAttachment={async (placeId, partnerId) => {
+              const place = built?.view.places.find((p) => p.id === placeId);
+              const attachment = place?.attachments.find((a) => a.partnerId === partnerId);
+              openSheet({ kind: 'place', placeId: placeId as CategoryId, partnerId: attachment?.state === 'ghost' ? partnerId : undefined });
             }}
+            onFlyInDone={async () => {}}
+            onArrivalsDone={async (ids) => commands.markArrivalsSeen(ids as CategoryId[])}
+            onZoneChange={async () => {}}
+            dom={{ scrollEnabled: false, style: { width: native ? screen.width : '100%', height: bandHeight, backgroundColor: 'transparent' } }}
           />
-        </View>
-
-        <View style={styles.body}>
-          {state.status === 'loading' && <ActivityIndicator color={world.blue} style={styles.loading} />}
+          <View style={[styles.header, { paddingTop: topInset }]}>
+            {framed && <StatusBar />}
+            <Header displayName={displayName} coins={moment.coins} />
+          </View>
           {state.status === 'error' && (
             <View style={styles.error} role="alert">
-              <Text style={styles.errorText}>Kate kan jullie wereld nu niet laden.</Text>
+              <Text style={styles.errorText}>Kate kan {voice.je} wereld nu niet laden.</Text>
               <PillButton label="Opnieuw proberen" onPress={commands.reload} />
             </View>
           )}
-          {state.status === 'ready' && customer && (
+        </View>
+
+        {/* 2 · Kate bar */}
+        <View style={styles.barBand} onLayout={(e) => setBarY(e.nativeEvent.layout.y)}>
+          <KateBar ticker={ticker} reduced={reduced} announce onPress={() => openChat(openerOf(ticker.current))} onHold={setHeld} />
+        </View>
+
+        {/* 3 · Finding cards, 4 · the world in text */}
+        <View style={styles.body}>
+          {state.status === 'loading' ? (
+            <ActivityIndicator color={world.blue} style={styles.loading} />
+          ) : (
             <>
-              <KateCard
-                phase={phase}
-                consents={customer.consents}
-                readyCount={state.checklist?.ready.length ?? 0}
-                openCount={openCount(state)}
-                checklistLoaded={!!state.checklist}
-                onConfirm={confirm}
-                onReject={reject}
-                onWhy={() => openSheet({ kind: 'why' })}
-                onShowChecklist={() => openSheet({ kind: 'checklist' })}
-              />
-              <DomainTiles
-                tiles={selectTiles(state)}
-                onOpen={(domain) => openSheet({ kind: 'domain', domain })}
+              <KateFindings findings={findings.cards} je={voice.je} deling={state.deling} onCommand={onCommand} />
+              <WorldText
+                groups={selectTextGroups(built)}
+                onOpenPlace={(id) => {
+                  street.current?.scrollToPlace(id);
+                  openSheet({ kind: 'place', placeId: id });
+                }}
+                onLink={onTextLink}
               />
             </>
           )}
         </View>
       </ScrollView>
 
-      <TabBar bottomInset={native ? insets.bottom : 0} actions={{ Meer: () => openSheet({ kind: 'account' }) }} />
+      <Animated.View
+        style={[styles.dock, { bottom: tabHeight + 10, pointerEvents: docked ? 'box-none' : 'none' }, dockStyle]}
+        aria-hidden={!docked}>
+        <KateBar ticker={ticker} reduced={reduced} onPress={() => openChat(openerOf(ticker.current))} onHold={setHeld} />
+      </Animated.View>
 
-      <BottomSheet open={!!sheet} label={sheetLabel(shown)} onClose={closeSheet}>
-        {shown?.kind === 'domain' && (
-          <DomainSheet
-            domain={state.domains.find((d) => d.id === shown.domain) ?? state.domains[0]}
+      <View onLayout={(e) => setTabHeight(e.nativeEvent.layout.height)}>
+        <TabBar
+          bottomInset={native ? insets.bottom : 0}
+          actions={{ Kate: () => openChat(null), Meer: () => openSheet({ kind: 'account' }) }}
+        />
+      </View>
+
+      <BottomSheet open={!!sheet} label={sheetLabel(shown, built?.view.places)} onClose={closeSheet}>
+        {shown?.kind === 'place' && state.data && built && (
+          <PlaceSheets
+            sheet={shown}
+            data={state.data}
+            built={built}
+            voice={voice}
+            deling={state.deling}
+            onDeling={deling}
+            onAskKate={(opener) => {
+              closeSheet();
+              openChat(opener);
+            }}
+            onChecklist={confirmed && moment.checklist ? () => openSheet({ kind: 'checklist' }) : undefined}
             onClose={closeSheet}
           />
         )}
         {shown?.kind === 'why' && (
           <WhySheet
-            signals={state.moment.signals}
-            hiddenSignals={state.moment.hiddenSignals}
-            canAnswer={phase === 'ask'}
-            onConfirm={confirm}
-            onReject={reject}
+            signals={moment.moment.signals}
+            hiddenSignals={moment.moment.hiddenSignals}
+            canAnswer={moment.phase === 'ask'}
+            onConfirm={() => {
+              closeSheet();
+              momentCommands.confirm();
+            }}
+            onReject={() => {
+              closeSheet();
+              momentCommands.reject();
+            }}
           />
+        )}
+        {shown?.kind === 'consent' && state.data && (
+          <ConsentSheet toestemming={state.data.profiel.toestemming} onChange={commands.setConsent} onClose={closeSheet} />
+        )}
+        {shown?.kind === 'partners' && state.data && (
+          <PartnersSheet data={state.data} voice={voice} deling={state.deling} onDeling={deling} onClose={closeSheet} />
         )}
         {shown?.kind === 'account' && (
           <AccountSheet
-            displayName={customer?.displayName ?? ''}
+            displayName={displayName}
             username={getSession()?.user.sub}
             onLogout={() => {
               closeSheet();
@@ -185,13 +329,13 @@ function PhoneScreen({ framed }: { framed: boolean }) {
           />
         )}
         {shown?.kind === 'checklist' &&
-          (state.checklist ? (
+          (moment.checklist ? (
             <BirthChecklist
-              ready={state.checklist.ready}
-              todo={state.checklist.todo}
-              runs={state.runs}
-              onRun={commands.runTodo}
-              onRunAll={commands.runAll}
+              ready={moment.checklist.ready}
+              todo={moment.checklist.todo}
+              runs={moment.runs}
+              onRun={momentCommands.runTodo}
+              onRunAll={momentCommands.runAll}
               onClose={closeSheet}
             />
           ) : (
@@ -199,26 +343,64 @@ function PhoneScreen({ framed }: { framed: boolean }) {
           ))}
       </BottomSheet>
 
-      <KateChat open={chatOpen} onClose={closeChat} topInset={topInset} />
+      <KateChat open={chat.open} opener={chat.opener} onClose={closeChat} topInset={topInset} />
     </View>
   );
 }
 
-function sheetLabel(sheet: Sheet | null) {
+/** A place's sheet follows its live state: linked, ghost (or a ghost attachment) or plot. */
+function PlaceSheets({
+  sheet,
+  onChecklist,
+  ...common
+}: Omit<ComponentProps<typeof PlaceSheet>, 'place' | 'onChecklist'> & {
+  sheet: Extract<Sheet, { kind: 'place' }>;
+  onChecklist?: () => void;
+}) {
+  const place = common.built.view.places.find((p) => p.id === sheet.placeId);
+  if (!place) return <Text style={styles.gone}>Deze plek is niet meer in {common.voice.je} wereld.</Text>;
+  if (place.state === 'plot') return <PlotSheet place={place} {...common} />;
+  if (place.state === 'ghost' || sheet.partnerId) return <ConnectSheet place={place} partnerId={sheet.partnerId} {...common} />;
+  return <PlaceSheet place={place} onChecklist={place.id === 'household' ? onChecklist : undefined} {...common} />;
+}
+
+function sheetLabel(sheet: Sheet | null, places: { id: CategoryId; label: string }[] | undefined) {
   if (!sheet) return '';
-  if (sheet.kind === 'why') return 'Waarom vraag ik dit?';
-  if (sheet.kind === 'checklist') return 'Klaar voor de geboorte';
-  if (sheet.kind === 'account') return 'Account';
-  return `Details ${sheet.domain}`;
+  switch (sheet.kind) {
+    case 'why':
+      return 'Waarom vraag ik dit?';
+    case 'checklist':
+      return 'Klaar voor de geboorte';
+    case 'account':
+      return 'Account';
+    case 'consent':
+      return 'Op jouw maat';
+    case 'partners':
+      return 'Gekoppelde partners';
+    case 'place':
+      return places?.find((p) => p.id === sheet.placeId)?.label ?? 'Plek';
+  }
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: world.ground, overflow: 'hidden' },
   scroll: { flex: 1 },
-  content: { flexGrow: 1, paddingBottom: 16 },
-  scene: { marginTop: -4 },
-  body: { gap: 12, paddingHorizontal: 16, marginTop: -8 },
+  header: { position: 'absolute', top: 0, left: 0, right: 0, pointerEvents: 'box-none' },
+  barBand: { paddingVertical: 12 },
+  body: { gap: 12, paddingHorizontal: 16 },
+  dock: { position: 'absolute', left: 0, right: 0 },
   loading: { marginTop: 24 },
-  error: { alignItems: 'center', gap: 10, paddingVertical: 20 },
-  errorText: { fontFamily: font.body700, fontSize: 14, color: world.ink },
+  error: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
+    top: '42%',
+    alignItems: 'center',
+    gap: 10,
+    padding: 16,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,.92)',
+  },
+  errorText: { fontFamily: font.body700, fontSize: 14, color: world.ink, textAlign: 'center' },
+  gone: { fontFamily: font.body600, fontSize: 14, color: world.soft, marginBottom: 16 },
 });

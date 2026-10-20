@@ -1,8 +1,57 @@
-// Gradients, filters and symbols, copied verbatim from mijn-wereld-prototype.html.
+// Gradients, filters and symbols. The first part is copied verbatim from mijn-wereld-prototype.html;
+// the street additions (hills, road, sea, sand, signs) follow at the end.
 
 export function SceneDefs() {
   return (
     <defs>
+      <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#9fe27f" />
+        <stop offset="1" stopColor="#5fbf4e" />
+      </linearGradient>
+      <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#bfeaa8" />
+        <stop offset="1" stopColor="#8fd27a" />
+      </linearGradient>
+      <linearGradient id="verge" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#8be06a" />
+        <stop offset="1" stopColor="#4fb146" />
+      </linearGradient>
+      <linearGradient id="lawn" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#7fd65e" />
+        <stop offset="1" stopColor="#3f9d3c" />
+      </linearGradient>
+      <linearGradient id="asphalt" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#7d8a9c" />
+        <stop offset="1" stopColor="#5d6a7c" />
+      </linearGradient>
+      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#6fd3f5" />
+        <stop offset="1" stopColor="#1f8fd0" />
+      </linearGradient>
+      <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffe9b0" />
+        <stop offset="1" stopColor="#f0c977" />
+      </linearGradient>
+      <linearGradient id="skyline" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#b9d6f2" />
+        <stop offset="1" stopColor="#9cc0e6" />
+      </linearGradient>
+      <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#d9f3ff" />
+        <stop offset="1" stopColor="#7cc8f0" />
+      </linearGradient>
+      <linearGradient id="stone" x1="0" x2="1">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset="1" stopColor="#dfe7f1" />
+      </linearGradient>
+      <linearGradient id="stoneSide" x1="0" x2="1">
+        <stop offset="0" stopColor="#cbd6e3" />
+        <stop offset="1" stopColor="#b3c1d2" />
+      </linearGradient>
+      <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#2ab0f0" />
+        <stop offset="1" stopColor="#0a5fb4" />
+      </linearGradient>
       <radialGradient id="grass" cx="45%" cy="30%" r="75%">
         <stop offset="0" stopColor="#a6f07a" />
         <stop offset=".6" stopColor="#6fd052" />

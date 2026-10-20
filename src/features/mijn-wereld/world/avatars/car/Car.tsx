@@ -1,8 +1,16 @@
-// MOBILITEIT: electric car with charging pole.
+// car: the phase-1 electric car with its charge point, on the driveway.
 
-export function Auto() {
+import type { AvatarProps } from '../types';
+
+const K = 1.25;
+/** Phase-1 art spans x 212–296 and stands on y 226. */
+const transform = (width: number) => `translate(${width / 2 - 254 * K} ${420 - 226 * K}) scale(${K})`;
+
+export const CAR_TOP = 420 - (226 - 178) * K;
+
+export function Car({ width }: AvatarProps) {
   return (
-    <>
+    <g transform={transform(width)}>
       <ellipse cx="246" cy="222" rx="42" ry="8" fill="#1d5e24" opacity=".4" filter="url(#soft)" />
       <rect x="286" y="188" width="10" height="30" rx="4" fill="#f4f7fb" filter="url(#lift)" />
       <rect x="288" y="193" width="6" height="6" rx="2" fill="#35d07f" />
@@ -21,6 +29,6 @@ export function Auto() {
         <circle cx="274" cy="218" r="8" fill="#1b2433" />
         <circle cx="274" cy="218" r="3.5" fill="#c7d3e0" />
       </g>
-    </>
+    </g>
   );
 }

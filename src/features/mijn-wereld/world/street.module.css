@@ -1,0 +1,390 @@
+/* The street: layout, ghost look, arrivals, fly-in clouds and idle loops (project-info.md 4.6–4.8). */
+
+.root {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#8fd0ff, #cdeeff 70%);
+}
+
+.sun {
+  position: absolute;
+  right: 34px;
+  top: 150px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffbe0, #ffe27a 55%, #ffd34d);
+  box-shadow: 0 0 0 10px rgba(255, 236, 150, 0.35), 0 0 40px 18px rgba(255, 230, 140, 0.35);
+}
+
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+.locked {
+  overflow-x: hidden;
+}
+.dragging {
+  cursor: grabbing;
+}
+
+.camera {
+  position: relative;
+  will-change: transform;
+}
+.camera svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ---------- Places ---------- */
+
+.slot {
+  transition: transform 400ms ease-out;
+}
+
+.place {
+  cursor: pointer;
+  outline: none;
+}
+.place:focus-visible .focusRing {
+  stroke: #7cc0ff;
+}
+.focusRing {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 3;
+  /* The whole slot is tappable, also a ghost that is only dashed outlines. */
+  pointer-events: all;
+}
+.place:hover .lift {
+  transform: translateY(-2px);
+}
+.lift {
+  transition: transform 0.2s;
+}
+
+.layer {
+  transition: opacity 600ms ease;
+}
+/* !important: a running animation (the ghost copy's breathe) would otherwise override the opacity. */
+.hidden {
+  opacity: 0 !important;
+  animation: none !important;
+  pointer-events: none;
+}
+
+/* Ghost: one class, dashed outlines of the same drawing. Signage stays readable, faintly. */
+.ghost :not(.sign):not(.sign *):not(.keep):not(.keep *) {
+  fill: none !important;
+  stroke: #9db4cf !important;
+  stroke-width: 1.6px !important;
+  stroke-dasharray: 5 4 !important;
+  filter: none !important;
+}
+.ghost .sign {
+  opacity: 0.35;
+}
+.ghost .sign rect,
+.ghost .sign path {
+  fill: #ffffff !important;
+  stroke: #9db4cf !important;
+  stroke-width: 1.4px !important;
+  stroke-dasharray: 4 3 !important;
+}
+.ghost .sign text {
+  fill: #6f87a6 !important;
+}
+.breathe {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+/* Arrival: grows from the ground line, then sparkles. */
+.grow {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.pending {
+  transform: scaleY(0);
+  opacity: 0;
+}
+.arriving {
+  animation: arrive 500ms cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+.sinking {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sink 250ms ease-in both;
+}
+.sparkle {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: sparkle 400ms ease-out both;
+}
+
+.attachment {
+  cursor: pointer;
+  outline: none;
+}
+.attachment:focus-visible .sign rect {
+  stroke: #7cc0ff !important;
+  stroke-width: 3px !important;
+}
+
+/* ---------- Idle ---------- */
+
+.cloud {
+  animation: drift 22s ease-in-out infinite alternate;
+}
+.blades {
+  animation: spin 6s linear infinite;
+  transform-origin: 0 0;
+}
+.bob {
+  animation: bob 3.2s ease-in-out infinite;
+}
+.boat {
+  animation: bob 4s ease-in-out infinite;
+}
+.wave {
+  animation: drift 6s ease-in-out infinite alternate;
+}
+.plane {
+  animation: fly 14s linear infinite;
+}
+.bus {
+  animation: bus 20s linear infinite;
+}
+.train {
+  animation: train 25s ease-in-out infinite;
+}
+.sparkleIdle {
+  animation: twinkle 3.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+.hop {
+  animation: hop 400ms ease-out 2;
+}
+
+/* ---------- Fly-in clouds (the loading state) ---------- */
+
+.flyClouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.flyCloud {
+  position: absolute;
+  border-radius: 999px;
+  background: radial-gradient(circle at 40% 30%, #ffffff, #e3effa 70%);
+  box-shadow: 0 10px 30px rgba(11, 42, 74, 0.12);
+  animation: puff 6s ease-in-out infinite alternate;
+}
+
+/* ---------- Zone strip ---------- */
+
+.zones {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 4px 0 rgba(12, 60, 120, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.zone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font: 700 12px/1 Nunito, Nunito_700Bold, system-ui, sans-serif;
+  color: #6b7f99;
+  cursor: pointer;
+}
+.zone:focus-visible {
+  outline: 3px solid #7cc0ff;
+}
+.zone::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+.zoneActive {
+  color: #0a5fb4;
+  background: #eaf2fb;
+}
+.zoneActive::before {
+  background: currentColor;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes arrive {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleY(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes sink {
+  to {
+    transform: scaleY(0) translateY(10px);
+    opacity: 0;
+  }
+}
+@keyframes sparkle {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+@keyframes twinkle {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  88% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes drift {
+  to {
+    transform: translateX(18px);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes hop {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes fly {
+  from {
+    transform: translateX(var(--from));
+  }
+  to {
+    transform: translateX(var(--to));
+  }
+}
+@keyframes bus {
+  0%,
+  55% {
+    transform: translateX(var(--from));
+  }
+  100% {
+    transform: translateX(var(--to));
+  }
+}
+@keyframes train {
+  0% {
+    transform: translateX(var(--from));
+  }
+  30%,
+  65% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--to));
+  }
+}
+@keyframes puff {
+  to {
+    transform: translateX(14px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud,
+  .blades,
+  .bob,
+  .boat,
+  .wave,
+  .plane,
+  .bus,
+  .train,
+  .sparkleIdle,
+  .breathe,
+  .hop,
+  .flyCloud {
+    animation: none;
+  }
+}
+.reduced .cloud,
+.reduced .blades,
+.reduced .bob,
+.reduced .boat,
+.reduced .wave,
+.reduced .plane,
+.reduced .bus,
+.reduced .train,
+.reduced .sparkleIdle,
+.reduced .breathe,
+.reduced .hop,
+.reduced .flyCloud {
+  animation: none;
+}
+.reduced .slot,
+.reduced .layer {
+  transition: none;
+}
+
+/* Marker classes: signage keeps its colours in the ghost look (faintly); .keep opts a detail out of it. */
+.sign {
+}
+.keep {
+}

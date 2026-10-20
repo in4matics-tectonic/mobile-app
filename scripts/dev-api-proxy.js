@@ -17,7 +17,9 @@ const { Buffer } = require('node:buffer');
 const POC_VM = require('../src/constants/poc-vm.json');
 
 const TARGET = (process.env.KBC_API_TARGET || `https://api.${POC_VM.domain}`).replace(/\/$/, '');
-const GATE_PASSWORD = process.env.KBC_GATE_PASSWORD;
+// Only the VM hosts (api.<domain>, chat.<domain>) sit behind the site password; a local backend has no gate.
+const GATE_PASSWORD =
+  process.env.KBC_GATE_URL || new URL(TARGET).hostname.startsWith('api.') ? process.env.KBC_GATE_PASSWORD : undefined;
 
 /** chat.<domain> next to api.<domain> on the VM; the poc-runner chat port when running locally. */
 function chatTarget() {

@@ -1,0 +1,2377 @@
+{
+ "ecosystemen": [
+  {
+   "id": "WONEN",
+   "naam": "Wonen",
+   "aantalProducten": 23,
+   "partners": [
+    "de-immowinkel",
+    "immoscoop",
+    "impact-us-today",
+    "setle"
+   ]
+  },
+  {
+   "id": "MOBILITEIT",
+   "naam": "Mobiliteit",
+   "aantalProducten": 31,
+   "partners": [
+    "4411",
+    "blue-bike",
+    "cambio",
+    "de-lijn",
+    "mivb",
+    "mobit",
+    "movesmart",
+    "nmbs",
+    "q-park",
+    "q8",
+    "vab",
+    "velo-antwerpen"
+   ]
+  },
+  {
+   "id": "PENSIOEN",
+   "naam": "Pensioen",
+   "aantalProducten": 9,
+   "partners": []
+  },
+  {
+   "id": "BELEGGEN",
+   "naam": "Beleggen",
+   "aantalProducten": 9,
+   "partners": [
+    "bolero"
+   ]
+  },
+  {
+   "id": "SPAREN",
+   "naam": "Sparen",
+   "aantalProducten": 5,
+   "partners": []
+  },
+  {
+   "id": "ONDERNEMEN",
+   "naam": "Ondernemen",
+   "aantalProducten": 46,
+   "partners": [
+    "bancontact",
+    "billit",
+    "go-solid",
+    "joyn",
+    "soluz-io"
+   ]
+  },
+  {
+   "id": "REIZEN",
+   "naam": "Reizen",
+   "aantalProducten": 3,
+   "partners": [
+    "brussels-airport",
+    "firsty"
+   ]
+  },
+  {
+   "id": "ENERGIE",
+   "naam": "Energie en duurzaamheid",
+   "aantalProducten": 13,
+   "partners": [
+    "encon",
+    "impact-us-today",
+    "kube",
+    "sweco"
+   ]
+  },
+  {
+   "id": "DAGELIJKS_BANKIEREN",
+   "naam": "Dagelijks bankieren en betalen",
+   "aantalProducten": 16,
+   "partners": [
+    "apple",
+    "paypal",
+    "wero"
+   ]
+  },
+  {
+   "id": "GEZIN",
+   "naam": "Gezin en bescherming",
+   "aantalProducten": 6,
+   "partners": []
+  },
+  {
+   "id": "GEZONDHEID",
+   "naam": "Gezondheid en welzijn",
+   "aantalProducten": 4,
+   "partners": [
+    "helena",
+    "leadlife"
+   ]
+  },
+  {
+   "id": "VERMOGEN",
+   "naam": "Vermogen en successieplanning",
+   "aantalProducten": 4,
+   "partners": []
+  },
+  {
+   "id": "WERK",
+   "naam": "Werk en personeel",
+   "aantalProducten": 6,
+   "partners": [
+    "nowjobs"
+   ]
+  },
+  {
+   "id": "INTERNATIONAAL",
+   "naam": "Internationaal ondernemen",
+   "aantalProducten": 10,
+   "partners": []
+  },
+  {
+   "id": "BESCHERMING_ONDERNEMING",
+   "naam": "Bescherming van je onderneming",
+   "aantalProducten": 10,
+   "partners": []
+  },
+  {
+   "id": "LANDBOUW",
+   "naam": "Land- en tuinbouw",
+   "aantalProducten": 3,
+   "partners": []
+  },
+  {
+   "id": "ADMINISTRATIE",
+   "naam": "Administratie en documenten",
+   "aantalProducten": 4,
+   "partners": [
+    "ipex"
+   ]
+  },
+  {
+   "id": "WINKELEN",
+   "naam": "Winkelen en dagelijkse diensten",
+   "aantalProducten": 8,
+   "partners": [
+    "base",
+    "de-tijd",
+    "joyn",
+    "kom-op-tegen-kanker",
+    "orange",
+    "proximus",
+    "vrt-nws"
+   ]
+  },
+  {
+   "id": "DIGITAAL",
+   "naam": "Digitale platformen en assistentie",
+   "aantalProducten": 14,
+   "partners": []
+  },
+  {
+   "id": "VEILIGHEID",
+   "naam": "Veiligheid",
+   "aantalProducten": 1,
+   "partners": []
+  },
+  {
+   "id": "INTEGRATIES",
+   "naam": "Algemene integraties",
+   "aantalProducten": 4,
+   "partners": []
+  }
+ ],
+ "producten": [
+  {
+   "id": "home-loan",
+   "naam": "Home loan",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "bridging-loan",
+   "naam": "Bridging loan",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "renovation-loan",
+   "naam": "Renovation loan",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "home-furnishing-loan",
+   "naam": "Home furnishing loan",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "garden-or-terrace-loan",
+   "naam": "Garden or terrace loan",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "rental-guarantee",
+   "naam": "Rental guarantee",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "home-insurance",
+   "naam": "Home insurance",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "home-assistance-insurance",
+   "naam": "Home assistance insurance",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "outstanding-balance-insurance",
+   "naam": "Outstanding balance insurance",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "myhome",
+   "naam": "MyHome",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "estimate-renovation-costs-and-grants-setle",
+   "naam": "Estimate renovation costs and grants - Setle",
+   "ecosysteem": "WONEN",
+   "partners": [
+    "setle"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "quote-for-new-windows-impact-us-today",
+   "naam": "Quote for new windows - Impact us today",
+   "ecosysteem": "WONEN",
+   "partners": [
+    "impact-us-today"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "certificates-and-inspections-de-immowinkel",
+   "naam": "Certificates and inspections - De Immowinkel",
+   "ecosysteem": "WONEN",
+   "partners": [
+    "de-immowinkel"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "search-for-a-home-immoscoop",
+   "naam": "Search for a home - Immoscoop",
+   "ecosysteem": "WONEN",
+   "partners": [
+    "immoscoop"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "property-valuation-by-an-estate-agent-immoscoop",
+   "naam": "Property valuation by an estate agent - Immoscoop",
+   "ecosysteem": "WONEN",
+   "partners": [
+    "immoscoop"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "indicative-online-property-valuation",
+   "naam": "Indicative online property valuation",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "calculate-housing-budget",
+   "naam": "Calculate housing budget",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "renovation-loan-for-co-owners-associations",
+   "naam": "Renovation loan for co-owners' associations",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "home-insurance-api",
+   "naam": "Home Insurance API",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "home-insurance-widget",
+   "naam": "Home Insurance Widget",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "home-loan-api",
+   "naam": "Home Loan API",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "home-loan-widget",
+   "naam": "Home Loan Widget",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "home-loans-partner-hub",
+   "naam": "Home Loans - Partner Hub",
+   "ecosysteem": "WONEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "petrol-or-diesel-car-loan",
+   "naam": "Petrol or diesel car loan",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "plug-in-hybrid-car-loan",
+   "naam": "Plug-in hybrid car loan",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "electric-car-loan",
+   "naam": "Electric car loan",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "bicycle-scooter-or-motorcycle-loan",
+   "naam": "Bicycle, scooter or motorcycle loan",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "camper-caravan-trailer-or-boat-loan",
+   "naam": "Camper, caravan, trailer or boat loan",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "car-loan-plus",
+   "naam": "Car Loan Plus",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "car-insurance",
+   "naam": "Car insurance",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "electric-car-insurance",
+   "naam": "Electric car insurance",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "bicycle-insurance",
+   "naam": "Bicycle insurance",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "moped-insurance",
+   "naam": "Moped insurance",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "motorcycle-insurance",
+   "naam": "Motorcycle insurance",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "mymobility",
+   "naam": "MyMobility",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "calculate-monthly-car-costs",
+   "naam": "Calculate monthly car costs",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "vab-vignettes-and-toll-badge",
+   "naam": "VAB vignettes and toll badge",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "vab"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "pay-for-parking-4411",
+   "naam": "Pay for parking - 4411",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "4411"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "parking-with-number-plate-recognition-q-park",
+   "naam": "Parking with number plate recognition - Q-Park",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "q-park"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "car-sharing-cambio",
+   "naam": "Car sharing - Cambio",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "cambio"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "bus-and-tram-tickets-de-lijn",
+   "naam": "Bus and tram tickets - De Lijn",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "de-lijn"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "train-tickets-nmbs",
+   "naam": "Train tickets - NMBS",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "nmbs"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "top-up-brupass-10-mivb",
+   "naam": "Top up BRUPASS 10 - MIVB",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "mivb"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "shared-bicycles-mobit",
+   "naam": "Shared bicycles - Mobit",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "mobit"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "shared-bicycles-blue-bike",
+   "naam": "Shared bicycles - Blue-bike",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "blue-bike"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "shared-bicycles-velo-antwerpen",
+   "naam": "Shared bicycles - Velo Antwerpen",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "velo-antwerpen"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "manage-a-leased-vehicle-movesmart-and-vab",
+   "naam": "Manage a leased vehicle - MoveSmart and VAB",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "vab",
+    "movesmart"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "prepare-for-the-driving-test-and-book-driving-lessons",
+   "naam": "Prepare for the driving test and book driving lessons",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "pay-for-fuel-q8",
+   "naam": "Pay for fuel - Q8",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "q8"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "manage-business-mobility-costs",
+   "naam": "Manage business mobility costs",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "vab-fuel-and-charging-cards",
+   "naam": "VAB fuel and charging cards",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "vab"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-employee-mobility-movesmart-integration",
+   "naam": "KBC Employee Mobility - MoveSmart integration",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [
+    "movesmart"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "car-insurance-api",
+   "naam": "Car Insurance API",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "car-insurance-widget",
+   "naam": "Car Insurance Widget",
+   "ecosysteem": "MOBILITEIT",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "pension-savings-fund",
+   "naam": "Pension savings fund",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "pension-savings-insurance",
+   "naam": "Pension savings insurance",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "supplementary-pension-for-the-self-employed",
+   "naam": "Supplementary pension for the self-employed",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "social-supplementary-pension-for-the-self-employed",
+   "naam": "Social supplementary pension for the self-employed",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "individual-pension-commitment",
+   "naam": "Individual pension commitment",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "pension-agreement-for-the-self-employed",
+   "naam": "Pension agreement for the self-employed",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "pension-plans-for-medical-professionals",
+   "naam": "Pension plans for medical professionals",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-team-benefit-plan",
+   "naam": "KBC Team Benefit Plan",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-pension-fund-solutions",
+   "naam": "KBC Pension Fund Solutions",
+   "ecosysteem": "PENSIOEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-investment-plan",
+   "naam": "KBC investment plan",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "invest-spare-change",
+   "naam": "Invest spare change",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "investment-funds",
+   "naam": "Investment funds",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "thematic-investing",
+   "naam": "Thematic investing",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "responsible-investing",
+   "naam": "Responsible investing",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "managed-investing",
+   "naam": "Managed investing",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "self-directed-investing-bolero",
+   "naam": "Self-directed investing - Bolero",
+   "ecosysteem": "BELEGGEN",
+   "partners": [
+    "bolero"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "branch-23-investment-insurance",
+   "naam": "Branch 23 investment insurance",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "portfolio-management",
+   "naam": "Portfolio management",
+   "ecosysteem": "BELEGGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "savings-accounts",
+   "naam": "Savings accounts",
+   "ecosysteem": "SPAREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "save-for-someone-else",
+   "naam": "Save for someone else",
+   "ecosysteem": "SPAREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "branch-21-savings-insurance",
+   "naam": "Branch 21 savings insurance",
+   "ecosysteem": "SPAREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-term-account",
+   "naam": "Business term account",
+   "ecosysteem": "SPAREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-term-deposit-pro",
+   "naam": "KBC Term Deposit PRO",
+   "ecosysteem": "SPAREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-pro-account",
+   "naam": "KBC Business PRO Account",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-debit-card",
+   "naam": "KBC Business Debit Card",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-credit-card",
+   "naam": "KBC Business Credit Card",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-mastercard-business-essential",
+   "naam": "KBC Mastercard Business Essential",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-mastercard-business-extra",
+   "naam": "KBC Mastercard Business Extra",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-prepaid-card",
+   "naam": "KBC Business Prepaid Card",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-multi-currency",
+   "naam": "Business multi-currency",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "e-invoicing-billit",
+   "naam": "E-invoicing - Billit",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "billit"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "collect-unpaid-invoices-go-solid",
+   "naam": "Collect unpaid invoices - Go Solid",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "go-solid"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "send-an-expense-claim-to-your-accountant",
+   "naam": "Send an expense claim to your accountant",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "payment-terminals",
+   "naam": "Payment terminals",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-payment-button",
+   "naam": "KBC payment button",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-paypage",
+   "naam": "KBC Paypage",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "electronic-invoicing-soluz-io",
+   "naam": "Electronic invoicing - Soluz.io",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "soluz-io"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-invoicing-services",
+   "naam": "KBC Invoicing Services",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "machine-to-machine-payment-solutions",
+   "naam": "Machine-to-machine payment solutions",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "cash-pooling",
+   "naam": "Cash pooling",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-cash-services",
+   "naam": "Business cash services",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "factoring-and-accounts-receivable-management",
+   "naam": "Factoring and accounts receivable management",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "comfin-touch",
+   "naam": "ComFin Touch",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "investment-loan",
+   "naam": "Investment loan",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-budget-facility",
+   "naam": "Business Budget Facility",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "current-account-advance",
+   "naam": "Current account advance",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "straight-loans",
+   "naam": "Straight Loans",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "financing-advance-tax-payments",
+   "naam": "Financing advance tax payments",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "cash-budget-credit-facility",
+   "naam": "Cash budget credit facility",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "roll-over-line-of-credit",
+   "naam": "Roll-Over Line of Credit",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "b2b-asset-financing",
+   "naam": "B2B Asset Financing",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "start-it-at-kbc",
+   "naam": "Start it @KBC",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-innovation-banking",
+   "naam": "KBC Innovation Banking",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "boostpack",
+   "naam": "Boostpack",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "tax-and-legal-advice-for-smes",
+   "naam": "Tax and legal advice for SMEs",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-transfer-advice",
+   "naam": "Business transfer advice",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-valuation-advice",
+   "naam": "Business valuation advice",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-property-advice",
+   "naam": "Business property advice",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "acquisition-advice",
+   "naam": "Acquisition advice",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "strategic-advice-through-a-relationship-manager",
+   "naam": "Strategic advice through a relationship manager",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "working-capital-forecasts",
+   "naam": "Working capital forecasts",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "working-capital-sector-comparison",
+   "naam": "Working capital sector comparison",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "digital-signatures-and-powers-of-attorney",
+   "naam": "Digital signatures and powers of attorney",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "multi-bank-account-overview",
+   "naam": "Multi-bank account overview",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "b2b-asset-financing-partner-hub",
+   "naam": "B2B Asset Financing - Partner Hub",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "business-account-partner-hub",
+   "naam": "Business Account - Partner Hub",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "bancontact-pro-in-store",
+   "naam": "Bancontact Pro In Store",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "bancontact"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "bancontact-pro-online",
+   "naam": "Bancontact Pro Online",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "bancontact"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "joyn-for-merchants",
+   "naam": "Joyn for merchants",
+   "ecosysteem": "ONDERNEMEN",
+   "partners": [
+    "joyn"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "airport-fast-lane-and-lounge-pass-brussels-airport",
+   "naam": "Airport Fast Lane and Lounge Pass - Brussels Airport",
+   "ecosysteem": "REIZEN",
+   "partners": [
+    "brussels-airport"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "travel-esim-firsty",
+   "naam": "Travel eSIM - Firsty",
+   "ecosysteem": "REIZEN",
+   "partners": [
+    "firsty"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "travel-insurance",
+   "naam": "Travel insurance",
+   "ecosysteem": "REIZEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "energy-loan",
+   "naam": "Energy loan",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "calculate-solar-panels-and-request-a-quote",
+   "naam": "Calculate solar panels and request a quote",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "calculate-a-home-battery-and-request-a-quote",
+   "naam": "Calculate a home battery and request a quote",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "insulation-quote-impact-us-today",
+   "naam": "Insulation quote - Impact us today",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "impact-us-today"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "heating-quote-impact-us-today",
+   "naam": "Heating quote - Impact us today",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "impact-us-today"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "air-conditioning-quote-impact-us-today",
+   "naam": "Air-conditioning quote - Impact us today",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "impact-us-today"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "group-purchase-of-electricity-and-gas",
+   "naam": "Group purchase of electricity and gas",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "energy-consumption-and-saving-tips",
+   "naam": "Energy consumption and saving tips",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "ecowise",
+   "naam": "ecoWise",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "sustainability-advice-encon",
+   "naam": "Sustainability advice - Encon",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "encon"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "water-resilience-sweco",
+   "naam": "Water resilience - Sweco",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "sweco"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kube-esg",
+   "naam": "Kube ESG",
+   "ecosysteem": "ENERGIE",
+   "partners": [
+    "kube"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-co2-insights-and-sector-comparison",
+   "naam": "Business CO2 insights and sector comparison",
+   "ecosysteem": "ENERGIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-basic-account",
+   "naam": "KBC Basic Account",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-plus-account",
+   "naam": "KBC Plus Account",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "joint-account",
+   "naam": "Joint account",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-budget-facility",
+   "naam": "KBC Budget Facility",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-basic-banking-service",
+   "naam": "KBC Basic Banking Service",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-universal-banking-service",
+   "naam": "KBC Universal Banking Service",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "debit-cards",
+   "naam": "Debit cards",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "credit-cards",
+   "naam": "Credit cards",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "cash-services",
+   "naam": "Cash services",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "instalment-repayment-of-credit-card-balance",
+   "naam": "Instalment repayment of credit card balance",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "loans-for-personal-expenses-studies-or-holidays",
+   "naam": "Loans for personal expenses, studies or holidays",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "apple-pay",
+   "naam": "Apple Pay",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [
+    "apple"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "wero",
+   "naam": "Wero",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [
+    "wero"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "paypal-account-overview",
+   "naam": "PayPal account overview",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [
+    "paypal"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "split-group-expenses",
+   "naam": "Split group expenses",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kate-wallet",
+   "naam": "Kate Wallet",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "family-insurance",
+   "naam": "Family insurance",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "accident-insurance",
+   "naam": "Accident insurance",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "life-insurance",
+   "naam": "Life insurance",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "funeral-insurance",
+   "naam": "Funeral insurance",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "service-vouchers",
+   "naam": "Service vouchers",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "accident-insurance-for-assisting-family-members",
+   "naam": "Accident insurance for assisting family members",
+   "ecosysteem": "GEZIN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "hospitalisation-insurance",
+   "naam": "Hospitalisation insurance",
+   "ecosysteem": "GEZONDHEID",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "view-medical-records-helena",
+   "naam": "View medical records - Helena",
+   "ecosysteem": "GEZONDHEID",
+   "partners": [
+    "helena"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-hospital-care",
+   "naam": "KBC Hospital Care",
+   "ecosysteem": "GEZONDHEID",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "leadlife-plus",
+   "naam": "Leadlife Plus",
+   "ecosysteem": "GEZONDHEID",
+   "partners": [
+    "leadlife"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "private-banker-advice",
+   "naam": "Private banker advice",
+   "ecosysteem": "VERMOGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "private-plan",
+   "naam": "Private Plan",
+   "ecosysteem": "VERMOGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "inheritance-planning-service",
+   "naam": "Inheritance Planning Service",
+   "ecosysteem": "VERMOGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "real-estate-service",
+   "naam": "Real Estate Service",
+   "ecosysteem": "VERMOGEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "find-flexible-workers-nowjobs",
+   "naam": "Find flexible workers - NOWJOBS",
+   "ecosysteem": "WERK",
+   "partners": [
+    "nowjobs"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "human-capital-solutions",
+   "naam": "Human Capital Solutions",
+   "ecosysteem": "WERK",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-employee-care",
+   "naam": "KBC Employee Care",
+   "ecosysteem": "WERK",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-team-protect-plan",
+   "naam": "KBC Team Protect Plan",
+   "ecosysteem": "WERK",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "occupational-accident-insurance",
+   "naam": "Occupational accident insurance",
+   "ecosysteem": "WERK",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "share-option-and-warrant-plans",
+   "naam": "Share option and warrant plans",
+   "ecosysteem": "WERK",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "documentary-collection-for-imports",
+   "naam": "Documentary collection for imports",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "documentary-collection-for-exports",
+   "naam": "Documentary collection for exports",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "documentary-credit-for-imports",
+   "naam": "Documentary credit for imports",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "documentary-credit-for-exports",
+   "naam": "Documentary credit for exports",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "international-bank-guarantees",
+   "naam": "International bank guarantees",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-flexims",
+   "naam": "KBC Flexims",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "avalised-bill-of-exchange",
+   "naam": "Avalised bill of exchange",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "import-forfaiting",
+   "naam": "Import forfaiting",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "hedge-foreign-exchange-and-interest-rate-risk",
+   "naam": "Hedge foreign exchange and interest rate risk",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "go-and-deal-pro",
+   "naam": "Go&Deal Pro",
+   "ecosysteem": "INTERNATIONAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-liability-insurance",
+   "naam": "Business liability insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "professional-liability-insurance",
+   "naam": "Professional liability insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "medical-professional-liability-insurance",
+   "naam": "Medical professional liability insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "directors-liability-insurance",
+   "naam": "Directors' liability insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "business-legal-assistance-insurance",
+   "naam": "Business legal assistance insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "ten-year-liability-insurance",
+   "naam": "Ten-year liability insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "office-and-building-insurance",
+   "naam": "Office and building insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "industrial-property-insurance",
+   "naam": "Industrial property insurance",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "guaranteed-income-insurance-for-the-self-employed",
+   "naam": "Guaranteed income insurance for the self-employed",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "outstanding-balance-insurance-for-entrepreneurs",
+   "naam": "Outstanding balance insurance for entrepreneurs",
+   "ecosysteem": "BESCHERMING_ONDERNEMING",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "agroflex-credit",
+   "naam": "Agroflex Credit",
+   "ecosysteem": "LANDBOUW",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "agriculture-and-horticulture-insurance",
+   "naam": "Agriculture and horticulture insurance",
+   "ecosysteem": "LANDBOUW",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "greenhouse-horticulture-insurance",
+   "naam": "Greenhouse horticulture insurance",
+   "ecosysteem": "LANDBOUW",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "registered-email-ipex",
+   "naam": "Registered email - IPEX",
+   "ecosysteem": "ADMINISTRATIE",
+   "partners": [
+    "ipex"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "digital-vault",
+   "naam": "Digital vault",
+   "ecosysteem": "ADMINISTRATIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "ebox",
+   "naam": "eBox",
+   "ecosysteem": "ADMINISTRATIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "cera-share-administration",
+   "naam": "Cera share administration",
+   "ecosysteem": "ADMINISTRATIE",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "joyn-loyalty-points",
+   "naam": "Joyn loyalty points",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "joyn"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "digital-loyalty-cards",
+   "naam": "Digital loyalty cards",
+   "ecosysteem": "WINKELEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "top-up-orange-tempo",
+   "naam": "Top up Orange Tempo",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "orange"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "top-up-proximus-payandgo",
+   "naam": "Top up Proximus Pay&Go",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "proximus"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "top-up-base",
+   "naam": "Top up BASE",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "base"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "donate-to-kom-op-tegen-kanker",
+   "naam": "Donate to Kom op tegen Kanker",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "kom-op-tegen-kanker"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "financial-news-de-tijd-vrt-nws-and-kbc",
+   "naam": "Financial news - De Tijd, VRT NWS and KBC",
+   "ecosysteem": "WINKELEN",
+   "partners": [
+    "de-tijd",
+    "vrt-nws"
+   ],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kate-coins",
+   "naam": "Kate Coins",
+   "ecosysteem": "WINKELEN",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-mobile",
+   "naam": "KBC Mobile",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-touch",
+   "naam": "KBC Touch",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-dashboard",
+   "naam": "KBC Business Dashboard",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-business-app",
+   "naam": "KBC Business app",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-reach",
+   "naam": "KBC Reach",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-reach-app",
+   "naam": "KBC Reach app",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kate",
+   "naam": "Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "kbc-partner-hub",
+   "naam": "KBC Partner Hub",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "kbc-developer-portal",
+   "naam": "KBC Developer Portal",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "search-for-documents-via-kate",
+   "naam": "Search for documents via Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "query-income-and-expenses-via-kate",
+   "naam": "Query income and expenses via Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "manage-cards-via-kate",
+   "naam": "Manage cards via Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "make-transfers-via-kate",
+   "naam": "Make transfers via Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "report-a-claim-via-kate",
+   "naam": "Report a claim via Kate",
+   "ecosysteem": "DIGITAAL",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "online-fraud-insurance",
+   "naam": "Online fraud insurance",
+   "ecosysteem": "VEILIGHEID",
+   "partners": [],
+   "kanaal": "KLANT"
+  },
+  {
+   "id": "instalment-loan-partner-hub",
+   "naam": "Instalment Loan - Partner Hub",
+   "ecosysteem": "INTEGRATIES",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "psd2-account-information-services",
+   "naam": "PSD2 Account Information Services",
+   "ecosysteem": "INTEGRATIES",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "psd2-payment-initiation-services",
+   "naam": "PSD2 Payment Initiation Services",
+   "ecosysteem": "INTEGRATIES",
+   "partners": [],
+   "kanaal": "B2B"
+  },
+  {
+   "id": "application-status-webhooks",
+   "naam": "Application status webhooks",
+   "ecosysteem": "INTEGRATIES",
+   "partners": [],
+   "kanaal": "B2B"
+  }
+ ],
+ "partners": [
+  {
+   "id": "4411",
+   "naam": "4411",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "pay-for-parking-4411"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "apple",
+   "naam": "Apple Pay",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "ecosystemen": [
+    "DAGELIJKS_BANKIEREN"
+   ],
+   "producten": [
+    "apple-pay"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "bancontact",
+   "naam": "Bancontact",
+   "ecosysteem": "ONDERNEMEN",
+   "ecosystemen": [
+    "ONDERNEMEN"
+   ],
+   "producten": [
+    "bancontact-pro-in-store",
+    "bancontact-pro-online"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "base",
+   "naam": "BASE",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "top-up-base"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "billit",
+   "naam": "Billit",
+   "ecosysteem": "ONDERNEMEN",
+   "ecosystemen": [
+    "ONDERNEMEN"
+   ],
+   "producten": [
+    "e-invoicing-billit"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "blue-bike",
+   "naam": "Blue-bike",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "shared-bicycles-blue-bike"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "bolero",
+   "naam": "Bolero",
+   "ecosysteem": "BELEGGEN",
+   "ecosystemen": [
+    "BELEGGEN"
+   ],
+   "producten": [
+    "self-directed-investing-bolero"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "brussels-airport",
+   "naam": "Brussels Airport",
+   "ecosysteem": "REIZEN",
+   "ecosystemen": [
+    "REIZEN"
+   ],
+   "producten": [
+    "airport-fast-lane-and-lounge-pass-brussels-airport"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "cambio",
+   "naam": "Cambio",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "car-sharing-cambio"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "de-immowinkel",
+   "naam": "De Immowinkel",
+   "ecosysteem": "WONEN",
+   "ecosystemen": [
+    "WONEN"
+   ],
+   "producten": [
+    "certificates-and-inspections-de-immowinkel"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "de-lijn",
+   "naam": "De Lijn",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "bus-and-tram-tickets-de-lijn"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "de-tijd",
+   "naam": "De Tijd",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "financial-news-de-tijd-vrt-nws-and-kbc"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "encon",
+   "naam": "Encon",
+   "ecosysteem": "ENERGIE",
+   "ecosystemen": [
+    "ENERGIE"
+   ],
+   "producten": [
+    "sustainability-advice-encon"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "firsty",
+   "naam": "Firsty",
+   "ecosysteem": "REIZEN",
+   "ecosystemen": [
+    "REIZEN"
+   ],
+   "producten": [
+    "travel-esim-firsty"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "go-solid",
+   "naam": "Go Solid",
+   "ecosysteem": "ONDERNEMEN",
+   "ecosystemen": [
+    "ONDERNEMEN"
+   ],
+   "producten": [
+    "collect-unpaid-invoices-go-solid"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "helena",
+   "naam": "Helena",
+   "ecosysteem": "GEZONDHEID",
+   "ecosystemen": [
+    "GEZONDHEID"
+   ],
+   "producten": [
+    "view-medical-records-helena"
+   ],
+   "gevoelig": true
+  },
+  {
+   "id": "immoscoop",
+   "naam": "Immoscoop",
+   "ecosysteem": "WONEN",
+   "ecosystemen": [
+    "WONEN"
+   ],
+   "producten": [
+    "search-for-a-home-immoscoop",
+    "property-valuation-by-an-estate-agent-immoscoop"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "impact-us-today",
+   "naam": "Impact us today",
+   "ecosysteem": "WONEN",
+   "ecosystemen": [
+    "WONEN",
+    "ENERGIE"
+   ],
+   "producten": [
+    "quote-for-new-windows-impact-us-today",
+    "insulation-quote-impact-us-today",
+    "heating-quote-impact-us-today",
+    "air-conditioning-quote-impact-us-today"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "ipex",
+   "naam": "IPEX",
+   "ecosysteem": "ADMINISTRATIE",
+   "ecosystemen": [
+    "ADMINISTRATIE"
+   ],
+   "producten": [
+    "registered-email-ipex"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "joyn",
+   "naam": "Joyn",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "ONDERNEMEN",
+    "WINKELEN"
+   ],
+   "producten": [
+    "joyn-for-merchants",
+    "joyn-loyalty-points"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "kom-op-tegen-kanker",
+   "naam": "Kom op tegen Kanker",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "donate-to-kom-op-tegen-kanker"
+   ],
+   "gevoelig": true
+  },
+  {
+   "id": "kube",
+   "naam": "Kube",
+   "ecosysteem": "ENERGIE",
+   "ecosystemen": [
+    "ENERGIE"
+   ],
+   "producten": [
+    "kube-esg"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "leadlife",
+   "naam": "Leadlife",
+   "ecosysteem": "GEZONDHEID",
+   "ecosystemen": [
+    "GEZONDHEID"
+   ],
+   "producten": [
+    "leadlife-plus"
+   ],
+   "gevoelig": true
+  },
+  {
+   "id": "mivb",
+   "naam": "MIVB",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "top-up-brupass-10-mivb"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "mobit",
+   "naam": "Mobit",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "shared-bicycles-mobit"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "movesmart",
+   "naam": "MoveSmart",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "manage-a-leased-vehicle-movesmart-and-vab",
+    "kbc-employee-mobility-movesmart-integration"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "nmbs",
+   "naam": "NMBS",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "train-tickets-nmbs"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "nowjobs",
+   "naam": "NOWJOBS",
+   "ecosysteem": "WERK",
+   "ecosystemen": [
+    "WERK"
+   ],
+   "producten": [
+    "find-flexible-workers-nowjobs"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "orange",
+   "naam": "Orange",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "top-up-orange-tempo"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "paypal",
+   "naam": "PayPal",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "ecosystemen": [
+    "DAGELIJKS_BANKIEREN"
+   ],
+   "producten": [
+    "paypal-account-overview"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "proximus",
+   "naam": "Proximus",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "top-up-proximus-payandgo"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "q-park",
+   "naam": "Q-Park",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "parking-with-number-plate-recognition-q-park"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "q8",
+   "naam": "Q8",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "pay-for-fuel-q8"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "setle",
+   "naam": "Setle",
+   "ecosysteem": "WONEN",
+   "ecosystemen": [
+    "WONEN"
+   ],
+   "producten": [
+    "estimate-renovation-costs-and-grants-setle"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "soluz-io",
+   "naam": "Soluz.io",
+   "ecosysteem": "ONDERNEMEN",
+   "ecosystemen": [
+    "ONDERNEMEN"
+   ],
+   "producten": [
+    "electronic-invoicing-soluz-io"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "sweco",
+   "naam": "Sweco",
+   "ecosysteem": "ENERGIE",
+   "ecosystemen": [
+    "ENERGIE"
+   ],
+   "producten": [
+    "water-resilience-sweco"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "vab",
+   "naam": "VAB",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "vab-vignettes-and-toll-badge",
+    "manage-a-leased-vehicle-movesmart-and-vab",
+    "vab-fuel-and-charging-cards"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "velo-antwerpen",
+   "naam": "Velo Antwerpen",
+   "ecosysteem": "MOBILITEIT",
+   "ecosystemen": [
+    "MOBILITEIT"
+   ],
+   "producten": [
+    "shared-bicycles-velo-antwerpen"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "vrt-nws",
+   "naam": "VRT NWS",
+   "ecosysteem": "WINKELEN",
+   "ecosystemen": [
+    "WINKELEN"
+   ],
+   "producten": [
+    "financial-news-de-tijd-vrt-nws-and-kbc"
+   ],
+   "gevoelig": false
+  },
+  {
+   "id": "wero",
+   "naam": "Wero",
+   "ecosysteem": "DAGELIJKS_BANKIEREN",
+   "ecosystemen": [
+    "DAGELIJKS_BANKIEREN"
+   ],
+   "producten": [
+    "wero"
+   ],
+   "gevoelig": false
+  }
+ ]
+}

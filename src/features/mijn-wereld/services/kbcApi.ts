@@ -46,11 +46,13 @@ export interface KlantProfiel {
   naam: string;
   toestemming: Record<Bron, boolean>;
   producten: string[];
+  /** Only for self-employed customers. */
+  onderneming?: { naam: string; sector: string; omschrijving: string; werknemers: number };
 }
 
 /** Moment as a customer sees it: privacy-filtered by the backend. */
 export interface KlantMoment {
-  moment: 'GEZINSUITBREIDING' | 'HUIS_KOPEN' | 'ZAAK_STARTEN';
+  moment: 'GEZINSUITBREIDING' | 'HUIS_KOPEN' | 'TROUWEN' | 'ZAAK_STARTEN' | 'ZAAK_UITBREIDEN';
   score: number;
   fase: Fase;
   bevestigd: boolean;
@@ -62,6 +64,97 @@ export interface KlantMoment {
 export interface MomentenResponse {
   week: number;
   momenten: KlantMoment[];
+}
+
+// ---- Ecosystems, partners and clusters (backend src/ecosysteem.ts, routes/ecosystemen.ts) ----
+
+export type EcosysteemId =
+  | 'WONEN' | 'MOBILITEIT' | 'PENSIOEN' | 'BELEGGEN' | 'SPAREN' | 'ONDERNEMEN' | 'REIZEN' | 'ENERGIE'
+  | 'DAGELIJKS_BANKIEREN' | 'GEZIN' | 'GEZONDHEID' | 'VERMOGEN' | 'WERK' | 'INTERNATIONAAL'
+  | 'BESCHERMING_ONDERNEMING' | 'LANDBOUW' | 'ADMINISTRATIE' | 'WINKELEN' | 'DIGITAAL' | 'VEILIGHEID' | 'INTEGRATIES';
+export type LinkStatus = 'actief' | 'gekend' | 'mogelijk';
+/** Where KBC knows a partner relation from: payments on the account, use inside KBC Mobile, or the customer added it. */
+export type Herkomst = 'REKENING' | 'KBC_MOBILE' | 'KLANT';
+export type NodeId = `product:${string}` | `partner:${string}`;
+
+export interface Waarom {
+  via: NodeId | `moment:${string}`;
+  naam: string;
+  /** Third person, e.g. "Vliegt via Brussels Airport". */
+  reden: string;
+}
+
+export interface Link {
+  id: NodeId;
+  soort: 'product' | 'partner';
+  /** Product or partner id in the catalogue. */
+  ref: string;
+  naam: string;
+  ecosysteem: EcosysteemId;
+  status: LinkStatus;
+  herkomst?: Herkomst | 'KBC_PRODUCT';
+  sinds?: string;
+  /** `mogelijk` only. */
+  score?: number;
+  waarom?: Waarom[];
+}
+
+export interface Cluster {
+  ecosysteem: EcosysteemId;
+  naam: string;
+  /** The strongest link in the cluster. */
+  status: LinkStatus;
+  links: Link[];
+}
+
+export interface EcosystemenResponse {
+  week: number;
+  samenvatting: {
+    actief: number;
+    gekend: number;
+    mogelijk: number;
+    ecosystemen: number;
+    /** Clusters with only `mogelijk` links: where the world can grow. */
+    nieuweEcosystemen: EcosysteemId[];
+  };
+  clusters: Cluster[];
+}
+
+/** Every catalogue partner with the customer's relation to it. */
+export interface KlantPartner {
+  partner: string;
+  naam: string;
+  ecosysteem: EcosysteemId;
+  gevoelig: boolean;
+  klantBijPartner: boolean;
+  deelt: boolean;
+  herkomst: Herkomst | null;
+  sinds: string | null;
+}
+
+export interface CatalogusProduct {
+  id: string;
+  naam: string;
+  ecosysteem: EcosysteemId;
+  partners: string[];
+  /** B2B products are never shown to a customer. */
+  kanaal: 'KLANT' | 'B2B';
+}
+
+export interface CatalogusPartner {
+  id: string;
+  naam: string;
+  ecosysteem: EcosysteemId;
+  ecosystemen: EcosysteemId[];
+  producten: string[];
+  /** Health partners: never drawn, suggested or connected. */
+  gevoelig: boolean;
+}
+
+export interface CatalogusResponse {
+  ecosystemen: { id: EcosysteemId; naam: string; aantalProducten: number; partners: string[] }[];
+  producten: CatalogusProduct[];
+  partners: CatalogusPartner[];
 }
 
 interface LoginResponse {
@@ -116,7 +209,7 @@ export async function login(username: string, password: string) {
   return body.user;
 }
 
-export async function kbcRequest<T>(method: 'GET' | 'POST' | 'DELETE', path: string, body?: unknown): Promise<T> {
+export async function kbcRequest<T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T> {
   const session = getSession();
   if (!session) throw new KbcApiError(401, 'unauthorized');
 
@@ -144,3 +237,20 @@ export function currentKlantId() {
   if (!klantId) throw new KbcApiError(401, 'unauthorized');
   return klantId;
 }
+
+// ---- Calls for the world (K = /v1/klanten/:klantId) ----
+
+const K = () => `/v1/klanten/${currentKlantId()}`;
+
+export const kbcWorld = {
+  /** The whole catalogue: same for everyone, so cache it. */
+  catalogus: () => kbcRequest<CatalogusResponse>('GET', '/v1/catalogus'),
+  profiel: () => kbcRequest<KlantProfiel>('GET', K()),
+  ecosystemen: () => kbcRequest<EcosystemenResponse>('GET', `${K()}/ecosystemen`),
+  partners: () => kbcRequest<KlantPartner[]>('GET', `${K()}/partners`),
+  /** Allow or stop a partner sharing data with KBC. Only the customer may (role klant). */
+  setDeling: (partner: string, deelt: boolean) =>
+    kbcRequest<KlantPartner | undefined>('PUT', `${K()}/partners/${encodeURIComponent(partner)}`, { deelt }),
+  setToestemming: (toestemming: Record<Bron, boolean>) =>
+    kbcRequest<Record<Bron, boolean>>('PUT', `${K()}/toestemming`, toestemming),
+};

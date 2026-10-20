@@ -82,7 +82,7 @@ export function MijnWereldProvider({ children }: { children: ReactNode }) {
     if (!needsChecklist) return;
     let cancelled = false;
     (async () => {
-      // KateCard shows "Ik zet jullie checklist klaar…" until this succeeds.
+      // Kate's moment card shows "Ik zet de checklist klaar…" until this succeeds.
       while (!cancelled) {
         try {
           const [checklist, world] = await Promise.all([

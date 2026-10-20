@@ -1,9 +1,9 @@
-// Domain detail and "Waarom vraag ik dit?" sheets.
+// Sheet title and tip primitives, "Waarom vraag ik dit?" and the account sheet.
 
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import type { DomainInfo, MomentSignal } from '../state/types';
+import type { MomentSignal } from '../state/types';
 import { font, world } from '../theme';
 import { PillButton } from './ui';
 
@@ -20,24 +20,6 @@ export function SheetTitle({ title, subtitle }: { title: string; subtitle: strin
 
 export function Tip({ children }: { children: ReactNode }) {
   return <Text style={sheetStyles.tip}>{children}</Text>;
-}
-
-export function DomainSheet({ domain, onClose }: { domain: DomainInfo; onClose: () => void }) {
-  return (
-    <>
-      <SheetTitle title={domain.title} subtitle={domain.detail.subtitle} />
-      <View style={styles.facts}>
-        {domain.detail.facts.map(([label, value]) => (
-          <View key={label} style={styles.fact}>
-            <Text style={styles.factLabel}>{label}</Text>
-            <Text style={styles.factValue}>{value}</Text>
-          </View>
-        ))}
-      </View>
-      <Tip>{domain.detail.tip}</Tip>
-      <PillButton label="Sluiten" onPress={onClose} />
-    </>
-  );
 }
 
 export function WhySheet({
@@ -136,25 +118,6 @@ export const sheetStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  facts: { gap: 8, marginBottom: 14 },
-  fact: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    borderBottomWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: world.line,
-    paddingBottom: 7,
-  },
-  factLabel: { fontFamily: font.body600, fontSize: 14, color: world.soft },
-  factValue: {
-    fontFamily: font.body800,
-    fontSize: 14,
-    color: world.ink,
-    textAlign: 'right',
-    fontVariant: ['tabular-nums'],
-    flexShrink: 1,
-  },
   why: { gap: 6, marginBottom: 14 },
   whyRow: { flexDirection: 'row', gap: 8 },
   bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: world.blue, marginTop: 7 },

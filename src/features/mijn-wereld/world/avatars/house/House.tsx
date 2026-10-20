@@ -1,8 +1,16 @@
-// WONEN: house with solar panels.
+// house: the phase-1 house with solar panels, scaled onto the street (art in its original island coordinates).
 
-export function Huis() {
+import type { AvatarProps } from '../types';
+
+const K = 1.85;
+/** Phase-1 art spans x 72–158 and stands on y 164. */
+const transform = (width: number) => `translate(${width / 2 - 115 * K} ${420 - 164 * K}) scale(${K})`;
+
+export const HOUSE_TOP = 420 - (164 - 72) * K;
+
+export function House({ width }: AvatarProps) {
   return (
-    <>
+    <g transform={transform(width)}>
       <ellipse cx="116" cy="166" rx="46" ry="11" fill="#1d5e24" opacity=".35" filter="url(#soft)" />
       <g filter="url(#lift)">
         <path d="M78 118 L118 118 L118 164 L78 164 Z" fill="url(#wall)" />
@@ -27,6 +35,6 @@ export function Huis() {
         <path d="M126 130 L140 126 L140 138 L126 142 Z" fill="url(#win)" />
         <path d="M78 164 L118 164 L152 152" stroke="#000" strokeOpacity=".08" strokeWidth="2" fill="none" />
       </g>
-    </>
+    </g>
   );
 }
