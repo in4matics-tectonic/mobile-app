@@ -477,9 +477,10 @@ Both read from the same list of findings.
 
 - `KateChat` gets an `opener?: { findingId: string; text: string }` prop.
 - The chat shows `text` as Kate's first message, and sends it along as conversation context, so a reply like "Ja, vertel meer" makes sense to the model.
-- **Transport**: the chat view is created on first open and then kept (phase 1), so:
-  - On first open, the URL carries it: `?app=kate&close=0&opener=<url-encoded text>`. (`close=0` hides the chat page's own ✕, D29.)
-  - On later opens, it's a `postMessage({ type: 'kate:opener', findingId, text })`: the iframe's `contentWindow.postMessage` on web, the WebView's message channel on native.
+- **Transport**: the chat view is created once and then kept. It's created ahead of time when a sheet opens or the Kate bar is pressed (so it isn't built while the panel slides in), otherwise on first open. So:
+  - If the view is created by the open itself, the URL carries the opener: `?app=kate&close=0&opener=<url-encoded text>`. (`close=0` hides the chat page's own ✕, D29.)
+  - Otherwise it's a `postMessage({ type: 'kate:opener', findingId, text })`: the iframe's `contentWindow.postMessage` on web, the WebView's message channel on native. It waits for the page to load.
+  - The same opener twice while the chat is open (a double tap) is sent once; reopening the chat later says it again.
 - **Dependency**: today `poc-runner/chat/public/index.html` reads no URL parameters and listens to no messages, so it needs a small change (Q8). Until then the chat opens plain, with no error. That's the fallback.
 - The same opener serves the "Vraag Kate" button on finding cards.
 
@@ -546,6 +547,12 @@ This list is also the accessible version of the world. It's reachable with a scr
 ### 4.11 Sheets and the connect flow
 
 All sheets use the phase-1 `BottomSheet`.
+
+**Overlays.** The sheets and the Kate chat share one veil (`components/Overlay.tsx`), owned by the screen. A tap on it closes the overlay on top; Escape and Android back do the same.
+- **Vraag Kate in a sheet**: the chat rises over the sheet (380ms, `cubic-bezier(.16,1,.3,1)`, no overshoot: on a full-height panel an overshoot opens a gap at the bottom). The sheet holds still and takes no input meanwhile; once the chat covers it, the sheet closes unseen. Closing the chat before it has finished opening returns to the sheet.
+- The bottom sheet keeps the phase-1 overshoot; its panel reaches 48px below the screen edge, so the overshoot never shows a gap.
+- The closed chat panel leaves the layout (`display: none`) instead of fading to opacity 0, which made the browser present stale frames of its iframe now and then.
+- Focus (web) moves into a panel when it opens and goes back to what opened it when it closes; a chat opened from a sheet that has since closed gives focus back to the place the sheet came from. `aria-hidden` is set only after a panel has finished closing, so it never lands on a focused element.
 
 **Linked place sheet** (`PlaceSheet`)
 - Contents:

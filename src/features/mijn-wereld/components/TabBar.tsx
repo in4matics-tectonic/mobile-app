@@ -1,5 +1,5 @@
-// Bottom navigation of KBC Mobile. In this demo only "Mijn wereld" and "Meer" (account) respond;
-// the chat with Kate opens from the Kate orb on the island.
+// Bottom navigation of KBC Mobile. In this demo "Mijn wereld" replays the fly-in, "Kate" opens the chat and
+// "Meer" the account sheet; "Rekeningen" is shown but disabled.
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';

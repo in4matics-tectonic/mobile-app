@@ -30,6 +30,7 @@ import { BottomSheet } from './components/BottomSheet';
 import { Header, StatusBar } from './components/Header';
 import { KATE_BAR_HEIGHT, KateBar } from './components/KateBar';
 import { KateFindings } from './components/KateFindings';
+import { Veil } from './components/Overlay';
 import { PhoneFrame, usePhoneFramed } from './components/PhoneFrame';
 import { AccountSheet, WhySheet } from './components/SheetContent';
 import { TabBar } from './components/TabBar';
@@ -91,7 +92,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
   const [viewport, setViewport] = useState<number | null>(null);
   const bandHeight = Math.max(WORLD_MIN, Math.round(viewport ?? screen.height - tabHeight - BAR_BAND));
 
-  // ---- Fly-in on every focus (D7) ----
+  // ---- Fly-in on every focus (D7), and again on a tap on the "Mijn wereld" tab ----
 
   const [flyInKey, setFlyInKey] = useState(0);
   useFocusEffect(
@@ -100,6 +101,12 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     }, []),
   );
   const street = useRef<StreetHandle>(null);
+  const pageScroll = useRef<ScrollView>(null);
+  /** Back to the top first, so the replay is in view even when the finding cards were scrolled up. */
+  const replayFlyIn = () => {
+    pageScroll.current?.scrollTo({ y: 0, animated: false });
+    setFlyInKey((k) => k + 1);
+  };
 
   // ---- Sheets and chat ----
 
@@ -112,6 +119,8 @@ function PhoneScreen({ framed }: { framed: boolean }) {
   };
   const closeSheet = useCallback(() => setSheet(null), []);
   const closeChat = useCallback(() => setChat((c) => ({ ...c, open: false })), []);
+  // From a sheet ("Vraag Kate"), the chat rises over it and the sheet stays put; once the chat covers it,
+  // KateChat's onOpened closes the sheet unseen (closeSheet). One motion, one veil, no glitch.
   const openChat = (opener: ChatOpener | null) => setChat({ open: true, opener });
 
   // ---- Kate ----
@@ -216,6 +225,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
     <View style={styles.screen} onLayout={(e) => setScreen(e.nativeEvent.layout)}>
       {native && <SystemStatusBar style="dark" />}
       <ScrollView
+        ref={pageScroll}
         style={styles.scroll}
         contentContainerStyle={styles.content}
         onLayout={(e) => setViewport(e.nativeEvent.layout.height)}
@@ -279,11 +289,13 @@ function PhoneScreen({ framed }: { framed: boolean }) {
       <View onLayout={(e) => setTabHeight(e.nativeEvent.layout.height)}>
         <TabBar
           bottomInset={native ? insets.bottom : 0}
-          actions={{ Kate: () => openChat(null), Meer: () => openSheet({ kind: 'account' }) }}
+          actions={{ 'Mijn wereld': replayFlyIn, Kate: () => openChat(null), Meer: () => openSheet({ kind: 'account' }) }}
         />
       </View>
 
-      <BottomSheet open={!!sheet} label={sheetLabel(shown, built?.view.places)} onClose={closeSheet}>
+      {/* Overlays: one veil under both; the chat stacks over a sheet */}
+      <Veil visible={!!sheet || chat.open} onPress={chat.open ? closeChat : closeSheet} />
+      <BottomSheet open={!!sheet} covered={chat.open} label={sheetLabel(shown, built?.view.places)} onClose={closeSheet}>
         {shown?.kind === 'place' && state.data && built && (
           <PlaceSheets
             sheet={shown}
@@ -292,10 +304,7 @@ function PhoneScreen({ framed }: { framed: boolean }) {
             voice={voice}
             deling={state.deling}
             onDeling={deling}
-            onAskKate={(opener) => {
-              closeSheet();
-              openChat(opener);
-            }}
+            onAskKate={openChat}
             onChecklist={confirmed && moment.checklist ? () => openSheet({ kind: 'checklist' }) : undefined}
             onClose={closeSheet}
           />
@@ -347,7 +356,15 @@ function PhoneScreen({ framed }: { framed: boolean }) {
           ))}
       </BottomSheet>
 
-      <KateChat open={chat.open} opener={chat.opener} onClose={closeChat} topInset={topInset} />
+      <KateChat
+        open={chat.open}
+        opener={chat.opener}
+        onClose={closeChat}
+        onOpened={closeSheet}
+        // Create the chat view while a sheet is open or the Kate bar is pressed, not while the panel slides in.
+        prewarm={!!sheet || held}
+        topInset={topInset}
+      />
     </View>
   );
 }

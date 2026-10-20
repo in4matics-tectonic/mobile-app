@@ -1,23 +1,30 @@
-// Kate's chat as a sheet that slides up over the whole phone screen, with the chat page inside a
-// WebView (an iframe on web, see ChatView). Opened from the Kate bar and the finding cards; closed with
-// the ✕, a tap on the veil, Escape (web) or the Android back button.
-// The view is created on first open and then kept, so the conversation survives closing the sheet.
+// Kate's chat as a panel that slides up over the whole phone screen, with the chat page inside a WebView (an
+// iframe on web, see ChatView). It sits on the screen's shared Veil (mijn-wereld/components/Overlay). Opened from
+// the Kate bar, the finding cards and the place sheets; closed with the ✕, a tap on the veil, Escape (web) or the
+// Android back button. The view is created once and then kept, so the conversation survives closing the panel.
 //
-// Opener (D16): when the chat opens from a finding, Kate starts with that finding. On first open it travels in
-// the URL (?opener=…&finding=…); later, as a { type: 'kate:opener' } message. A chat page that doesn't know
-// openers ignores both and simply opens plain.
+// Opened from a sheet, the panel rises over that sheet; `onOpened` tells the screen when it fully covers it, so the
+// sheet can close unseen.
+//
+// Opener (D16): when the chat opens from a finding, Kate starts with that finding. If the view is created by that
+// open, it travels in the URL (?opener=…&finding=…); otherwise as a { type: 'kate:opener' } message. The same opener
+// twice while the chat is open (a double tap) is said once. A chat page that doesn't know openers opens plain.
 
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
+import { useOverlayFocus } from '@/features/mijn-wereld/components/Overlay';
 import { font, shadow, world } from '@/features/mijn-wereld/theme';
 
 import { ChatView } from './ChatView';
 import { KATE_CHAT_URL } from './config';
 import type { ChatOpener, ChatViewHandle } from './types';
 
-const EASE = Easing.bezier(0.2, 0.9, 0.3, 1.1);
+/** A full-height panel settles without overshoot: a spring past the top would open a gap at the bottom. */
+const ENTER = Easing.bezier(0.16, 1, 0.3, 1);
+const EXIT = Easing.bezier(0.4, 0, 1, 1);
 
 function withOpener(url: string, opener: ChatOpener | null | undefined) {
   if (!opener) return url;
@@ -25,38 +32,51 @@ function withOpener(url: string, opener: ChatOpener | null | undefined) {
   return `${url}${url.includes('?') ? '&' : '?'}${query}`;
 }
 
+const sameOpener = (a: ChatOpener | null, b: ChatOpener | null) => !!a && !!b && a.findingId === b.findingId && a.text === b.text;
+
 export function KateChat({
   open,
   onClose,
+  onOpened,
+  prewarm = false,
   topInset = 0,
   opener,
 }: {
   open: boolean;
   onClose: () => void;
+  /** The panel has finished opening and covers everything under it. */
+  onOpened?: () => void;
+  /** Create the chat view ahead of the first open (hidden), so it isn't built while the panel slides in. */
+  prewarm?: boolean;
   topInset?: number;
-  /** Kate's first message when opened from a finding; a new object each time it should be said. */
+  /** Kate's first message when opened from a finding. */
   opener?: ChatOpener | null;
 }) {
   const progress = useSharedValue(0);
+  const panel = useRef<View>(null);
+  const { hidden, settle } = useOverlayFocus(open, panel);
   const [mounted, setMounted] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [height, setHeight] = useState(812);
   const [url, setUrl] = useState(KATE_CHAT_URL);
   const view = useRef<ChatViewHandle>(null);
-  /** The last opener Kate was asked to say, and the one still to send to the page. */
+  /** What Kate was asked to say during this open, and the one still to send to the page. */
   const [said, setSaid] = useState<ChatOpener | null>(null);
   const [outbox, setOutbox] = useState<ChatOpener | null>(null);
   const sent = useRef<ChatOpener | null>(null);
 
-  // Mount the chat on first open only (it starts polling the chat server as soon as it loads).
-  // The first opener travels in the URL; later ones as a message to the page that's already there.
-  if (open && !mounted) {
+  if ((open || prewarm) && !mounted) {
     setMounted(true);
-    setUrl(withOpener(KATE_CHAT_URL, opener));
-    setSaid(opener ?? null);
-  } else if (open && opener && opener !== said) {
+    if (open) {
+      setUrl(withOpener(KATE_CHAT_URL, opener));
+      setSaid(opener ?? null);
+    }
+  } else if (open && opener && !sameOpener(opener, said)) {
     setSaid(opener);
     setOutbox(opener);
+  } else if (!open && said) {
+    // Closed: opening the same finding again later should make Kate say it again.
+    setSaid(null);
   }
 
   useEffect(() => {
@@ -65,11 +85,17 @@ export function KateChat({
     view.current?.post({ type: 'kate:opener', ...outbox });
   }, [outbox, loaded]);
 
-  const onLoad = () => setLoaded(true);
+  const onOpenedRef = useRef(onOpened);
+  useEffect(() => {
+    onOpenedRef.current = onOpened;
+  }, [onOpened]);
 
   useEffect(() => {
-    progress.value = withTiming(open ? 1 : 0, { duration: open ? 320 : 220, easing: open ? EASE : Easing.out(Easing.quad) });
-  }, [open, progress]);
+    const opened = () => onOpenedRef.current?.();
+    progress.value = withTiming(open ? 1 : 0, { duration: open ? 380 : 240, easing: open ? ENTER : EXIT }, (finished) => {
+      if (finished) scheduleOnRN(open ? opened : settle);
+    });
+  }, [open, progress, settle]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,46 +111,40 @@ export function KateChat({
     return () => sub.remove();
   }, [open, onClose]);
 
-  const veilStyle = useAnimatedStyle(() => ({ opacity: progress.value }));
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: (1 - progress.value) * height * 1.05 }],
-    // Fully hidden once closed, so nothing (e.g. a scrolled container) can ever reveal it
-    opacity: progress.value > 0.001 ? 1 : 0,
   }));
 
   return (
-    <View style={[StyleSheet.absoluteFill, { pointerEvents: open ? 'auto' : 'none' }]} aria-hidden={!open}>
-      <Animated.View style={[StyleSheet.absoluteFill, styles.veil, veilStyle]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} aria-label="Sluiten" />
-      </Animated.View>
-
-      <Animated.View
-        role="dialog"
-        aria-modal
-        aria-label="Chat met Kate"
-        onLayout={(e) => setHeight(e.nativeEvent.layout.height)}
-        style={[styles.sheet, { top: 12 + topInset }, sheetStyle]}>
-        <View style={styles.top}>
-          <View style={styles.grab} />
-          <Pressable role="button" aria-label="Chat sluiten" onPress={onClose} style={styles.close}>
-            <Text style={styles.closeIcon}>✕</Text>
-          </Pressable>
-        </View>
-        <View style={styles.body}>
-          {mounted && <ChatView ref={view} url={url} onLoad={onLoad} />}
-          {!loaded && (
-            <View style={styles.loading}>
-              <ActivityIndicator color={world.blue} />
-            </View>
-          )}
-        </View>
-      </Animated.View>
-    </View>
+    <Animated.View
+      ref={panel}
+      role="dialog"
+      aria-modal
+      aria-label="Chat met Kate"
+      aria-hidden={hidden}
+      onLayout={(e) => setHeight(e.nativeEvent.layout.height)}
+      // Closed and settled: out of the layout altogether. Fading a panel with an iframe to opacity 0 made the
+      // browser keep presenting stale frames of it; display: none drops the layer and keeps the chat page alive.
+      style={[styles.sheet, { top: 12 + topInset, pointerEvents: open ? 'auto' : 'none', display: hidden ? 'none' : 'flex' }, sheetStyle]}>
+      <View style={styles.top}>
+        <View style={styles.grab} />
+        <Pressable role="button" aria-label="Chat sluiten" onPress={onClose} style={styles.close}>
+          <Text style={styles.closeIcon}>✕</Text>
+        </Pressable>
+      </View>
+      <View style={styles.body}>
+        {mounted && <ChatView ref={view} url={url} onLoad={() => setLoaded(true)} />}
+        {!loaded && (
+          <View style={styles.loading}>
+            <ActivityIndicator color={world.blue} />
+          </View>
+        )}
+      </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  veil: { backgroundColor: 'rgba(8,30,60,.35)' },
   sheet: {
     position: 'absolute',
     left: 0,
