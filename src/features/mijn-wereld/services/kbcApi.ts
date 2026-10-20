@@ -1,16 +1,19 @@
-// Client for the KBC Momentum backend at https://api.34-23-164-33.sslip.io (../backend, docs at /docs).
+// Client for the KBC Momentum backend on the PoC VM, api.<domain> (../backend, docs at /docs).
+// The VM's domain is in src/constants/poc-vm.json: change it there when the VM moves.
 //
 // That host sits behind the PoC site password (a cookie gate) and only allows CORS from
-// https://34-23-164-33.sslip.io, so a browser page can't call it directly. On web the app calls /v1
+// https://<domain>, so a browser page can't call it directly. On web the app calls /v1
 // on its own origin instead, which is forwarded to the API: by nginx in the deployed PoC
 // (poc-runner) and by the Metro dev proxy locally (metro.config.js). iOS/Android have no CORS and
 // call the API directly; they pass the site gate with the same password before logging in.
 
 import { Platform } from 'react-native';
 
+import POC_VM from '@/constants/poc-vm.json';
+
 import { clearSession, getSession, saveSession, type SessionUser } from '@/features/auth/session';
 
-export const API_ORIGIN = 'https://api.34-23-164-33.sslip.io';
+export const API_ORIGIN = `https://api.${POC_VM.domain}`;
 const DIRECT = Platform.OS !== 'web' || !!process.env.EXPO_PUBLIC_API_URL;
 
 function baseUrl() {

@@ -7,14 +7,16 @@
 //                                   same-origin in the app (see src/features/kate-chat)
 //
 // .env.local (never committed):
-//   KBC_API_TARGET=https://api.34-23-164-33.sslip.io   (default; or http://127.0.0.1:3000 for ../backend)
-//   KATE_CHAT_TARGET=https://chat.34-23-164-33.sslip.io (default: derived from KBC_API_TARGET)
-//   KBC_GATE_PASSWORD=...                               (the shared site password in front of the VM)
+//   KBC_API_TARGET=https://api.<domain>   (default, domain from src/constants/poc-vm.json; or http://127.0.0.1:3000 for ../backend)
+//   KATE_CHAT_TARGET=https://chat.<domain> (default: derived from KBC_API_TARGET)
+//   KBC_GATE_PASSWORD=...                  (the shared site password in front of the VM)
 // The gate cookie stays in this Node process; it never reaches the browser.
 
 const { Buffer } = require('node:buffer');
 
-const TARGET = (process.env.KBC_API_TARGET || 'https://api.34-23-164-33.sslip.io').replace(/\/$/, '');
+const POC_VM = require('../src/constants/poc-vm.json');
+
+const TARGET = (process.env.KBC_API_TARGET || `https://api.${POC_VM.domain}`).replace(/\/$/, '');
 const GATE_PASSWORD = process.env.KBC_GATE_PASSWORD;
 
 /** chat.<domain> next to api.<domain> on the VM; the poc-runner chat port when running locally. */

@@ -3,8 +3,10 @@
 
 import { Platform } from 'react-native';
 
+import POC_VM from '@/constants/poc-vm.json';
+
 /** The deployed chat on the PoC VM, behind the shared site password (asked once; the cookie lasts 30 days). */
-const LIVE_URL = 'https://chat.34-23-164-33.sslip.io/?app=kate';
+const LIVE_URL = `https://chat.${POC_VM.domain}/?app=kate`;
 
 /**
  * The web dev server (localhost) loads the same live chat through the Metro proxy
